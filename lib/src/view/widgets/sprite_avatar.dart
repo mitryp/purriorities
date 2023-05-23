@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../constants.dart';
-
 class SpriteAvatar extends StatelessWidget {
   final ImageProvider? image;
   final String? assetName;

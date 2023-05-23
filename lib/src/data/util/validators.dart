@@ -38,39 +38,73 @@ FieldValidator optional(FieldValidator validator) {
 }
 
 FieldValidator get isPositiveInteger => all([
-  isInteger,
+      isInteger,
       (s) => _positiveIntegerValidator(int.parse(s!)),
-]);
+    ]);
 
 FieldValidator get isNonNegativeInteger => all([
-  isInteger,
+      isInteger,
       (s) => _nonNegativeIntegerValidator(int.parse(s!)),
-]);
+    ]);
 
 FieldValidator isIntegerInRange(int min, int max) => all([
-  isInteger,
+      isInteger,
       (s) => _rangeIntegerValidator(int.parse(s!), min, max),
-]);
+    ]);
 
 FieldValidator get isCurrencyValue => all([
-  notEmpty,
-  isNonNegativeDouble,
+      notEmpty,
+      isNonNegativeDouble,
       (s) => _nonNegativeCurrencyValidator(s!),
-]);
+    ]);
 
 FieldValidator get isDouble => all([notEmpty, _doubleValidator]);
 
 FieldValidator get isNonNegativeDouble => all([
-  notEmpty,
-  isDouble,
+      notEmpty,
+      isDouble,
       (s) => _nonNegativeDoubleValidator(double.parse(s!)),
-]);
+    ]);
 
 FieldValidator get isPhoneNumber => all([
-  startsWith('+'),
-  hasLength(13),
+      startsWith('+'),
+      hasLength(13),
       (s) => isInteger(s!.replaceFirst('+', '')),
-]);
+    ]);
+
+FieldValidator isLongerOrEqual(int minLength) {
+  return all([
+    notEmpty,
+    (s) {
+      if (s!.trim().length >= minLength) {
+        return null;
+      }
+
+      return 'Стрічка повинна бути не коротшою, ніж $minLength символів';
+    },
+  ]);
+}
+
+FieldValidator get usernameValidator => all([
+      notEmpty,
+      (s) {
+        final normalized = s!.trim();
+        final match = RegExp(r'\w+').matchAsPrefix(normalized);
+
+        if (match != null) return null;
+        return 'Стрічка може містити латиницю, цифри та підкреслення';
+      }
+    ]);
+
+FieldValidator get isEmail => all([
+      notEmpty,
+      (s) {
+        final normalized = s!.trim();
+        final match = RegExp(r'^[\w.+-]*[\w+-]@([\w.-]+\.)+\w+$').matchAsPrefix(normalized);
+        if (match != null) return null;
+        return 'Стрічка повинна бути валідною адресою ел. пошти';
+      },
+    ]);
 
 FieldValidator startsWith(String pattern) =>
     all([notEmpty, (s) => _startsWithValidator(s, pattern)]);
