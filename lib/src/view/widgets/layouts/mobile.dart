@@ -9,6 +9,7 @@ class MobileLayout extends StatelessWidget {
   final CrossAxisAlignment? crossAxisAlignment;
 
   final EdgeInsets minimumSafeArea;
+  final AppBar? appBar;
 
   const MobileLayout({
     required List<Widget> children,
@@ -16,6 +17,7 @@ class MobileLayout extends StatelessWidget {
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.crossAxisAlignment = CrossAxisAlignment.center,
     this.minimumSafeArea = const EdgeInsets.all(8),
+    this.appBar,
     super.key,
   })  : child = null,
         bodyChildren = children;
@@ -23,6 +25,7 @@ class MobileLayout extends StatelessWidget {
   const MobileLayout.child({
     required Widget this.child,
     this.minimumSafeArea = const EdgeInsets.all(8),
+    this.appBar,
     super.key,
   })  : bodyChildren = null,
         mainAxisSize = null,
@@ -40,6 +43,7 @@ class MobileLayout extends StatelessWidget {
         );
 
     return Scaffold(
+      appBar: appBar,
       body: SafeArea(
         minimum: minimumSafeArea,
         child: child,

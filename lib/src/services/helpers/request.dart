@@ -15,6 +15,8 @@ Future<http.Response> makeRequest(HttpMethod method, Uri path, {Object? body}) a
     ..body = body != null ? jsonEncode(body) : ''
     ..headers['Content-Type'] = 'application/json; charset=utf-8';
 
+  // todo add authentication token here
+
   return http.Client()
       .send(req)
       .then(http.Response.fromStream)

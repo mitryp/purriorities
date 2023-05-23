@@ -144,7 +144,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     if (!context.mounted) return;
     final data = context.read<UserData>();
 
-    context.go('/register', extra: data.email);
+    context.push('/register', extra: data.email);
 
     // todo
     // Navigator.of(context).push(MaterialPageRoute(
