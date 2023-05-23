@@ -1,0 +1,29 @@
+name: Flutter Build to the `presentation` branch
+
+on: 
+  push:
+    branches:
+      - master
+      
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Install Flutter
+        uses: britannio/action-install-flutter@v1.1
+      
+      - name: Get dependencies
+        run: flutter pub get
+      
+      - name: Build Flutter for Web
+        run: flutter build web --release
+        
+      - name: Force push generated files
+        uses: dfm/force-push-branch-action@v1
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          target-branch: presentation
+          path: build/web/*
+          commit-message: "Automatically built assets"
