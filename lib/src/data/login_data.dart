@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 
-class LoginData extends ChangeNotifier {
+class LoginData with ChangeNotifier {
   String _email = '';
 
   String _password = '';
