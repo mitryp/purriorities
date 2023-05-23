@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/enums/sprite.dart';
-import '../../data/user_data.dart';
+import '../../data/login_data.dart';
 import '../../data/util/validators.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/enums/sprite.dart';
-import '../../data/user_data.dart';
+import '../../data/login_data.dart';
 import '../../data/util/validators.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';
@@ -22,7 +22,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => UserData(),
+      create: (context) => LoginData(),
       child: LayoutSelector(
         mobileLayoutBuilder: (context) => const MobileLoginForm(),
         desktopLayoutBuilder: (context) => const Placeholder(),
@@ -85,7 +85,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
 
   Widget _buildFormContent(BuildContext context) {
     // final data = Provider.of<LoginData>(context, [listen: true]);
-    final data = context.watch<UserData>();
+    final data = context.watch<LoginData>();
 
     return Column(
       children: [
@@ -135,14 +135,14 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
   void _processLogin(BuildContext context) {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    final data = context.read<UserData>();
+    final data = context.read<LoginData>();
     // loginService.login(data);
     log('${data.email}, ${data.password}');
   }
 
   void _processRegisterRedirect(BuildContext context) {
     if (!context.mounted) return;
-    final data = context.read<UserData>();
+    final data = context.read<LoginData>();
 
     context.push('/register', extra: data.email);
 
