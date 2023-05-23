@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/enums/sprite.dart';
 import '../../data/user_data.dart';
 import '../../data/util/validators.dart';
 import '../../util/sprite_scaling.dart';
@@ -48,7 +49,6 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
       child: FormLayout(
         form: Form(
           key: _formKey,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: _buildFormContent(),
         ),
         leading: [
@@ -79,7 +79,7 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
     return Hero(
       tag: 'login-cat-hero',
       child: SpriteAvatar.asset(
-        'assets/gray-cat.webp',
+        Sprite.grayCat.asset,
         maxRadius: 48,
         scale: scaleTo(64),
       ),
@@ -102,6 +102,7 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
             controller: formFields[i].$2,
             decoration: InputDecoration(labelText: formFields[i].$1),
             validator: formFields[i].$3,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
       ],
     );

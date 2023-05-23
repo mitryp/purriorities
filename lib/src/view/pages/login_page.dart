@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/enums/sprite.dart';
@@ -30,8 +31,15 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-class MobileLoginForm extends StatelessWidget {
+class MobileLoginForm extends StatefulWidget {
   const MobileLoginForm({super.key});
+
+  @override
+  State<MobileLoginForm> createState() => _MobileLoginFormState();
+}
+
+class _MobileLoginFormState extends State<MobileLoginForm> {
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +47,10 @@ class MobileLoginForm extends StatelessWidget {
       minimumSafeArea: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
       child: FormLayout(
         leading: _buildLeading(),
-        form: Form(child: _buildFormContent(context)),
+        form: Form(
+          key: _formKey,
+          child: _buildFormContent(context),
+        ),
         trailing: _buildTrailing(context),
       ),
     );
@@ -72,12 +83,40 @@ class MobileLoginForm extends StatelessWidget {
     );
   }
 
+  Widget _buildFormContent(BuildContext context) {
+    // final data = Provider.of<LoginData>(context, [listen: true]);
+    final data = context.watch<UserData>();
+
+    return Column(
+      children: [
+        TextFormField(
+          initialValue: data.email,
+          validator: isEmail,
+          onChanged: (newEmail) => data.email = newEmail,
+          decoration: const InputDecoration(labelText: 'Email'),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+        ),
+        TextFormField(
+          obscureText: true,
+          initialValue: data.password,
+          validator: isLongerOrEqual(8),
+          onChanged: (newPassword) => data.password = newPassword,
+          decoration: const InputDecoration(labelText: 'Пароль'),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+        ),
+      ],
+    );
+  }
+
   List<Widget> _buildTrailing(BuildContext context) {
     return [
       Padding(
         padding: const EdgeInsets.only(top: 24, bottom: 72),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Wrap(
+          direction: Axis.horizontal,
+          alignment: WrapAlignment.spaceEvenly,
+          spacing: 16,
+          runSpacing: 8,
           children: [
             OutlinedButton(
               onPressed: () => _processLogin(context),
@@ -93,32 +132,9 @@ class MobileLoginForm extends StatelessWidget {
     ];
   }
 
-  Widget _buildFormContent(BuildContext context) {
-    // final data = Provider.of<LoginData>(context, [listen: true]);
-    final data = context.watch<UserData>();
-
-    // todo add validators
-
-    return Column(
-      children: [
-        TextFormField(
-          initialValue: data.email,
-          validator: isEmail,
-          onChanged: (newEmail) => data.email = newEmail,
-          decoration: const InputDecoration(labelText: 'Email'),
-        ),
-        TextFormField(
-          obscureText: true,
-          initialValue: data.password,
-          validator: isLongerOrEqual(8),
-          onChanged: (newPassword) => data.password = newPassword,
-          decoration: const InputDecoration(labelText: 'Пароль'),
-        ),
-      ],
-    );
-  }
-
   void _processLogin(BuildContext context) {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
     final data = context.read<UserData>();
     // loginService.login(data);
     log('${data.email}, ${data.password}');
@@ -128,9 +144,11 @@ class MobileLoginForm extends StatelessWidget {
     if (!context.mounted) return;
     final data = context.read<UserData>();
 
+    context.go('/register', extra: data.email);
+
     // todo
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => RegisterPage(email: data.email),
-    ));
+    // Navigator.of(context).push(MaterialPageRoute(
+    //   builder: (context) => RegisterPage(email: data.email),
+    // ));
   }
 }
