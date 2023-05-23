@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'view/pages/homepage.dart';
+import 'view/pages/login_page.dart';
 import 'view/theme.dart';
 
 class PurrioritiesApp extends StatelessWidget {
@@ -11,7 +11,8 @@ class PurrioritiesApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: darkTheme,
-      home: const Homepage(),
+      //
+      home: const LoginPage(),
     );
   }
 }
