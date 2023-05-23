@@ -11,6 +11,7 @@ import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
+import '../widgets/progress_indicator_button.dart';
 import '../widgets/sprite_avatar.dart';
 import 'register_page.dart';
 
@@ -118,9 +119,9 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
           spacing: 16,
           runSpacing: 8,
           children: [
-            OutlinedButton(
+            ProgressIndicatorButton.outlined(
               onPressed: () => _processLogin(context),
-              child: const Text('Увійти'),
+              textCaption: const Text('Увійти'),
             ),
             TextButton(
               onPressed: () => _processRegisterRedirect(context),
@@ -132,12 +133,14 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     ];
   }
 
-  void _processLogin(BuildContext context) {
+  Future<void> _processLogin(BuildContext context) async{
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final data = context.read<LoginData>();
     // loginService.login(data);
     log('${data.email}, ${data.password}');
+
+    //await Future.delayed(const Duration(seconds: 2));
   }
 
   void _processRegisterRedirect(BuildContext context) {
