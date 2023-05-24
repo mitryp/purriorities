@@ -15,11 +15,10 @@ class ProgressIndicatorButton extends StatefulWidget {
   });
 
   const ProgressIndicatorButton.elevated({
-    required Widget child,
+    required this.child,
     required this.onPressed,
     super.key,
-  })  : child = child,
-        buttonBuilder = ElevatedButton.new;
+  })  : buttonBuilder = ElevatedButton.new;
 
   const ProgressIndicatorButton.outlined({
     required Text textCaption,
