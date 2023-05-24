@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MobileLayout extends StatelessWidget {
+  static const defaultSafeArea = EdgeInsets.all(8);
+
   final List<Widget>? bodyChildren;
   final Widget? child;
 
@@ -16,7 +18,7 @@ class MobileLayout extends StatelessWidget {
     this.mainAxisSize = MainAxisSize.max,
     this.mainAxisAlignment = MainAxisAlignment.start,
     this.crossAxisAlignment = CrossAxisAlignment.center,
-    this.minimumSafeArea = const EdgeInsets.all(8),
+    this.minimumSafeArea = defaultSafeArea,
     this.appBar,
     super.key,
   })  : child = null,
@@ -24,7 +26,7 @@ class MobileLayout extends StatelessWidget {
 
   const MobileLayout.child({
     required Widget this.child,
-    this.minimumSafeArea = const EdgeInsets.all(8),
+    this.minimumSafeArea = defaultSafeArea,
     this.appBar,
     super.key,
   })  : bodyChildren = null,
