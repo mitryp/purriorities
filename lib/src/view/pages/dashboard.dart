@@ -32,53 +32,69 @@ class _MobileHomepage extends StatelessWidget {
     );
   }
 
+  Widget _buildProgressIndicator({
+    required String label,
+    required int value,
+    required int maxValue,
+    int minValue = 0,
+    String? progressBarCaption,
+  }) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Expanded(
+          child: Text(label, textAlign: TextAlign.end),
+        ),
+        const SizedBox(
+          width: 20,
+        ),
+        Expanded(
+          flex: 3,
+          child: ProgressBar(
+            minValue: minValue,
+            maxValue: maxValue,
+            value: value,
+            height: 25,
+            caption: progressBarCaption != null ? Text(progressBarCaption) : null,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildUserInfoBar() {
     const sprite = Sprite.grayCat;
     const radius = 50.0;
     final scale = (radius - sprite.size.width) * 2;
 
-    return Row(
-      children: [
-        SpriteAvatar.asset(sprite.asset, minRadius: radius, scale: scaleTo(scale)),
-        const Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: Text('Довіра', textAlign: TextAlign.end),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: ProgressBar(
-                      maxValue: 100,
-                      initialValue: 10,
-                      height: 30,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Expanded(child: Text('XP')),
-                  Expanded(
-                    flex: 2,
-                    child: ProgressBar(
-                      maxValue: 1000,
-                      initialValue: 600,
-                      height: 30,
-                      caption: Text('Рівень 1'),
-                    ),
-                  ),
-                ],
-              )
-            ],
+    final trustValue = 10;
+    final maxTrust = 100;
+
+    final xpValue = 40;
+    final maxXp = 100;
+    final xpLevel = 2;
+
+    return IntrinsicHeight(
+      child: Row(
+        children: [
+          SpriteAvatar.asset(sprite.asset, minRadius: radius, scale: scaleTo(scale)),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildProgressIndicator(label: 'Довіра', value: trustValue, maxValue: maxTrust),
+                _buildProgressIndicator(
+                  label: 'XP',
+                  value: xpValue,
+                  maxValue: maxXp,
+                  progressBarCaption: 'Рівень $xpLevel',
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
