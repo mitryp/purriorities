@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/enums/sprite.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/desktop.dart';
 import '../widgets/layouts/layout_selector.dart';
-import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/sprite_avatar.dart';
 
@@ -25,10 +25,60 @@ class _MobileHomepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MobileLayout(
+    return Column(
       children: [
         _buildUserInfoBar(),
+        _buildQuestsList(context),
       ],
+    );
+  }
+
+  Widget _buildQuestsList(BuildContext context) {
+    //TODO add priority: it indicates a color of list item outline
+    final List<(String name, bool isRepeated, DateTime? deadline)> questsData = [
+      ('Нявчитися писати бекенд...', false, DateTime(2023, 05, 24, 23, 59)),
+      ('Позайматися', true, DateTime(2023, 05, 24, 18, 0)),
+      ('Нявчитися нявати', false, DateTime(2023, 05, 30, 23, 59)),
+      ('Помуркотіти коханого :3', false, null),
+    ];
+
+    return ListView(
+      shrinkWrap: true,
+      children: questsData.map((questData) {
+        final (questName, isRepeated, deadline) = questData;
+
+        //TODO locale
+        final time = deadline != null ? DateFormat('HH:mm').format(deadline) : null;
+        final date = deadline != null ? DateFormat('dd.MM.yyyy').format(deadline) : null;
+
+        return ListTile(
+          title: Text(questName),
+          trailing: FractionallySizedBox(
+            widthFactor: 0.3,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (isRepeated)
+                  const Row(
+                    children: [
+                      Icon(Icons.restart_alt_rounded),
+                      SizedBox(width: 20),
+                    ],
+                  ),
+                if (deadline != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(date!),
+                      Text(time!),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
@@ -62,6 +112,19 @@ class _MobileHomepage extends StatelessWidget {
     );
   }
 
+  Widget _buildCurrencyStats({required int quantity, required String asset}) {
+    return Row(
+      children: [
+        Text('$quantity'),
+        Image.asset(
+          asset,
+          scale: scaleTo(25),
+          filterQuality: FilterQuality.none,
+        ),
+      ],
+    );
+  }
+
   Widget _buildUserInfoBar() {
     const sprite = Sprite.grayCat;
     const radius = 50.0;
@@ -73,6 +136,9 @@ class _MobileHomepage extends StatelessWidget {
     final xpValue = 40;
     final maxXp = 100;
     final xpLevel = 2;
+
+    final nFish = 10;
+    final nValerian = 1;
 
     return IntrinsicHeight(
       child: Row(
@@ -89,6 +155,14 @@ class _MobileHomepage extends StatelessWidget {
                   value: xpValue,
                   maxValue: maxXp,
                   progressBarCaption: 'Рівень $xpLevel',
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    _buildCurrencyStats(quantity: nFish, asset: Sprite.fishFood.asset),
+                    const SizedBox(width: 20),
+                    _buildCurrencyStats(quantity: nValerian, asset: Sprite.valerian.asset),
+                  ],
                 ),
               ],
             ),
