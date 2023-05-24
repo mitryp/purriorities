@@ -13,7 +13,6 @@ import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_indicator_button.dart';
 import '../widgets/sprite_avatar.dart';
-import 'register_page.dart';
 
 // можна зберігати останню пошту в локалсторедж
 
