@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/enums/sprite.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/desktop.dart';
 import '../widgets/layouts/layout_selector.dart';
+import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_bar.dart';
+import '../widgets/progress_indicator_button.dart';
+import '../widgets/quest_tile.dart';
 import '../widgets/sprite_avatar.dart';
 
 class Dashboard extends StatelessWidget {
@@ -25,11 +28,55 @@ class _MobileHomepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return MobileLayout(
+      floatingActionButton: _buildFloatingActionButton(context),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       children: [
-        _buildUserInfoBar(),
-        _buildQuestsList(context),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
+          child: _buildUserInfoBar(),
+        ),
+        Expanded(
+          child: Card(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                  child: Text(
+                    'Не втратьте довіру: виконайте квести!',
+                    style: TextStyle(fontSize: 22),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                _buildQuestsList(context),
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: ProgressIndicatorButton.elevated(
+                      onPressed: () async {
+                        GoRouter.of(context).go('/all_quests');
+                        //TODO remove
+                        await Future.delayed(const Duration(seconds: 1));
+                      },
+                      child: const Text('Всі квести'),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 40.0),
       ],
+    );
+  }
+
+  FloatingActionButton _buildFloatingActionButton(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () => GoRouter.of(context).go('/new_quest'),
+      shape: const CircleBorder(),
+      child: const Icon(Icons.add),
     );
   }
 
@@ -42,43 +89,15 @@ class _MobileHomepage extends StatelessWidget {
       ('Помуркотіти коханого :3', false, null),
     ];
 
-    return ListView(
+    return ListView.separated(
       shrinkWrap: true,
-      children: questsData.map((questData) {
-        final (questName, isRepeated, deadline) = questData;
+      itemCount: questsData.length,
+      itemBuilder: (context, index) {
+        final (questName, isRepeated, deadline) = questsData[index];
 
-        //TODO locale
-        final time = deadline != null ? DateFormat('HH:mm').format(deadline) : null;
-        final date = deadline != null ? DateFormat('dd.MM.yyyy').format(deadline) : null;
-
-        return ListTile(
-          title: Text(questName),
-          trailing: FractionallySizedBox(
-            widthFactor: 0.3,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (isRepeated)
-                  const Row(
-                    children: [
-                      Icon(Icons.restart_alt_rounded),
-                      SizedBox(width: 20),
-                    ],
-                  ),
-                if (deadline != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(date!),
-                      Text(time!),
-                    ],
-                  ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
+        return QuestTile(questName: questName, isRepeated: isRepeated, deadline: deadline);
+      },
+      separatorBuilder: (context, index) => const Divider(),
     );
   }
 

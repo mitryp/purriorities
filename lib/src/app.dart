@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'view/pages/dashboard.dart';
 import 'view/pages/login_page.dart';
 import 'view/pages/register_page.dart';
 import 'view/theme.dart';
+import 'view/widgets/main_navigation.dart';
 
 final _router = GoRouter(
-  initialLocation: '/login',
+  initialLocation: '/dashboard',
   routes: [
-    GoRoute(path: '/dashboard', builder: (context, state) => const Placeholder()),
+    ShellRoute(
+      builder: (context, state, child) => MainNavigation(child: child),
+      routes: [
+        GoRoute(
+          path: '/dashboard',
+          builder: (context, state) => const Dashboard(),
+        ),
+        GoRoute(
+          path: '/cats',
+          builder: (context, state) => const Placeholder(),
+        ),
+        GoRoute(
+          path: '/store',
+          builder: (context, state) => const Placeholder(),
+        ),
+      ],
+    ),
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginPage(),
@@ -18,12 +36,16 @@ final _router = GoRouter(
       builder: (context, state) =>
           RegisterPage(email: state.extra is String ? state.extra as String : null),
     ),
+    // GoRoute(
+    //   path: '/edit_quest',
+    //   builder: (context, state) => QuestEditPage(
+    //     initialQuest: state.extra is QuestModel ? state.extra as QuestModel : null,
+    //   ),
+    // ),
     GoRoute(
-      path: '/edit_quest',
-      builder: (context, state) => QuestEditPage(
-        initialQuest: state.extra is QuestModel ? state.extra as QuestModel : null,
-      ),
-    )
+      path: '/all_quests',
+      builder: (context, state) => const Placeholder(),
+    ),
   ],
 );
 

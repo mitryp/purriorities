@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
+import '../../data/main_navigation_data.dart';
 import 'layouts/layout_selector.dart';
-import 'layouts/mobile.dart';
 
 enum MainNavAction {
   dashboard(Icons.home_outlined, 'Головна', '/dashboard'),
@@ -16,36 +17,47 @@ enum MainNavAction {
   const MainNavAction(this.iconData, this.label, this.link);
 }
 
-class MainNavigation extends StatefulWidget {
+class MainNavigation extends StatelessWidget {
   final Widget child;
 
   const MainNavigation({required this.child, super.key});
 
   @override
-  State<MainNavigation> createState() => _MainNavigationState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => MainNavigationData(),
+      child: LayoutSelector(
+        mobileLayoutBuilder: (context) => _MobileNavigation(child: child),
+        desktopLayoutBuilder: (context) => const Placeholder(),
+      ),
+    );
+  }
 }
 
-class _MainNavigationState extends State<MainNavigation> {
-  int selectedIndex = 0;
+class _MobileNavigation extends StatelessWidget {
+  final Widget child;
+
+  const _MobileNavigation({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutSelector(
-      mobileLayoutBuilder: (context) =>
-          MobileLayout.child(bottomNavigationBar: _buildBottomNavigator(), child: widget.child),
-      desktopLayoutBuilder: (context) => const Placeholder(),
+    return Scaffold(
+      bottomNavigationBar: _buildBottomNavigator(context),
+      body: child,
     );
   }
 
-  Widget _buildBottomNavigator() {
+  Widget _buildBottomNavigator(BuildContext context) {
     const actions = MainNavAction.values;
 
+    final data = context.watch<MainNavigationData>();
+
     return BottomNavigationBar(
-      onTap: (index) => setState(() {
-        selectedIndex = index;
+      onTap: (index) {
+        data.index = index;
         GoRouter.of(context).go(actions[index].link);
-      }),
-      currentIndex: selectedIndex,
+      },
+      currentIndex: data.index,
       //TODO selected item color
       items: actions.map((action) {
         return BottomNavigationBarItem(

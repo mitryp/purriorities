@@ -11,6 +11,8 @@ class MobileLayout extends StatelessWidget {
   final EdgeInsets minimumSafeArea;
   final AppBar? appBar;
   final Widget? bottomNavigationBar;
+  final FloatingActionButton? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   const MobileLayout({
     required List<Widget> children,
@@ -20,6 +22,8 @@ class MobileLayout extends StatelessWidget {
     this.minimumSafeArea = const EdgeInsets.all(8),
     this.appBar,
     this.bottomNavigationBar,
+    this.floatingActionButton,
+    this.floatingActionButtonLocation,
     super.key,
   })  : child = null,
         bodyChildren = children;
@@ -29,6 +33,8 @@ class MobileLayout extends StatelessWidget {
     this.minimumSafeArea = const EdgeInsets.all(8),
     this.appBar,
     this.bottomNavigationBar,
+    this.floatingActionButton,
+    this.floatingActionButtonLocation,
     super.key,
   })  : bodyChildren = null,
         mainAxisSize = null,
@@ -48,6 +54,8 @@ class MobileLayout extends StatelessWidget {
     return Scaffold(
       appBar: appBar,
       bottomNavigationBar: bottomNavigationBar,
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation,
       body: SafeArea(
         minimum: minimumSafeArea,
         child: child,
