@@ -9,18 +9,15 @@ class ProgressBar extends StatefulWidget {
   final double height;
   final Text? caption;
 
-  ProgressBar({
-    minValue = 0,
-    required maxValue,
-    required initialValue,
+  const ProgressBar({
+    required this.maxValue,
+    required this.initialValue,
     required this.height,
+    this.minValue = 0,
     this.caption,
     super.key,
-  })  : minValue = min(minValue, maxValue),
-        maxValue = max(minValue, maxValue),
-        initialValue = min(max(initialValue, minValue), maxValue) {
-    assert(minValue != maxValue);
-  }
+  }) : // todo asserts, stateless
+        assert(minValue != maxValue);
 
   @override
   State<ProgressBar> createState() => _ProgressBarState();

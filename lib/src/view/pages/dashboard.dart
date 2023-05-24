@@ -25,14 +25,14 @@ class _MobileHomepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MobileLayout.child(
-      child: Column(children: [
-        buildUserInfoBar(),
-      ]),
+    return MobileLayout(
+      children: [
+        _buildUserInfoBar(),
+      ],
     );
   }
 
-  Widget buildUserInfoBar() {
+  Widget _buildUserInfoBar() {
     const sprite = Sprite.grayCat;
     const radius = 50.0;
     final scale = (radius - sprite.size.width) * 2;
@@ -40,7 +40,7 @@ class _MobileHomepage extends StatelessWidget {
     return Row(
       children: [
         SpriteAvatar.asset(sprite.asset, minRadius: radius, scale: scaleTo(scale)),
-        Expanded(
+        const Expanded(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -48,9 +48,11 @@ class _MobileHomepage extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('Довіра'),
-                  FractionallySizedBox(
-                    widthFactor: 0.3,
+                  Expanded(
+                    child: Text('Довіра', textAlign: TextAlign.end),
+                  ),
+                  Expanded(
+                    flex: 2,
                     child: ProgressBar(
                       maxValue: 100,
                       initialValue: 10,
@@ -59,17 +61,20 @@ class _MobileHomepage extends StatelessWidget {
                   ),
                 ],
               ),
-              // Row(
-              //   children: [
-              //     const Text('XP'),
-              //     ProgressBar(
-              //       maxValue: 1000,
-              //       initialValue: 600,
-              //       height: 30,
-              //       caption: const Text('Рівень 1'),
-              //     ),
-              //   ],
-              // )
+              Row(
+                children: [
+                  Expanded(child: Text('XP')),
+                  Expanded(
+                    flex: 2,
+                    child: ProgressBar(
+                      maxValue: 1000,
+                      initialValue: 600,
+                      height: 30,
+                      caption: Text('Рівень 1'),
+                    ),
+                  ),
+                ],
+              )
             ],
           ),
         ),

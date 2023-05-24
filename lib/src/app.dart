@@ -18,7 +18,12 @@ final _router = GoRouter(
       builder: (context, state) =>
           RegisterPage(email: state.extra is String ? state.extra as String : null),
     ),
-    // GoRoute(path: '/edit_quest', builder: (context, state) => ,)
+    GoRoute(
+      path: '/edit_quest',
+      builder: (context, state) => QuestEditPage(
+        initialQuest: state.extra is QuestModel ? state.extra as QuestModel : null,
+      ),
+    )
   ],
 );
 
