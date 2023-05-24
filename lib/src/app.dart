@@ -15,12 +15,10 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) {
-        final cachedEmail = state.extra is String ? state.extra as String : null;
-
-        return RegisterPage(email: cachedEmail);
-      },
-    )
+      builder: (context, state) =>
+          RegisterPage(email: state.extra is String ? state.extra as String : null),
+    ),
+    // GoRoute(path: '/edit_quest', builder: (context, state) => ,)
   ],
 );
 

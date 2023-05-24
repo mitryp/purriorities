@@ -1,10 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../data/enums/sprite.dart';
-import '../../data/user_data.dart';
 import '../../data/util/validators.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';
@@ -45,6 +43,7 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
   @override
   Widget build(BuildContext context) {
     return MobileLayout.child(
+      appBar: AppBar(),
       minimumSafeArea: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
       child: FormLayout(
         form: Form(

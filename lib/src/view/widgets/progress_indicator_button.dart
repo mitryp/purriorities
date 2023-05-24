@@ -3,35 +3,37 @@ import 'package:flutter/material.dart';
 typedef ButtonBuilder = Widget Function({required VoidCallback onPressed, required Widget child});
 
 class ProgressIndicatorButton extends StatefulWidget {
-  late final Widget defaultChild;
-  late final ButtonBuilder buttonBuilder;
+  final Widget child;
+  final ButtonBuilder buttonBuilder;
   final Future Function() onPressed;
 
-  ProgressIndicatorButton.elevated(
-      {required Text textCaption, required this.onPressed, super.key}) {
-    defaultChild = textCaption;
-    buttonBuilder = ({required VoidCallback onPressed, required Widget child}) =>
-        ElevatedButton(onPressed: onPressed, child: child);
-  }
+  const ProgressIndicatorButton({
+    required this.buttonBuilder,
+    required this.child,
+    required this.onPressed,
+    super.key,
+  });
 
-  ProgressIndicatorButton.outlined(
-      {required Text textCaption, required this.onPressed, super.key}) {
-    defaultChild = textCaption;
-    buttonBuilder = ({required VoidCallback onPressed, required Widget child}) =>
-        OutlinedButton(onPressed: onPressed, child: child);
-  }
+  const ProgressIndicatorButton.elevated({
+    required Text textCaption,
+    required this.onPressed,
+    super.key,
+  })  : child = textCaption,
+        buttonBuilder = ElevatedButton.new;
 
-  ProgressIndicatorButton.text({required Text textCaption, required this.onPressed, super.key}) {
-    defaultChild = textCaption;
-    buttonBuilder = ({required VoidCallback onPressed, required Widget child}) =>
-        TextButton(onPressed: onPressed, child: child);
-  }
+  const ProgressIndicatorButton.outlined({
+    required Text textCaption,
+    required this.onPressed,
+    super.key,
+  })  : child = textCaption,
+        buttonBuilder = OutlinedButton.new;
 
-  ProgressIndicatorButton.icon({required Icon icon, required this.onPressed, super.key}) {
-    defaultChild = icon;
-    buttonBuilder = ({required VoidCallback onPressed, required Widget child}) =>
-        IconButton(onPressed: onPressed, icon: child);
-  }
+  const ProgressIndicatorButton.text({
+    required Text textCaption,
+    required this.onPressed,
+    super.key,
+  })  : child = textCaption,
+        buttonBuilder = TextButton.new;
 
   @override
   State<ProgressIndicatorButton> createState() => _ProgressIndicatorButtonState();
@@ -43,10 +45,11 @@ class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
   @override
   Widget build(BuildContext context) {
     return widget.buttonBuilder(
-        onPressed: _handlePress,
-        child: isProcessing
-            ? Transform.scale(scale: 0.5, child: const CircularProgressIndicator())
-            : widget.defaultChild);
+      onPressed: _handlePress,
+      child: isProcessing
+          ? Transform.scale(scale: 0.5, child: const CircularProgressIndicator())
+          : widget.child,
+    );
   }
 
   void _handlePress() {
@@ -54,6 +57,9 @@ class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
 
     setState(() => isProcessing = true);
 
-    widget.onPressed().whenComplete(() => setState(() => isProcessing = false));
+    widget.onPressed().whenComplete(() {
+      if (!mounted) return;
+      setState(() => isProcessing = false);
+    });
   }
 }
