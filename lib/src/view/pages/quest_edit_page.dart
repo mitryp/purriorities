@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/enums/priority.dart';
+import '../../data/enums/quest_priority.dart';
 import '../../data/models/quest.dart';
 import '../../util/extensions/datetime_extensions.dart';
 import '../../util/extensions/widget_list_extensions.dart';
