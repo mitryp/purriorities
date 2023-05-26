@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/enums/priority.dart';
+import '../../data/enums/quest_priority.dart';
 import '../../util/extensions/string_capitalize.dart';
 
 class PrioritySelector extends StatelessWidget {
