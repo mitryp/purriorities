@@ -18,20 +18,17 @@ import '../widgets/priority_selector.dart';
 import '../widgets/time_selector_form_field.dart';
 
 class QuestEditPage extends StatelessWidget {
-  final QuestModel? initialQuest;
+  final Quest? initialQuest;
 
   const QuestEditPage({this.initialQuest, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: initialQuest ?? QuestModel(),
-      child: LayoutSelector(
-        mobileLayoutBuilder: (context) => MobileQuestEditPage(
-          isEditing: initialQuest != null,
-        ),
-        desktopLayoutBuilder: (context) => const Placeholder(),
+    return LayoutSelector(
+      mobileLayoutBuilder: (context) => MobileQuestEditPage(
+        isEditing: initialQuest != null,
       ),
+      desktopLayoutBuilder: (context) => const Placeholder(),
     );
   }
 }
