@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'quest.dart';
 
+part 'quest_stage.g.dart';
+
 /// A class representing a single stage of a [Quest].
 @JsonSerializable()
 class QuestStage {
@@ -16,4 +18,8 @@ class QuestStage {
     required this.id,
     required this.name,
   });
+
+  factory QuestStage.fromJson(Map<String, dynamic> json) => _$QuestStageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestStageToJson(this);
 }

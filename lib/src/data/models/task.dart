@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+part 'task.g.dart';
+
 /// A class representing the task in a quest stage.
 @JsonSerializable()
 class Task {
@@ -17,4 +19,8 @@ class Task {
     required this.id,
     required this.name,
   });
+
+  factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TaskToJson(this);
 }

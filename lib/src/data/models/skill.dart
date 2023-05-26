@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+part 'skill.g.dart';
+
 /// A class representing a user-defined skill with the information about its current [level].
 @JsonSerializable()
 class Skill {
@@ -21,4 +23,8 @@ class Skill {
     required this.levelExp,
     required this.id,
   });
+
+  factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SkillToJson(this);
 }

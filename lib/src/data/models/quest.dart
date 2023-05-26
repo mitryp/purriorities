@@ -4,6 +4,8 @@ import '../enums/quest_priority.dart';
 import 'quest_category.dart';
 import 'quest_stage.dart';
 
+part 'quest.g.dart';
+
 /// A class representing a quest
 @JsonSerializable()
 class Quest {
@@ -47,4 +49,8 @@ class Quest {
     required this.category,
     required this.stages,
   });
+
+  factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestToJson(this);
 }

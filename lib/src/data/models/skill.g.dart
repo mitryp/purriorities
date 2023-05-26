@@ -1,0 +1,21 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'skill.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Skill _$SkillFromJson(Map<String, dynamic> json) => Skill(
+      name: json['name'] as String,
+      level: json['level'] as int,
+      levelExp: json['levelExp'] as int,
+      id: json['id'] as int,
+    );
+
+Map<String, dynamic> _$SkillToJson(Skill instance) => <String, dynamic>{
+      'name': instance.name,
+      'level': instance.level,
+      'levelExp': instance.levelExp,
+      'id': instance.id,
+    };

@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+part 'user.g.dart';
+
 /// A class representing the current user of the application.
 @JsonSerializable()
 class User {
@@ -54,4 +56,8 @@ class User {
     required this.catnip,
     required this.trust,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }

@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+part 'cat_ownership.g.dart';
+
 /// A class representing the cat ownership of the current user.
 @JsonSerializable()
 class CatOwnership {
@@ -18,4 +20,8 @@ class CatOwnership {
     required this.acquireDate,
     required this.catNameId,
   });
+
+  factory CatOwnership.fromJson(Map<String, dynamic> json) => _$CatOwnershipFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CatOwnershipToJson(this);
 }
