@@ -33,8 +33,9 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) =>
-          RegisterPage(email: state.extra is String ? state.extra as String : null),
+      builder: (context, state) => RegisterPage(
+        email: state.extra is String ? state.extra as String : null,
+      ),
     ),
     // GoRoute(
     //   path: '/edit_quest',
