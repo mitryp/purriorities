@@ -5,19 +5,18 @@ class ProgressBar extends StatelessWidget {
   final int maxValue;
   final int value;
   final double height;
-  final Text? caption;
+  final Widget? overlayingWidget;
 
   const ProgressBar({
     required this.maxValue,
     required this.value,
     required this.height,
     this.minValue = 0,
-    this.caption,
+    this.overlayingWidget,
     super.key,
   })  : assert(minValue < maxValue),
-        assert(value > minValue),
-        assert(value < maxValue),
-        assert(minValue != maxValue);
+        assert(value >= minValue),
+        assert(value <= maxValue);
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +27,13 @@ class ProgressBar extends StatelessWidget {
       child: LinearProgressIndicator(value: currentValue),
     );
 
-    if (caption == null) return progressBar;
+    if (overlayingWidget == null) return progressBar;
 
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
         progressBar,
-        caption!,
+        overlayingWidget!,
       ],
     );
   }
