@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../common/enums/routes.dart';
 import '../widgets/add_button.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
-import '../widgets/quest_tile.dart';
 import '../widgets/quests_list.dart';
 
 const skills = [
@@ -47,10 +47,8 @@ class _MobileQuestsPage extends StatelessWidget {
     return MobileLayout(
       appBar: AppBar(
         title: const Text('Квести'),
-        //TODO make it return!!!
-        leading: const BackButton(),
       ),
-      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).go('/edit_quest')),
+      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).push(Routes.editQuest.route)),
       children: [
         _buildFilters(),
         Card(
