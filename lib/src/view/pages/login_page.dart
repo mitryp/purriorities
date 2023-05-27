@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/enums/routes.dart';
+import '../../common/enums/app_route.dart';
 import '../../data/enums/sprite.dart';
 import '../../data/login_data.dart';
 import '../../data/util/validators.dart';
@@ -147,7 +147,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     if (!context.mounted) return;
     final data = context.read<LoginData>();
 
-    context.push(Routes.register.route, extra: data.email);
+    context.push(AppRoute.register.route, extra: data.email);
 
     // todo
     // Navigator.of(context).push(MaterialPageRoute(

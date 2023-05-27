@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../common/enums/routes.dart';
+import '../../common/enums/app_route.dart';
 import '../../data/enums/sprite.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/add_button.dart';
@@ -39,7 +39,7 @@ class _MobileHomepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MobileLayout(
-      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).push(Routes.editQuest.route)),
+      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).push(AppRoute.editQuest.route)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       children: [
         Padding(
@@ -58,14 +58,14 @@ class _MobileHomepage extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                QuestsList(items: questsData),
-                Container(
+                Expanded(child: QuestsList(items: questsData)),
+                Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ProgressIndicatorButton.elevated(
                       onPressed: () async {
-                        GoRouter.of(context).push(Routes.allQuests.route);
+                        GoRouter.of(context).push(AppRoute.allQuests.route);
                         //TODO remove
                         await Future.delayed(const Duration(seconds: 1));
                       },

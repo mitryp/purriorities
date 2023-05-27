@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../common/enums/routes.dart';
+import '../../common/enums/app_route.dart';
 import '../widgets/add_button.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
@@ -48,7 +48,7 @@ class _MobileQuestsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Квести'),
       ),
-      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).push(Routes.editQuest.route)),
+      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).push(AppRoute.editQuest.route)),
       children: [
         _buildFilters(),
         Card(

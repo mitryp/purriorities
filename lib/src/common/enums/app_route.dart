@@ -1,4 +1,4 @@
-enum Routes {
+enum AppRoute {
   dashboard('/dashboard'),
   cats('/cats'),
   store('/store'),
@@ -10,5 +10,5 @@ enum Routes {
 
   final String route;
 
-  const Routes(this.route);
+  const AppRoute(this.route);
 }
