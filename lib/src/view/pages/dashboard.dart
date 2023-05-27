@@ -3,12 +3,14 @@ import 'package:go_router/go_router.dart';
 
 import '../../data/enums/sprite.dart';
 import '../../util/sprite_scaling.dart';
+import '../widgets/add_button.dart';
 import '../widgets/layouts/desktop.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_bar.dart';
 import '../widgets/progress_indicator_button.dart';
 import '../widgets/quest_tile.dart';
+import '../widgets/quests_list.dart';
 import '../widgets/sprite_avatar.dart';
 
 class Dashboard extends StatelessWidget {
@@ -23,13 +25,21 @@ class Dashboard extends StatelessWidget {
   }
 }
 
+//TODO add priority: it indicates a color of list item outline
+final List<(String name, bool isRepeated, DateTime? deadline)> questsData = [
+  ('Нявчитися писати бекенд...', false, DateTime(2023, 05, 24, 23, 59)),
+  ('Позайматися', true, DateTime(2023, 05, 24, 18, 0)),
+  ('Нявчитися нявати', false, DateTime(2023, 05, 30, 23, 59)),
+  ('Помуркотіти коханого :3', false, null),
+];
+
 class _MobileHomepage extends StatelessWidget {
   const _MobileHomepage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MobileLayout(
-      floatingActionButton: _buildFloatingActionButton(context),
+      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).go('/edit_quest')),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       children: [
         Padding(
@@ -48,7 +58,7 @@ class _MobileHomepage extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                _buildQuestsList(context),
+                QuestsList(items: questsData),
                 Container(
                   alignment: Alignment.centerRight,
                   child: Padding(
@@ -69,35 +79,6 @@ class _MobileHomepage extends StatelessWidget {
         ),
         const SizedBox(height: 40.0),
       ],
-    );
-  }
-
-  FloatingActionButton _buildFloatingActionButton(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () => GoRouter.of(context).go('/new_quest'),
-      shape: const CircleBorder(),
-      child: const Icon(Icons.add),
-    );
-  }
-
-  Widget _buildQuestsList(BuildContext context) {
-    //TODO add priority: it indicates a color of list item outline
-    final List<(String name, bool isRepeated, DateTime? deadline)> questsData = [
-      ('Нявчитися писати бекенд...', false, DateTime(2023, 05, 24, 23, 59)),
-      ('Позайматися', true, DateTime(2023, 05, 24, 18, 0)),
-      ('Нявчитися нявати', false, DateTime(2023, 05, 30, 23, 59)),
-      ('Помуркотіти коханого :3', false, null),
-    ];
-
-    return ListView.separated(
-      shrinkWrap: true,
-      itemCount: questsData.length,
-      itemBuilder: (context, index) {
-        final (questName, isRepeated, deadline) = questsData[index];
-
-        return QuestTile(questName: questName, isRepeated: isRepeated, deadline: deadline);
-      },
-      separatorBuilder: (context, index) => const Divider(),
     );
   }
 
@@ -124,7 +105,7 @@ class _MobileHomepage extends StatelessWidget {
             maxValue: maxValue,
             value: value,
             height: 25,
-            caption: progressBarCaption != null ? Text(progressBarCaption) : null,
+            overlayingWidget: progressBarCaption != null ? Text(progressBarCaption) : null,
           ),
         ),
       ],

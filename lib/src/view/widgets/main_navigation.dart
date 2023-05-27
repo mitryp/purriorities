@@ -7,6 +7,7 @@ import 'layouts/layout_selector.dart';
 
 enum MainNavAction {
   dashboard(Icons.home_outlined, 'Головна', '/dashboard'),
+  skills(Icons.psychology_outlined, 'Навички', '/skills'),
   cats(Icons.pets_outlined, 'Котики', '/cats'),
   shop(Icons.storefront_outlined, 'Магазин', '/store');
 
@@ -53,12 +54,14 @@ class _MobileNavigation extends StatelessWidget {
     final data = context.watch<MainNavigationData>();
 
     return BottomNavigationBar(
+      unselectedItemColor: Colors.white,
+      //TODO selected item color
+      selectedItemColor: Colors.white,
       onTap: (index) {
         data.index = index;
         GoRouter.of(context).go(actions[index].link);
       },
       currentIndex: data.index,
-      //TODO selected item color
       items: actions.map((action) {
         return BottomNavigationBarItem(
           icon: Icon(action.iconData, size: 36),

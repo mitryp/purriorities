@@ -13,7 +13,7 @@ class MobileLayout extends StatelessWidget {
   final EdgeInsets minimumSafeArea;
   final AppBar? appBar;
   final Widget? bottomNavigationBar;
-  final FloatingActionButton? floatingActionButton;
+  final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
 
   const MobileLayout({
