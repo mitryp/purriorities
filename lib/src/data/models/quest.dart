@@ -34,6 +34,12 @@ class Quest {
   /// Must be >= the [deadline].
   final DateTime? limit;
 
+  /// Days between the occurrences of this quest.
+  ///
+  /// If null, then the quest does not repeat.
+  /// Must be > 0.
+  final int? interval;
+
   /// A [QuestCategory] of this quest.
   final QuestCategory category;
 
@@ -46,6 +52,7 @@ class Quest {
     required this.priority,
     this.deadline,
     this.limit,
+    this.interval,
     required this.category,
     required this.stages,
   });
@@ -53,4 +60,29 @@ class Quest {
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Quest &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          priority == other.priority &&
+          deadline == other.deadline &&
+          limit == other.limit &&
+          interval == other.interval &&
+          category == other.category &&
+          stages == other.stages;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      priority.hashCode ^
+      deadline.hashCode ^
+      limit.hashCode ^
+      interval.hashCode ^
+      category.hashCode ^
+      stages.hashCode;
 }

@@ -16,6 +16,7 @@ Quest _$QuestFromJson(Map<String, dynamic> json) => Quest(
       limit: json['limit'] == null
           ? null
           : DateTime.parse(json['limit'] as String),
+      interval: json['interval'] as int?,
       category:
           QuestCategory.fromJson(json['category'] as Map<String, dynamic>),
       stages: (json['stages'] as List<dynamic>)
@@ -29,6 +30,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'priority': _$QuestPriorityEnumMap[instance.priority]!,
       'deadline': instance.deadline?.toIso8601String(),
       'limit': instance.limit?.toIso8601String(),
+      'interval': instance.interval,
       'category': instance.category,
       'stages': instance.stages,
     };

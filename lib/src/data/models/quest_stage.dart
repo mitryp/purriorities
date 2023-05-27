@@ -22,4 +22,15 @@ class QuestStage {
   factory QuestStage.fromJson(Map<String, dynamic> json) => _$QuestStageFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestStageToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QuestStage &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name;
+
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
 }

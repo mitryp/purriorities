@@ -24,4 +24,16 @@ class CatOwnership {
   factory CatOwnership.fromJson(Map<String, dynamic> json) => _$CatOwnershipFromJson(json);
 
   Map<String, dynamic> toJson() => _$CatOwnershipToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CatOwnership &&
+          runtimeType == other.runtimeType &&
+          level == other.level &&
+          acquireDate == other.acquireDate &&
+          catNameId == other.catNameId;
+
+  @override
+  int get hashCode => level.hashCode ^ acquireDate.hashCode ^ catNameId.hashCode;
 }

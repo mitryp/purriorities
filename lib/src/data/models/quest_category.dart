@@ -21,4 +21,15 @@ class QuestCategory {
   factory QuestCategory.fromJson(Map<String, dynamic> json) => _$QuestCategoryFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestCategoryToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QuestCategory &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          id == other.id;
+
+  @override
+  int get hashCode => name.hashCode ^ id.hashCode;
 }

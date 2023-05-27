@@ -25,4 +25,16 @@ class Cat {
   factory Cat.fromJson(Map<String, dynamic> json) => _$CatFromJson(json);
 
   Map<String, dynamic> toJson() => _$CatToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Cat &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          description == other.description &&
+          rarity == other.rarity;
+
+  @override
+  int get hashCode => name.hashCode ^ description.hashCode ^ rarity.hashCode;
 }
