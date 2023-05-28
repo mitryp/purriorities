@@ -60,4 +60,35 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is User &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          nickname == other.nickname &&
+          email == other.email &&
+          joinDate == other.joinDate &&
+          locale == other.locale &&
+          timezone == other.timezone &&
+          level == other.level &&
+          levelExp == other.levelExp &&
+          feed == other.feed &&
+          catnip == other.catnip &&
+          trust == other.trust;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      nickname.hashCode ^
+      email.hashCode ^
+      joinDate.hashCode ^
+      locale.hashCode ^
+      timezone.hashCode ^
+      level.hashCode ^
+      levelExp.hashCode ^
+      feed.hashCode ^
+      catnip.hashCode ^
+      trust.hashCode;
 }

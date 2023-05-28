@@ -23,4 +23,16 @@ class Task {
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
   Map<String, dynamic> toJson() => _$TaskToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Task &&
+          runtimeType == other.runtimeType &&
+          stageId == other.stageId &&
+          id == other.id &&
+          name == other.name;
+
+  @override
+  int get hashCode => stageId.hashCode ^ id.hashCode ^ name.hashCode;
 }

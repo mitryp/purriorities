@@ -2,21 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/enums/quest_priority.dart';
 import '../../data/main_navigation_data.dart';
 import 'layouts/layout_selector.dart';
-
-enum MainNavAction {
-  dashboard(Icons.home_outlined, 'Головна', '/dashboard'),
-  skills(Icons.psychology_outlined, 'Навички', '/skills'),
-  cats(Icons.pets_outlined, 'Котики', '/cats'),
-  shop(Icons.storefront_outlined, 'Магазин', '/store');
-
-  final IconData iconData;
-  final String label;
-  final String link;
-
-  const MainNavAction(this.iconData, this.label, this.link);
-}
 
 class MainNavigation extends StatelessWidget {
   final Widget child;
@@ -55,12 +43,8 @@ class _MobileNavigation extends StatelessWidget {
 
     return BottomNavigationBar(
       unselectedItemColor: Colors.white,
-      //TODO selected item color
-      selectedItemColor: Colors.white,
-      onTap: (index) {
-        data.index = index;
-        GoRouter.of(context).go(actions[index].link);
-      },
+      selectedItemColor: QuestPriority.legendary.color,
+      onTap: (index) => GoRouter.of(context).go(actions[index].route.route),
       currentIndex: data.index,
       items: actions.map((action) {
         return BottomNavigationBarItem(
