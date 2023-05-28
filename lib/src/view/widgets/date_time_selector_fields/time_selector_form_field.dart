@@ -1,14 +1,12 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../util/extensions/datetime_extensions.dart';
+import 'datetime_editing_controller.dart';
+
 class TimeSelectorFormField extends StatefulWidget {
+  final TimeEditingController? controller;
   final TimeOfDay? initialTime;
-
-  // final DateTime firstDate;
-  // final DateTime lastDate;
-
   final void Function(TimeOfDay?) onSelected;
 
   final bool preserveWhenNotSelected;
@@ -16,31 +14,38 @@ class TimeSelectorFormField extends StatefulWidget {
   final String label;
 
   const TimeSelectorFormField({
-    required this.initialTime,
     required this.onSelected,
+    this.controller,
+    this.initialTime,
     this.preserveWhenNotSelected = true,
     this.timeFormat = 'HH:mm',
     this.label = 'Час',
     super.key,
-  }) : assert(!preserveWhenNotSelected || initialTime != null);
+  });
 
   @override
   State<TimeSelectorFormField> createState() => _TimeSelectorFormFieldState();
 }
 
 class _TimeSelectorFormFieldState extends State<TimeSelectorFormField> {
-  late TimeOfDay? _selectedTime = widget.initialTime;
-  late final TextEditingController _controller = TextEditingController();
+  late final TimeEditingController _controller = widget.controller ??
+      TimeEditingController(
+        format: widget.timeFormat,
+        selectedTime: widget.initialTime,
+      );
+
+  late TimeOfDay? _previousTime = widget.initialTime;
 
   @override
   void initState() {
     super.initState();
-    _setTime(widget.initialTime);
+    if (widget.initialTime != null) {
+      _controller.time = widget.initialTime;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    log(_controller.text);
     return TextFormField(
       readOnly: true,
       controller: _controller,
@@ -50,24 +55,22 @@ class _TimeSelectorFormFieldState extends State<TimeSelectorFormField> {
   }
 
   void _showDatePicker() async {
-    final initialTime = _selectedTime ?? TimeOfDay.now();
+    final initialTime = _controller.time ?? TimeOfDay.now();
 
     TimeOfDay? time = await showTimePicker(context: context, initialTime: initialTime);
 
     if (!mounted) return;
 
     if (widget.preserveWhenNotSelected) {
-      time ??= _selectedTime;
+      time ??= _previousTime;
     }
 
     _setTime(time);
   }
 
   void _setTime(TimeOfDay? time) {
-    final asDateTime = time != null ? DateTime(2022, 12, 31, time.hour, time.minute) : null;
-
-    setState(() => _selectedTime = time);
-    _controller.text = asDateTime != null ? DateFormat(widget.timeFormat).format(asDateTime) : '';
+    _controller.time = time;
+    _previousTime = time;
     widget.onSelected(time);
   }
 }

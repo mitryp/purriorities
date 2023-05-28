@@ -8,9 +8,8 @@ extension SeparatedWidgetList on List<Widget> {
 }
 
 extension WidgetWrappedList on List<Widget> {
-  List<Widget> wrap(wrappers.SingleChildWidgetConstructor widgetConstructor) =>
-      map(wrappers.wrapWith(widgetConstructor)).toList();
+  List<Widget> wrap(wrappers.WidgetWrapper widgetConstructor) => map(widgetConstructor).toList();
 
-  Widget wrapWithCollection(wrappers.MultiChildWidgetConstructor widgetConstructor) =>
-      wrappers.wrapWithCollection(widgetConstructor)(this);
+  Widget wrapWithCollection(wrappers.WidgetCollectionWrapper widgetConstructor) =>
+      widgetConstructor(this);
 }

@@ -1,11 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-import '../../util/datetime_comparison.dart';
+import '../../../util/datetime_comparison.dart';
+import 'datetime_editing_controller.dart';
 
 class DateSelectorFormField extends StatefulWidget {
+  final DateTimeEditingController? controller;
+
   final DateTime? initialDate;
   final DateTime firstDate;
   final DateTime lastDate;
@@ -20,30 +20,36 @@ class DateSelectorFormField extends StatefulWidget {
     required this.firstDate,
     required this.lastDate,
     required this.onSelected,
+    this.controller,
     this.initialDate,
     this.dateFormat = 'dd.MM.yyyy',
     this.preserveWhenNotSelected = true,
     this.label = 'Дата',
     super.key,
-  }) : assert(!preserveWhenNotSelected || initialDate != null);
+  });
 
   @override
   State<DateSelectorFormField> createState() => _DateSelectorFormFieldState();
 }
 
 class _DateSelectorFormFieldState extends State<DateSelectorFormField> {
-  late DateTime? _selectedDate = widget.initialDate;
-  late final TextEditingController _controller = TextEditingController();
+  late final DateTimeEditingController _controller = widget.controller ?? DateTimeEditingController(
+    format: widget.dateFormat,
+    selectedDate: widget.initialDate,
+  );
+
+  late DateTime? _previousDate = widget.initialDate;
 
   @override
   void initState() {
     super.initState();
-    _setDate(widget.initialDate);
+    if (widget.initialDate != null) {
+      _controller.dateTime = widget.initialDate;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    log(_controller.text);
     return TextFormField(
       readOnly: true,
       controller: _controller,
@@ -53,7 +59,7 @@ class _DateSelectorFormFieldState extends State<DateSelectorFormField> {
   }
 
   void _showDatePicker() async {
-    final initialDate = _selectedDate ??
+    final initialDate = _controller.dateTime ??
         minDate(
           maxDate(widget.firstDate, DateTime.now()),
           widget.lastDate,
@@ -61,7 +67,7 @@ class _DateSelectorFormFieldState extends State<DateSelectorFormField> {
 
     DateTime? date = await showDatePicker(
       context: context,
-      initialDate: initialDate,
+      initialDate: minDate(maxDate(initialDate, widget.firstDate), widget.lastDate),
       firstDate: widget.firstDate,
       lastDate: widget.lastDate,
     );
@@ -69,16 +75,16 @@ class _DateSelectorFormFieldState extends State<DateSelectorFormField> {
     if (!mounted) return;
 
     if (widget.preserveWhenNotSelected) {
-      date ??= _selectedDate;
+      date ??= _previousDate;
     }
 
     _setDate(date);
   }
 
   void _setDate(DateTime? date) {
-    setState(() => _selectedDate = date);
-    _controller.text =
-        _selectedDate != null ? DateFormat(widget.dateFormat).format(_selectedDate!) : '';
+    // _selectedDate = date;
+    _controller.dateTime = date;
+    _previousDate = date;
     widget.onSelected(date);
   }
 }

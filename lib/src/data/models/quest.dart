@@ -57,6 +57,16 @@ class Quest {
     required this.stages,
   });
 
+  const Quest.empty()
+      : id = -1,
+        name = '',
+        priority = QuestPriority.regular,
+        deadline = null,
+        limit = null,
+        interval = null,
+        category = const QuestCategory.empty(),
+        stages = const [QuestStage.empty()];
+
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestToJson(this);
@@ -85,4 +95,46 @@ class Quest {
       interval.hashCode ^
       category.hashCode ^
       stages.hashCode;
+
+  Quest copyWith({
+    required DateTime? deadline,
+    required DateTime? limit,
+    required int? interval,
+    String? name,
+    QuestPriority? priority,
+    QuestCategory? category,
+    List<QuestStage>? stages,
+  }) =>
+      Quest(
+        id: id,
+        name: name ?? this.name,
+        priority: priority ?? this.priority,
+        category: category ?? this.category,
+        stages: stages ?? this.stages,
+        deadline: deadline,
+        limit: limit,
+        interval: interval,
+      );
+
+  Quest copyWithPreserveSchedule({
+    String? name,
+    QuestPriority? priority,
+    QuestCategory? category,
+    List<QuestStage>? stages,
+  }) =>
+      Quest(
+        id: id,
+        name: name ?? this.name,
+        priority: priority ?? this.priority,
+        category: category ?? this.category,
+        stages: stages ?? this.stages,
+        deadline: deadline,
+        limit: limit,
+        interval: interval,
+      );
+
+  @override
+  String toString() {
+    return 'Quest [until $deadline; repeat until $limit]';
+  }
 }

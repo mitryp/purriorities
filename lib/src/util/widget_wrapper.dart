@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
-typedef WidgetWrapper = Widget Function(Widget);
-typedef WidgetCollectionWrapper = Widget Function(List<Widget>);
+typedef WidgetWrapper = Widget Function(Widget child);
+typedef WidgetCollectionWrapper = Widget Function(List<Widget> children);
 
 typedef SingleChildWidgetConstructor = Widget Function({
   required Widget child,

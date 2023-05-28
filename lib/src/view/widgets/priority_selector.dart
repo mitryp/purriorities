@@ -1,15 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../../data/enums/quest_priority.dart';
+import '../../typedefs.dart';
 import '../../util/extensions/string_capitalize.dart';
 
 class PrioritySelector extends StatelessWidget {
-  final void Function(QuestPriority newPriority) onSelectChanged;
+  final Callback<QuestPriority> onPriorityChanged;
   final List<QuestPriority> priorities;
   final QuestPriority? selected;
 
   const PrioritySelector({
-    required this.onSelectChanged,
+    required this.onPriorityChanged,
     this.selected,
     this.priorities = QuestPriority.values,
     super.key,
@@ -17,26 +20,26 @@ class PrioritySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('${priorities.length}');
+
     return DropdownButtonFormField<QuestPriority>(
       value: selected,
       onChanged: _processChange,
       decoration: const InputDecoration(labelText: 'Рідкісність', contentPadding: EdgeInsets.zero),
       items: priorities
-          .map((e) => DropdownMenuItem<QuestPriority>(value: e, child: _buildPriorityButton(e)))
+          .map(
+            (e) => DropdownMenuItem<QuestPriority>(
+              value: e,
+              child: PrioritySelectItem(priority: e, onSelected: () => onPriorityChanged(e)),
+            ),
+          )
           .toList(),
-    );
-  }
-
-  Widget _buildPriorityButton(QuestPriority priority) {
-    return PrioritySelectItem(
-      priority: priority,
-      onSelected: () => onSelectChanged(priority),
     );
   }
 
   void _processChange(QuestPriority? priority) {
     if (priority == null) return;
-    onSelectChanged(priority);
+    onPriorityChanged(priority);
   }
 }
 

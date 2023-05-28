@@ -39,8 +39,9 @@ class _MobileHomepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MobileLayout(
-      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).push(AppRoute.editQuest.route)),
+      floatingActionButton: AddButton(onPressed: () => context.push(AppRoute.editQuest.route)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
@@ -65,7 +66,7 @@ class _MobileHomepage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ProgressIndicatorButton.elevated(
                       onPressed: () async {
-                        GoRouter.of(context).push(AppRoute.allQuests.route);
+                        context.push(AppRoute.allQuests.route);
                         //TODO remove
                         await Future.delayed(const Duration(seconds: 1));
                       },
