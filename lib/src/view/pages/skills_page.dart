@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/add_button.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
-import '../widgets/progress_bar.dart';
+import '../widgets/progress_bars/progress_bar.dart';
 
 const List<({String name, int level, int progress, int maxProgress})> skills = [
   (name: 'Нявання', level: 100, progress: 10, maxProgress: 100),
