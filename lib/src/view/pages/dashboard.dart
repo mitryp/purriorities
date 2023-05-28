@@ -8,7 +8,8 @@ import '../widgets/add_button.dart';
 import '../widgets/layouts/desktop.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
-import '../widgets/progress_bar.dart';
+import '../widgets/progress_bars/labeled_progress_bar.dart';
+import '../widgets/progress_bars/progress_bar.dart';
 import '../widgets/progress_indicator_button.dart';
 import '../widgets/quests_list.dart';
 import '../widgets/sprite_avatar.dart';
@@ -83,36 +84,6 @@ class _MobileHomepage extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressIndicator({
-    required String label,
-    required int value,
-    required int maxValue,
-    int minValue = 0,
-    String? progressBarCaption,
-  }) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Expanded(
-          child: Text(label, textAlign: TextAlign.end),
-        ),
-        const SizedBox(
-          width: 20,
-        ),
-        Expanded(
-          flex: 3,
-          child: ProgressBar(
-            minValue: minValue,
-            maxValue: maxValue,
-            value: value,
-            height: 25,
-            overlayingWidget: progressBarCaption != null ? Text(progressBarCaption) : null,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildCurrencyStats({required int quantity, required String asset}) {
     return Row(
       children: [
@@ -150,8 +121,12 @@ class _MobileHomepage extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildProgressIndicator(label: 'Довіра', value: trustValue, maxValue: maxTrust),
-                _buildProgressIndicator(
+                LabeledProgressBar(
+                  label: 'Довіра',
+                  value: trustValue,
+                  maxValue: maxTrust,
+                ),
+                LabeledProgressBar(
                   label: 'XP',
                   value: xpValue,
                   maxValue: maxXp,

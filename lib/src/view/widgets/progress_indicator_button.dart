@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
 
-typedef ButtonBuilder = Widget Function({required VoidCallback onPressed, required Widget child});
+typedef ButtonBuilder = Widget Function({
+  required VoidCallback onPressed,
+  required Widget child,
+  ButtonStyle? style,
+});
 
 class ProgressIndicatorButton extends StatefulWidget {
   final Widget child;
   final ButtonBuilder buttonBuilder;
   final Future Function() onPressed;
+  final ButtonStyle? style;
 
   const ProgressIndicatorButton({
     required this.buttonBuilder,
     required this.child,
     required this.onPressed,
+    this.style,
     super.key,
   });
 
   const ProgressIndicatorButton.elevated({
     required this.child,
     required this.onPressed,
+    this.style,
     super.key,
-  })  : buttonBuilder = ElevatedButton.new;
+  }) : buttonBuilder = ElevatedButton.new;
 
   const ProgressIndicatorButton.outlined({
     required Text textCaption,
     required this.onPressed,
+    this.style,
     super.key,
   })  : child = textCaption,
         buttonBuilder = OutlinedButton.new;
@@ -30,6 +38,7 @@ class ProgressIndicatorButton extends StatefulWidget {
   const ProgressIndicatorButton.text({
     required Text textCaption,
     required this.onPressed,
+    this.style,
     super.key,
   })  : child = textCaption,
         buttonBuilder = TextButton.new;
@@ -48,6 +57,7 @@ class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
       child: isProcessing
           ? Transform.scale(scale: 0.5, child: const CircularProgressIndicator())
           : widget.child,
+      style: widget.style,
     );
   }
 
