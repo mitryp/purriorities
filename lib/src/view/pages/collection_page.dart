@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:js';
 
 import 'package:flutter/material.dart';
@@ -88,45 +89,68 @@ class MobileCollection extends StatelessWidget {
   }
 
   Widget _buildCatCard(BuildContext context,
-      ({String asset, String? name, int? level, double? xp, int? price}) cat) {
+      ({
+      String asset,
+      String? name,
+      int? level,
+      double? xp,
+      int? price,
+      }) cat,) {
     const radius = 50.0;
     // 16 is the size of a sprite
     const scale = (radius - 16) * 2;
 
-    return Stack(
-      alignment: Alignment.topRight,
-      children: [
-        Column(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+
+        return Stack(
+          alignment: Alignment.center,
           children: [
-            ColorFiltered(
-              colorFilter: const ColorFilter.mode(Color.fromARGB(255, 0, 0, 0), BlendMode.difference),
-              child: SpriteAvatar(
-                image:
-                Image.asset(
-                  cat.asset,
-                  color: cat.name == null ? Colors.black : null,
-                  filterQuality: FilterQuality.none,
-                  scale: scaleTo(scale),
+            Column(
+              children: [
+                SizedBox.square(
+                  dimension: radius * 2,
+                  child: ClipOval(
+                    child: ColorFiltered(
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xff222222),
+                        BlendMode.darken,
+                      ),
+                      child: SpriteAvatar(
+                        image: Image.asset(
+                          cat.asset,
+                          color: cat.name == null ? Colors.black : null,
+                          filterQuality: FilterQuality.none,
+                          scale: scaleTo(scale),
+                        ),
+                        minRadius: radius,
+                      ),
+                    ),
+                  ),
                 ),
-                minRadius: radius,
-              ),
+                const SizedBox(height: 8),
+                Text(cat.name ?? '???', style: const TextStyle(fontWeight: FontWeight.bold)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: (cat.price == null)
+                      ? Text('+${cat.xp ?? '?'}% XP')
+                      : _buildPurchaseButton(context, cat.price!),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(cat.name ?? '???', style: const TextStyle(fontWeight: FontWeight.bold)),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: (cat.price == null)
-                  ? Text('+${cat.xp ?? '?'}% XP')
-                  : _buildPurchaseButton(context, cat.price!),
-            ),
+            if (cat.level != null)
+              Positioned(
+                top: 0,
+                right: (width / 2 - radius) / 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DiamondText(caption: '${cat.level}'),
+                ),
+              )
           ],
-        ),
-        if (cat.level != null)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DiamondText(caption: '${cat.level}'),
-          )
-      ],
+        );
+      },
     );
   }
 
