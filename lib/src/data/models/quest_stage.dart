@@ -21,6 +21,8 @@ class QuestStage {
 
   factory QuestStage.fromJson(Map<String, dynamic> json) => _$QuestStageFromJson(json);
 
+  const QuestStage.empty([int ordinal = 1]) : id = '', name = 'Етап $ordinal';
+
   Map<String, dynamic> toJson() => _$QuestStageToJson(this);
 
   @override

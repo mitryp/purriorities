@@ -18,6 +18,8 @@ class QuestCategory {
     required this.id,
   });
 
+  const QuestCategory.empty() : id = 0, name = 'Без категорії';
+
   factory QuestCategory.fromJson(Map<String, dynamic> json) => _$QuestCategoryFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestCategoryToJson(this);

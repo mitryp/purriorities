@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'common/enums/app_route.dart';
 import 'data/main_navigation_data.dart';
 import 'view/pages/login_page.dart';
-import 'view/pages/quest_edit_page.dart';
+import 'view/pages/quest_edit_page/quest_edit_page.dart';
 import 'view/pages/quests_page.dart';
 import 'view/pages/register_page.dart';
 import 'view/theme.dart';
