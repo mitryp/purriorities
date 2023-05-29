@@ -4,6 +4,7 @@ import '../../../constants.dart';
 import '../../../data/enums/sprite.dart';
 import '../../../util/sprite_scaling.dart';
 import '../../theme.dart';
+import '../../widgets/currency/currency_info.dart';
 import '../../widgets/diamond_text.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';

@@ -50,14 +50,12 @@ class _CatAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const scale = (_radius - catSpriteDimension) * 2;
-
     return SpriteAvatar(
       image: Image.asset(
         cat.asset,
         color: cat.name == null ? Colors.black : null,
         filterQuality: FilterQuality.none,
-        scale: scaleTo(scale),
+        scale: scaleToFitCircle(_radius),
       ),
       minRadius: _radius,
     );
@@ -90,28 +88,10 @@ class _PurchaseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final border = MaterialStateProperty.all(
-      const BorderSide(
-        style: BorderStyle.solid,
-        color: legendaryColor,
-        width: 1,
-      ),
-    );
-
     return ProgressIndicatorButton.elevated(
       onPressed: () async {}, //TODO
-      style: ButtonStyle(
-        side: border,
-        //shape: shape,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset(Sprite.fishFood.asset),
-          Text('$price'),
-        ],
-      ),
+      style: accentButtonStyle,
+      child: CurrencyInfo(quantity: price, currency: Currency.common),
     );
   }
 }

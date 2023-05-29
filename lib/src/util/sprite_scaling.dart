@@ -10,3 +10,7 @@ double upscale(double times) => 1 / times;
 double scaleTo(double dimension, {double spriteDimension = catSpriteDimension}) {
   return spriteDimension / dimension;
 }
+
+double scaleToFitCircle(double radius, {double spriteDimension = catSpriteDimension}) {
+  return scaleTo((radius - spriteDimension) * 2, spriteDimension: spriteDimension);
+}

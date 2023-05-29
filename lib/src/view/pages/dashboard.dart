@@ -5,11 +5,11 @@ import '../../common/enums/app_route.dart';
 import '../../data/enums/sprite.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/add_button.dart';
+import '../widgets/currency/currency_balance.dart';
 import '../widgets/layouts/desktop.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_bars/labeled_progress_bar.dart';
-import '../widgets/progress_bars/progress_bar.dart';
 import '../widgets/progress_indicator_button.dart';
 import '../widgets/quests_list.dart';
 import '../widgets/sprite_avatar.dart';
@@ -42,7 +42,6 @@ class _MobileHomepage extends StatelessWidget {
     return MobileLayout(
       floatingActionButton: AddButton(onPressed: () => context.push(AppRoute.editQuest.route)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
@@ -84,23 +83,9 @@ class _MobileHomepage extends StatelessWidget {
     );
   }
 
-  Widget _buildCurrencyStats({required int quantity, required String asset}) {
-    return Row(
-      children: [
-        Text('$quantity'),
-        Image.asset(
-          asset,
-          scale: scaleTo(25),
-          filterQuality: FilterQuality.none,
-        ),
-      ],
-    );
-  }
-
   Widget _buildUserInfoBar() {
     const sprite = Sprite.grayCat;
     const radius = 50.0;
-    final scale = (radius - sprite.size.width) * 2;
 
     final trustValue = 10;
     final maxTrust = 100;
@@ -115,7 +100,11 @@ class _MobileHomepage extends StatelessWidget {
     return IntrinsicHeight(
       child: Row(
         children: [
-          SpriteAvatar.asset(sprite.asset, minRadius: radius, scale: scaleTo(scale)),
+          SpriteAvatar.asset(
+            sprite.asset,
+            minRadius: radius,
+            scale: scaleToFitCircle(radius),
+          ),
           Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -132,14 +121,10 @@ class _MobileHomepage extends StatelessWidget {
                   maxValue: maxXp,
                   progressBarCaption: 'Рівень $xpLevel',
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    _buildCurrencyStats(quantity: nFish, asset: Sprite.fishFood.asset),
-                    const SizedBox(width: 20),
-                    _buildCurrencyStats(quantity: nValerian, asset: Sprite.valerian.asset),
-                  ],
-                ),
+                CurrencyBalance(
+                  commonCurrencyBalance: nFish,
+                  rareCurrencyBalance: nValerian,
+                )
               ],
             ),
           ),
