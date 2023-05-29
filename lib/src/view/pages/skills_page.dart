@@ -33,22 +33,25 @@ class _MobileSkillsPage extends StatelessWidget {
       floatingActionButton: AddButton(onPressed: () {}),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       children: skills.map((skill) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: ProgressBar(
-            height: 50,
-            overlayingWidget: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(skill.name),
-                  Text('Рівень ${skill.level}')
-                ],
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: ProgressBar(
+              height: 50,
+              overlayingWidget: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(skill.name),
+                    Text('Рівень ${skill.level}')
+                  ],
+                ),
               ),
+              value: skill.progress,
+              maxValue: skill.maxProgress,
             ),
-            value: skill.progress,
-            maxValue: skill.maxProgress,
           ),
         );
       }).toList(),
