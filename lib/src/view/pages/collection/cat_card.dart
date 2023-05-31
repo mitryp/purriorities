@@ -27,11 +27,10 @@ class CatCard extends StatelessWidget {
                   dimension: _radius * 2,
                   child: cat.price != null ? _ShadedCatAvatar(cat: cat) : _CatAvatar(cat: cat),
                 ),
-                Text(
-                  cat.name ?? '???',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    overflow: TextOverflow.fade,
+                FittedBox(
+                  child: Text(
+                    cat.name ?? '???',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
                 SizedBox(
