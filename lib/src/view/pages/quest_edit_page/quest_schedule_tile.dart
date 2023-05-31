@@ -126,7 +126,7 @@ class _DeadlineRow extends StatelessWidget {
       lastDateController.dateTime = newLimit;
     }
 
-    wrapper.data = quest.copyWith(
+    wrapper.data = quest.copyWithSchedule(
       deadline: deadline,
       limit: newLimit,
       interval: quest.interval,
@@ -193,7 +193,7 @@ class _RepeatControls extends StatelessWidget {
 
       if (interval == null) return;
 
-      wrapper.data = quest.copyWith(
+      wrapper.data = quest.copyWithSchedule(
         deadline: quest.deadline,
         limit: quest.limit,
         interval: interval,
@@ -203,7 +203,7 @@ class _RepeatControls extends StatelessWidget {
 
   Callback<DateTime?> _changeQuestLastDateFor(NotifierWrapper<Quest> wrapper, Quest quest) {
     return (lastDate) {
-      wrapper.data = quest.copyWith(
+      wrapper.data = quest.copyWithSchedule(
         deadline: quest.deadline,
         limit: lastDate,
         interval: quest.interval,

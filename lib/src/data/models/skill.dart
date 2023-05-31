@@ -1,10 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'abs/model.dart';
+import 'abs/prototype.dart';
+
 part 'skill.g.dart';
 
 /// A class representing a user-defined skill with the information about its current [level].
 @JsonSerializable()
-class Skill {
+class Skill with Prototype<Skill> implements Serializable {
   /// A name of this skill, defined by the user during the skill creation.
   final String name;
 
@@ -26,6 +29,7 @@ class Skill {
 
   factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$SkillToJson(this);
 
   @override
@@ -40,4 +44,12 @@ class Skill {
 
   @override
   int get hashCode => name.hashCode ^ level.hashCode ^ levelExp.hashCode ^ id.hashCode;
+
+  @override
+  Skill copyWith({String? name}) => Skill(
+      name: name ?? this.name,
+      level: level,
+      levelExp: levelExp,
+      id: id,
+    );
 }

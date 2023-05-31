@@ -1,10 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'abs/model.dart';
+
 part 'cat_ownership.g.dart';
 
 /// A class representing the cat ownership of the current user.
 @JsonSerializable()
-class CatOwnership {
+class CatOwnership implements Serializable {
   /// A level of the cat with the [catNameId] name-id owned by the current user.
   final int level;
 
@@ -23,6 +25,7 @@ class CatOwnership {
 
   factory CatOwnership.fromJson(Map<String, dynamic> json) => _$CatOwnershipFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$CatOwnershipToJson(this);
 
   @override

@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'abs/model.dart';
+import 'abs/prototype.dart';
 import 'quest.dart';
 import 'task.dart';
 
@@ -7,7 +9,7 @@ part 'quest_stage.g.dart';
 
 /// A class representing a single stage of a [Quest].
 @JsonSerializable()
-class QuestStage {
+class QuestStage with Prototype<QuestStage> implements Serializable {
   /// An id of this quest stage.
   final String id;
 
@@ -31,6 +33,7 @@ class QuestStage {
         name = 'Етап $ordinal',
         tasks = const [];
 
+  @override
   Map<String, dynamic> toJson() => _$QuestStageToJson(this);
 
   @override
@@ -44,4 +47,11 @@ class QuestStage {
 
   @override
   int get hashCode => id.hashCode ^ name.hashCode ^ tasks.hashCode;
+
+  @override
+  QuestStage copyWith({String? name, List<Task>? tasks}) => QuestStage(
+        id: id,
+        name: name ?? this.name,
+        tasks: tasks ?? this.tasks,
+      );
 }

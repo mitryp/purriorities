@@ -100,7 +100,7 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
       ..removeAt(oldIndex)
       ..insert(newIndex, draggedSkill);
 
-    wrapper.data = quest.copyWithPreserveSchedule(skills: reorderedSkills);
+    wrapper.data = quest.copyWith(skills: reorderedSkills);
 
     setState(() => _skills = reorderedSkills);
   }

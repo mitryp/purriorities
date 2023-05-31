@@ -40,7 +40,7 @@ class QuestEditPage extends StatelessWidget {
 
         return NotifierWrapper<Quest>(
           initialQuest ??
-              const Quest.empty().copyWith(
+              const Quest.empty().copyWithSchedule(
                 deadline: deadline,
                 limit: deadline,
                 interval: 1,
@@ -167,10 +167,10 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
   }
 
   Callback<QuestPriority> _changePriorityFor(NotifierWrapper<Quest> wrapper, Quest quest) =>
-      (newPriority) => wrapper.data = quest.copyWithPreserveSchedule(priority: newPriority);
+      (newPriority) => wrapper.data = quest.copyWith(priority: newPriority);
 
   Callback<String> _changeNameFor(NotifierWrapper<Quest> wrapper, Quest quest) =>
-      (name) => wrapper.data = quest.copyWithPreserveSchedule(name: name);
+      (name) => wrapper.data = quest.copyWith(name: name);
 }
 
 class _PriorityCategoryRow extends StatelessWidget {

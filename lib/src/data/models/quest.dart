@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../enums/quest_priority.dart';
+import 'abs/model.dart';
+import 'abs/prototype.dart';
 import 'quest_category.dart';
 import 'quest_stage.dart';
 import 'skill.dart';
@@ -9,7 +11,7 @@ part 'quest.g.dart';
 
 /// A class representing a quest
 @JsonSerializable()
-class Quest {
+class Quest with Prototype<Quest> implements Serializable {
   /// An id of this quest.
   final int id;
 
@@ -75,6 +77,7 @@ class Quest {
 
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$QuestToJson(this);
 
   @override
@@ -104,7 +107,28 @@ class Quest {
       skills.hashCode ^
       stages.hashCode;
 
+  /// Preserves the schedule information. Use the [copyWithSchedule] method to change it.
+  @override
   Quest copyWith({
+    String? name,
+    QuestPriority? priority,
+    QuestCategory? category,
+    List<Skill>? skills,
+    List<QuestStage>? stages,
+  }) =>
+      Quest(
+        id: id,
+        name: name ?? this.name,
+        priority: priority ?? this.priority,
+        category: category ?? this.category,
+        stages: stages ?? this.stages,
+        skills: skills ?? this.skills,
+        deadline: deadline,
+        limit: limit,
+        interval: interval,
+      );
+
+  Quest copyWithSchedule({
     required DateTime? deadline,
     required DateTime? limit,
     required int? interval,
@@ -121,25 +145,6 @@ class Quest {
         category: category ?? this.category,
         skills: skills ?? this.skills,
         stages: stages ?? this.stages,
-        deadline: deadline,
-        limit: limit,
-        interval: interval,
-      );
-
-  Quest copyWithPreserveSchedule({
-    String? name,
-    QuestPriority? priority,
-    QuestCategory? category,
-    List<Skill>? skills,
-    List<QuestStage>? stages,
-  }) =>
-      Quest(
-        id: id,
-        name: name ?? this.name,
-        priority: priority ?? this.priority,
-        category: category ?? this.category,
-        stages: stages ?? this.stages,
-        skills: skills ?? this.skills,
         deadline: deadline,
         limit: limit,
         interval: interval,

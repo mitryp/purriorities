@@ -1,12 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../enums/cat_rarity.dart';
+import 'abs/model.dart';
+import 'abs/prototype.dart';
 
 part 'cat.g.dart';
 
 /// A class representing a collectible cat.
 @JsonSerializable()
-class Cat {
+class Cat implements Serializable {
   /// A human-readable name of this cat.
   final String name;
 
@@ -24,6 +26,7 @@ class Cat {
 
   factory Cat.fromJson(Map<String, dynamic> json) => _$CatFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$CatToJson(this);
 
   @override

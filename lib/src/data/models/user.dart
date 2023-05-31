@@ -1,10 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'abs/model.dart';
+import 'abs/prototype.dart';
+
 part 'user.g.dart';
 
 /// A class representing the current user of the application.
 @JsonSerializable()
-class User {
+class User with Prototype<User> implements Serializable {
   /// An id of this user.
   final String id;
 
@@ -59,6 +62,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   @override
@@ -91,4 +95,25 @@ class User {
       feed.hashCode ^
       catnip.hashCode ^
       trust.hashCode;
+
+  @override
+  User copyWith({
+    String? nickname,
+    String? email,
+    String? locale,
+    String? timezone,
+  }) =>
+      User(
+        id: id,
+        nickname: nickname ?? this.nickname,
+        email: email ?? this.email,
+        joinDate: joinDate,
+        locale: locale ?? this.locale,
+        timezone: timezone ?? this.timezone,
+        level: level,
+        levelExp: levelExp,
+        feed: feed,
+        catnip: catnip,
+        trust: trust,
+      );
 }
