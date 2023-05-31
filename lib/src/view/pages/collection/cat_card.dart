@@ -14,23 +14,30 @@ class CatCard extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
+        final height = constraints.maxHeight;
         final catLevel = cat.level;
 
         return Stack(
           alignment: Alignment.center,
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox.square(
                   dimension: _radius * 2,
                   child: cat.price != null ? _ShadedCatAvatar(cat: cat) : _CatAvatar(cat: cat),
                 ),
-                const SizedBox(height: 8),
-                Text(cat.name ?? '???', style: const TextStyle(fontWeight: FontWeight.bold)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: (cat.price == null)
-                      ? Text('+${cat.xp ?? '?'}% XP')
+                Text(
+                  cat.name ?? '???',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+                SizedBox(
+                  height: height / 6,
+                  child: cat.price == null
+                      ? Center(child: Text('+${cat.xp ?? '?'}% XP'))
                       : _PurchaseButton(price: cat.price!),
                 ),
               ],
