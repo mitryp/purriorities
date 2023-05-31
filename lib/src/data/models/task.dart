@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'abs/model.dart';
+import 'abs/serializable.dart';
 import 'abs/prototype.dart';
 
 part 'task.g.dart';
