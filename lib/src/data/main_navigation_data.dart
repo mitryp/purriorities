@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../common/enums/app_route.dart';
-import '../view/pages/collection_page.dart';
+import '../view/pages/collection/collection_page.dart';
 import '../view/pages/dashboard.dart';
 import '../view/pages/skills_page.dart';
 import '../view/pages/store_page.dart';

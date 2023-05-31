@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/add_button.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
-import '../widgets/progress_bar.dart';
+import '../widgets/progress_bars/progress_bar.dart';
 
 const List<({String name, int level, int progress, int maxProgress})> skills = [
   (name: 'Нявання', level: 100, progress: 10, maxProgress: 100),
@@ -33,22 +33,25 @@ class _MobileSkillsPage extends StatelessWidget {
       floatingActionButton: AddButton(onPressed: () {}),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       children: skills.map((skill) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: ProgressBar(
-            height: 50,
-            overlayingWidget: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(skill.name),
-                  Text('Рівень ${skill.level}')
-                ],
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: ProgressBar(
+              height: 50,
+              overlayingWidget: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(skill.name),
+                    Text('Рівень ${skill.level}')
+                  ],
+                ),
               ),
+              value: skill.progress,
+              maxValue: skill.maxProgress,
             ),
-            value: skill.progress,
-            maxValue: skill.maxProgress,
           ),
         );
       }).toList(),
