@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../../../data/enums/quest_priority.dart';
 import '../../../data/models/quest.dart';
+import '../../../data/models/quest_stage.dart';
+import '../../../data/models/skill.dart';
+import '../../../data/models/task.dart';
 import '../../../data/util/notifier_wrapper.dart';
 import '../../../typedefs.dart';
 import '../../../util/datetime_comparison.dart';
@@ -16,8 +19,13 @@ import '../../widgets/date_time_selector_fields/time_selector_form_field.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
 import '../../widgets/priority_selector.dart';
+import '../../widgets/quest_skill_tile/quest_skill_tile.dart';
 
-part 'schedule_tile.dart';
+part 'quest_schedule_tile.dart';
+
+part 'quest_skills_selector.dart';
+
+part 'quest_stages_editor.dart';
 
 class QuestEditPage extends StatelessWidget {
   final Quest? initialQuest;
@@ -36,6 +44,32 @@ class QuestEditPage extends StatelessWidget {
                 deadline: deadline,
                 limit: deadline,
                 interval: 1,
+                skills: const [
+                  Skill(
+                    name: 'Нявати',
+                    level: 100,
+                    levelExp: 10,
+                    id: 0,
+                  ),
+                  Skill(
+                    name: 'Мурати',
+                    level: 70,
+                    levelExp: 90,
+                    id: 1,
+                  ),
+                  Skill(
+                    name: 'Кицяти',
+                    level: 80,
+                    levelExp: 20,
+                    id: 2,
+                  ),
+                  Skill(
+                    name: 'Перегортатися',
+                    level: 50,
+                    levelExp: 25,
+                    id: 3,
+                  ),
+                ],
               ),
         );
       },
@@ -70,6 +104,15 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
   bool _isRepeating = false;
 
   @override
+  void dispose() {
+    _deadlineDateController.dispose();
+    _deadlineTimeController.dispose();
+    _lastDateController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final data = context.watch<NotifierWrapper<Quest>>();
     final quest = data.data;
@@ -80,6 +123,7 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
         title: Text('${widget.isEditing ? 'Існуючий' : 'Новий'} квест'),
       ),
       child: CustomScrollView(
+        shrinkWrap: true,
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate([
@@ -111,12 +155,10 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
                       deadlineTimeController: _deadlineTimeController,
                       lastDateController: _lastDateController,
                     ),
-                    // todo expansion tile with deadlines and scheduling
                   ].separate(_separator),
                 ),
               ),
-              // todo skills selector
-              // todo stages&tasks block
+              const _QuestSkillsSelector(),
             ]),
           )
         ],
