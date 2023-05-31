@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../dialogs/task_completion_dialog.dart';
+
 class QuestTile extends StatelessWidget {
   final String questName;
   final bool isRepeated;
@@ -27,6 +29,10 @@ class QuestTile extends StatelessWidget {
             _buildDeadlineSection(),
           ],
         ),
+      ),
+      onTap: () => showDialog<void>(
+        context: context,
+        builder: (BuildContext context) => const TaskCompletionDialog(),
       ),
     );
   }
