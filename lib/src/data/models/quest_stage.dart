@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import 'quest.dart';
+import 'task.dart';
 
 part 'quest_stage.g.dart';
 
@@ -14,14 +15,21 @@ class QuestStage {
   /// Can be empty - might want to replace it with a placeholder.
   final String name;
 
+  /// A list of task on this stage.
+  final List<Task> tasks;
+
   const QuestStage({
     required this.id,
     required this.name,
+    required this.tasks,
   });
 
   factory QuestStage.fromJson(Map<String, dynamic> json) => _$QuestStageFromJson(json);
 
-  const QuestStage.empty([int ordinal = 1]) : id = '', name = 'Етап $ordinal';
+  const QuestStage.empty([int ordinal = 1])
+      : id = '',
+        name = 'Етап $ordinal',
+        tasks = const [];
 
   Map<String, dynamic> toJson() => _$QuestStageToJson(this);
 
@@ -31,8 +39,9 @@ class QuestStage {
       other is QuestStage &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          name == other.name;
+          name == other.name &&
+          tasks == other.tasks;
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode;
+  int get hashCode => id.hashCode ^ name.hashCode ^ tasks.hashCode;
 }

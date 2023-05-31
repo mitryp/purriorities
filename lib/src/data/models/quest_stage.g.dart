@@ -9,10 +9,14 @@ part of 'quest_stage.dart';
 QuestStage _$QuestStageFromJson(Map<String, dynamic> json) => QuestStage(
       id: json['id'] as String,
       name: json['name'] as String,
+      tasks: (json['tasks'] as List<dynamic>)
+          .map((e) => Task.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$QuestStageToJson(QuestStage instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'tasks': instance.tasks,
     };
