@@ -19,6 +19,9 @@ Quest _$QuestFromJson(Map<String, dynamic> json) => Quest(
       interval: json['interval'] as int?,
       category:
           QuestCategory.fromJson(json['category'] as Map<String, dynamic>),
+      skills: (json['skills'] as List<dynamic>)
+          .map((e) => Skill.fromJson(e as Map<String, dynamic>))
+          .toList(),
       stages: (json['stages'] as List<dynamic>)
           .map((e) => QuestStage.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -32,6 +35,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'limit': instance.limit?.toIso8601String(),
       'interval': instance.interval,
       'category': instance.category,
+      'skills': instance.skills,
       'stages': instance.stages,
     };
 

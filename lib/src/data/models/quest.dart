@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../enums/quest_priority.dart';
 import 'quest_category.dart';
 import 'quest_stage.dart';
+import 'skill.dart';
 
 part 'quest.g.dart';
 
@@ -43,6 +44,9 @@ class Quest {
   /// A [QuestCategory] of this quest.
   final QuestCategory category;
 
+  /// A list of [Skill]s of connected to this quest;
+  final List<Skill> skills;
+
   /// A list of [QuestStage]s of this quest.
   final List<QuestStage> stages;
 
@@ -54,6 +58,7 @@ class Quest {
     this.limit,
     this.interval,
     required this.category,
+    required this.skills,
     required this.stages,
   });
 
@@ -65,6 +70,7 @@ class Quest {
         limit = null,
         interval = null,
         category = const QuestCategory.empty(),
+        skills = const [],
         stages = const [QuestStage.empty()];
 
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
@@ -83,6 +89,7 @@ class Quest {
           limit == other.limit &&
           interval == other.interval &&
           category == other.category &&
+          skills == other.skills &&
           stages == other.stages;
 
   @override
@@ -94,6 +101,7 @@ class Quest {
       limit.hashCode ^
       interval.hashCode ^
       category.hashCode ^
+      skills.hashCode ^
       stages.hashCode;
 
   Quest copyWith({
@@ -103,6 +111,7 @@ class Quest {
     String? name,
     QuestPriority? priority,
     QuestCategory? category,
+    List<Skill>? skills,
     List<QuestStage>? stages,
   }) =>
       Quest(
@@ -110,6 +119,7 @@ class Quest {
         name: name ?? this.name,
         priority: priority ?? this.priority,
         category: category ?? this.category,
+        skills: skills ?? this.skills,
         stages: stages ?? this.stages,
         deadline: deadline,
         limit: limit,
@@ -120,6 +130,7 @@ class Quest {
     String? name,
     QuestPriority? priority,
     QuestCategory? category,
+    List<Skill>? skills,
     List<QuestStage>? stages,
   }) =>
       Quest(
@@ -128,13 +139,9 @@ class Quest {
         priority: priority ?? this.priority,
         category: category ?? this.category,
         stages: stages ?? this.stages,
+        skills: skills ?? this.skills,
         deadline: deadline,
         limit: limit,
         interval: interval,
       );
-
-  @override
-  String toString() {
-    return 'Quest [until $deadline; repeat until $limit]';
-  }
 }
