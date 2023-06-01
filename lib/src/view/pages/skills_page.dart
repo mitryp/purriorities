@@ -24,7 +24,7 @@ class SkillsPage extends StatelessWidget {
 }
 
 class _MobileSkillsPage extends StatelessWidget {
-  const _MobileSkillsPage({super.key});
+  const _MobileSkillsPage();
 
   @override
   Widget build(BuildContext context) {

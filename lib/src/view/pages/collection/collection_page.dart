@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../constants.dart';
 import '../../../data/enums/sprite.dart';
 import '../../../util/sprite_scaling.dart';
-import '../../theme.dart';
 import '../../widgets/currency/currency_info.dart';
 import '../../widgets/diamond_text.dart';
 import '../../widgets/layouts/layout_selector.dart';
@@ -44,15 +43,15 @@ class MobileCollection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final trustValue = 10;
-    final maxTrust = 100;
+    const trustValue = 10;
+    const maxTrust = 100;
 
     return MobileLayout(
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerRight,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 6.0),
             child: LabeledProgressBar(
               label: 'Довіра',
               value: trustValue,

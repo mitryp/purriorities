@@ -1,7 +1,7 @@
 part of 'quest_edit_page.dart';
 
 class _QuestSkillsSelector extends StatefulWidget {
-  const _QuestSkillsSelector({super.key});
+  const _QuestSkillsSelector();
 
   @override
   State<_QuestSkillsSelector> createState() => _QuestSkillsSelectorState();
@@ -29,16 +29,7 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
     const topPadding = 0.0;
     const titleFontSize = 18.0;
     const leftTitlePadding = 16.0;
-
-    final plusButton = SizedBox.square(
-      dimension: 50,
-      child: Center(
-        child: IconButton(
-          icon: const Icon(Icons.add),
-          onPressed: () {}, // todo add skill to the quest
-        ),
-      ),
-    );
+    const scrollbarThickness = 1.5;
 
     return Padding(
       padding: const EdgeInsets.only(top: topPadding),
@@ -55,12 +46,16 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
             constraints: const BoxConstraints(maxHeight: 100),
             child: Scrollbar(
               interactive: false,
-              thickness: 1.5,
+              thickness: scrollbarThickness,
               controller: _scrollController,
               thumbVisibility: true,
               child: ReorderableListView(
-                header: plusButton,
-                footer: _skills.isNotEmpty ? plusButton : null,
+                buildDefaultDragHandles: false,
+                // todo add skill to the quest
+                header: _AddSkillButton(onPressed: () => _processAddSkill(atStart: true)),
+                footer: _skills.isNotEmpty
+                    ? _AddSkillButton(onPressed: () => _processAddSkill(atStart: false))
+                    : null,
                 scrollController: _scrollController,
                 scrollDirection: Axis.horizontal,
                 onReorder: _processSkillsReorder,
@@ -68,13 +63,10 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
                     .asMap()
                     .entries
                     .map(
-                      (e) => Padding(
-                        key: ValueKey(e.value.id),
-                        padding: const EdgeInsets.all(8),
-                        child: QuestSkillTile(
-                          e.value,
-                          skillPriority: QuestSkillPriority.fromIndex(e.key),
-                        ),
+                      (e) => _DraggableSkillTile(
+                        key: ValueKey('${e.value.id}'),
+                        index: e.key,
+                        skill: e.value,
                       ),
                     )
                     .toList(growable: false),
@@ -85,6 +77,8 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
       ),
     );
   }
+
+  void _processAddSkill({required bool atStart}) {}
 
   void _processSkillsReorder(int oldIndex, int newIndex) {
     final wrapper = context.read<NotifierWrapper<Quest>>();
@@ -103,5 +97,66 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
     wrapper.data = quest.copyWith(skills: reorderedSkills);
 
     setState(() => _skills = reorderedSkills);
+  }
+}
+
+class _AddSkillButton extends StatelessWidget {
+  static const double _dimension = 50.0;
+
+  final VoidCallback onPressed;
+
+  const _AddSkillButton({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.square(
+      dimension: _dimension,
+      child: Center(
+        child: IconButton(
+          icon: const Icon(Icons.add),
+          onPressed: onPressed,
+        ),
+      ),
+    );
+  }
+}
+
+class _DraggableSkillTile extends StatelessWidget {
+  static const EdgeInsets _tilePadding = EdgeInsets.all(8);
+  static const Offset _handleIconOffset = Offset(-8, -6);
+
+  final int index;
+  final Skill skill;
+  final bool useDelayedListener;
+
+  const _DraggableSkillTile({
+    required this.index,
+    required this.skill,
+    this.useDelayedListener = true,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final listenerConstructor = useDelayedListener
+        ? ReorderableDelayedDragStartListener.new
+        : ReorderableDragStartListener.new;
+
+    return listenerConstructor(
+      index: index,
+      child: Padding(
+        padding: _tilePadding,
+        child: Badge(
+          offset: _handleIconOffset,
+          backgroundColor: Colors.transparent,
+          alignment: Alignment.bottomCenter,
+          label: const Icon(Icons.drag_handle),
+          child: QuestSkillTile(
+            skill,
+            skillPriority: QuestSkillPriority.fromIndex(index),
+          ),
+        ),
+      ),
+    );
   }
 }

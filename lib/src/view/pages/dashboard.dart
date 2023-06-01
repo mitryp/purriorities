@@ -35,7 +35,7 @@ final List<(String name, bool isRepeated, DateTime? deadline)> questsData = [
 ];
 
 class _MobileHomepage extends StatelessWidget {
-  const _MobileHomepage({super.key});
+  const _MobileHomepage();
 
   @override
   Widget build(BuildContext context) {
@@ -87,15 +87,15 @@ class _MobileHomepage extends StatelessWidget {
     const sprite = Sprite.grayCat;
     const radius = 50.0;
 
-    final trustValue = 10;
-    final maxTrust = 100;
+    const trustValue = 10;
+    const maxTrust = 100;
 
-    final xpValue = 40;
-    final maxXp = 100;
-    final xpLevel = 2;
+    const xpValue = 40;
+    const maxXp = 100;
+    const xpLevel = 2;
 
-    final nFish = 10;
-    final nValerian = 1;
+    const nFish = 10;
+    const nValerian = 1;
 
     return IntrinsicHeight(
       child: Row(
@@ -105,7 +105,7 @@ class _MobileHomepage extends StatelessWidget {
             minRadius: radius,
             scale: scaleToFitCircle(radius),
           ),
-          Expanded(
+          const Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -135,7 +135,7 @@ class _MobileHomepage extends StatelessWidget {
 }
 
 class _DesktopHomepage extends StatelessWidget {
-  const _DesktopHomepage({super.key});
+  const _DesktopHomepage();
 
   @override
   Widget build(BuildContext context) => const DesktopLayout();

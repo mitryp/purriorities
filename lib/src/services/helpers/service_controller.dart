@@ -6,8 +6,10 @@ import 'exceptions.dart';
 typedef ControllerLogic<T> = T Function(http.Response response);
 
 Future<T> httpServiceController<T>(
-    http.Response response, ControllerLogic<T> successLogic,
-    [ControllerLogic<T>? unsuccessfulLogic]) async {
+  http.Response response,
+  ControllerLogic<T> successLogic, [
+  ControllerLogic<T>? unsuccessfulLogic,
+]) async {
   //final res = await applyResponseMiddleware(response);
 
   final res = response;

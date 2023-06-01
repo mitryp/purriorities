@@ -2,7 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../enums/cat_rarity.dart';
 import 'abs/serializable.dart';
-import 'abs/prototype.dart';
 
 part 'cat.g.dart';
 

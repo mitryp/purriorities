@@ -32,7 +32,8 @@ class QuestSkillTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(defaultBorderRadius.bottomLeft.x * 3),
         color: backgroundColor,
       ),
-      child: Center(child: FittedBox(child: Text(skill.name, softWrap: true))),
+      child: Center(child: FittedBox(child: Text(skill.name, softWrap: true)),
+      ),
     );
   }
 }

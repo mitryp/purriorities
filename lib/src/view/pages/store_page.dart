@@ -24,18 +24,18 @@ class StorePage extends StatelessWidget {
 }
 
 class _MobileStorePage extends StatelessWidget {
-  const _MobileStorePage({super.key});
+  const _MobileStorePage();
 
   @override
   Widget build(BuildContext context) {
-    final int commonCurrencyBalance = 100;
-    final int rareCurrencyBalance = 10;
+    const commonCurrencyBalance = 100;
+    const rareCurrencyBalance = 10;
 
-    final int goldLootboxPrice = 20;
-    final int commonLootboxPrice = 100;
+    const goldLootboxPrice = 20;
+    const commonLootboxPrice = 100;
 
-    final int commonCurrencyBought = 100;
-    final int priceOfCommonCurrency = 2;
+    const commonCurrencyBought = 100;
+    const priceOfCommonCurrency = 2;
 
     final List<({Currency currency, Sprite sprite, int price, Color? bgColor})>
         lootboxPurchaseColumns = [
@@ -55,7 +55,7 @@ class _MobileStorePage extends StatelessWidget {
 
     return MobileLayout(
       children: [
-        CurrencyBalance(
+        const CurrencyBalance(
           commonCurrencyBalance: commonCurrencyBalance,
           rareCurrencyBalance: rareCurrencyBalance,
         ),
@@ -87,13 +87,13 @@ class _MobileStorePage extends StatelessWidget {
                       ProgressIndicatorButton.elevated(
                         onPressed: () async {}, //TODO
                         style: accentButtonStyle,
-                        child: Row(
+                        child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text('+ $commonCurrencyBought '),
-                            const CurrencyImage(currency: Currency.common),
+                            CurrencyImage(currency: Currency.common),
                             Text(' за $priceOfCommonCurrency '),
-                            const CurrencyImage(currency: Currency.rare),
+                            CurrencyImage(currency: Currency.rare),
                           ],
                         ),
                       )
@@ -122,7 +122,6 @@ class _LootboxPurchaseColumn extends StatelessWidget {
     required this.price,
     this.radius = 32,
     this.backgroundColor,
-    super.key,
   });
 
   @override

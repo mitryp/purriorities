@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'common/enums/app_route.dart';
 import 'data/main_navigation_data.dart';
+import 'data/models/quest.dart';
 import 'view/pages/login_page.dart';
 import 'view/pages/quest_edit_page/quest_edit_page.dart';
 import 'view/pages/quests_page.dart';
@@ -36,8 +37,7 @@ final _router = GoRouter(
     GoRoute(
       path: AppRoute.editQuest.route,
       builder: (context, state) => QuestEditPage(
-        //initialQuest: state.extra is QuestModel ? state.extra as QuestModel : null,
-        initialQuest: null,
+        initialQuest: state.extra is Quest ? state.extra as Quest : null,
       ),
     ),
     GoRoute(

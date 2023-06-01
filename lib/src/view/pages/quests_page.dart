@@ -40,7 +40,7 @@ final List<(String name, bool isRepeated, DateTime? deadline)> questsData = [
 ];
 
 class _MobileQuestsPage extends StatelessWidget {
-  const _MobileQuestsPage({super.key});
+  const _MobileQuestsPage();
 
   @override
   Widget build(BuildContext context) {

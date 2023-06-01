@@ -52,7 +52,7 @@ class CatCard extends StatelessWidget {
 class _CatAvatar extends StatelessWidget {
   final Cat cat;
 
-  const _CatAvatar({required this.cat, super.key});
+  const _CatAvatar({required this.cat});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +71,7 @@ class _CatAvatar extends StatelessWidget {
 class _ShadedCatAvatar extends StatelessWidget {
   final Cat cat;
 
-  const _ShadedCatAvatar({required this.cat, super.key});
+  const _ShadedCatAvatar({required this.cat});
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +90,7 @@ class _ShadedCatAvatar extends StatelessWidget {
 class _PurchaseButton extends StatelessWidget {
   final int price;
 
-  const _PurchaseButton({required this.price, super.key});
+  const _PurchaseButton({required this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class _LevelDiamond extends StatelessWidget {
   final double width;
   final int level;
 
-  const _LevelDiamond({required this.width, required this.level, super.key});
+  const _LevelDiamond({required this.width, required this.level});
 
   @override
   Widget build(BuildContext context) {

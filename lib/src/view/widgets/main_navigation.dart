@@ -26,7 +26,7 @@ class MainNavigation extends StatelessWidget {
 class _MobileNavigation extends StatelessWidget {
   final Widget child;
 
-  const _MobileNavigation({required this.child, super.key});
+  const _MobileNavigation({required this.child});
 
   @override
   Widget build(BuildContext context) {

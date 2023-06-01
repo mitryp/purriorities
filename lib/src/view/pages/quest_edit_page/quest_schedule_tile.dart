@@ -21,7 +21,6 @@ class _ScheduleTile extends StatelessWidget {
     required this.deadlineDateController,
     required this.deadlineTimeController,
     required this.lastDateController,
-    super.key,
   });
 
   @override
@@ -64,6 +63,10 @@ class _ScheduleTile extends StatelessWidget {
 }
 
 class _DeadlineRow extends StatelessWidget {
+  static const int _firstYear = 2023;
+  static const int _lastYear = 2050;
+  static const Duration _initialDurationToDeadline = Duration(days: 1);
+
   final bool isRepeating;
   final Widget separator;
   final DateTimeEditingController deadlineDateController;
@@ -78,45 +81,61 @@ class _DeadlineRow extends StatelessWidget {
     required this.deadlineDateController,
     required this.deadlineTimeController,
     required this.lastDateController,
-    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     final data = context.watch<NotifierWrapper<Quest>>();
     final quest = data.data;
-    final currentDeadline = quest.deadline ?? DateTime.now().add(const Duration(days: 1));
+    final currentDeadline = quest.deadline ?? DateTime.now().add(_initialDurationToDeadline);
 
     return Row(
       children: [
-        DateSelectorFormField(
-          controller: deadlineDateController,
-          initialDate: currentDeadline,
-          firstDate: DateTime(2023),
-          lastDate: DateTime(2050),
-          label: isRepeating ? 'Перший термін' : 'Кінцевий термін',
-          onSelected: (date) {
-            if (date == null) return;
-
-            final newDeadline = currentDeadline.withDate(date);
-
-            _setQuestDeadline(data, deadline: newDeadline);
-          },
+        Expanded(
+          child: DateSelectorFormField(
+            controller: deadlineDateController,
+            initialDate: currentDeadline,
+            firstDate: DateTime(_firstYear),
+            lastDate: DateTime(_lastYear),
+            label: isRepeating ? 'Перший термін' : 'Кінцевий термін',
+            onSelected: _processDateSelection(currentDeadline, data),
+          ),
         ),
-        TimeSelectorFormField(
-          controller: deadlineTimeController,
-          initialTime: currentDeadline.toTime(),
-          onSelected: (time) {
-            if (time == null) return;
-
-            final newDeadline = currentDeadline.withTime(time);
-
-            _setQuestDeadline(data, deadline: newDeadline);
-          },
+        separator,
+        Expanded(
+          child: TimeSelectorFormField(
+            controller: deadlineTimeController,
+            initialTime: currentDeadline.toTime(),
+            onSelected: _processTimeSelection(currentDeadline, data),
+          ),
         ),
-      ].wrap((child) => Expanded(child: child)).separate(separator),
+      ],
     );
   }
+
+  Callback<DateTime?> _processDateSelection(
+    DateTime currentDeadline,
+    NotifierWrapper<Quest> data,
+  ) =>
+      (date) {
+        if (date == null) return;
+
+        final newDeadline = currentDeadline.withDate(date);
+
+        _setQuestDeadline(data, deadline: newDeadline);
+      };
+
+  Callback<TimeOfDay?> _processTimeSelection(
+    DateTime currentDeadline,
+    NotifierWrapper<Quest> data,
+  ) =>
+      (time) {
+        if (time == null) return;
+
+        final newDeadline = currentDeadline.withTime(time);
+
+        _setQuestDeadline(data, deadline: newDeadline);
+      };
 
   void _setQuestDeadline(NotifierWrapper<Quest> wrapper, {required DateTime deadline}) {
     final quest = wrapper.data;
@@ -135,6 +154,8 @@ class _DeadlineRow extends StatelessWidget {
 }
 
 class _RepeatControls extends StatelessWidget {
+  static const int _initialIntervalDays = 1;
+
   final bool isRepeating;
   final Callback<bool> onRepeatModeChanged;
   final Widget separator;
@@ -145,7 +166,6 @@ class _RepeatControls extends StatelessWidget {
     required this.onRepeatModeChanged,
     required this.separator,
     required this.lastDateController,
-    super.key,
   });
 
   @override
@@ -158,31 +178,35 @@ class _RepeatControls extends StatelessWidget {
       trailing: Icon(isRepeating ? Icons.check : Icons.close),
       initiallyExpanded: isRepeating,
       onExpansionChanged: onRepeatModeChanged,
-      childrenPadding: _MobileQuestEditPageState._inputRowPadding,
+      childrenPadding: _MobileQuestEditPageState._inputRowPadding.copyWith(bottom: 0),
       children: [
         Row(
           children: [
-            TextFormField(
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Інтервал',
-                suffixText: 'днів',
+            Expanded(
+              child: TextFormField(
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Інтервал',
+                  suffixText: 'днів',
+                ),
+                initialValue: '${quest.interval ?? _initialIntervalDays}',
+                onChanged: _changeQuestIntervalFor(data, quest),
               ),
-              initialValue: '${quest.interval ?? 1}',
-              onChanged: _changeQuestIntervalFor(data, quest),
             ),
-            DateSelectorFormField(
-              controller: lastDateController,
-              initialDate: quest.limit ?? quest.deadline,
-              firstDate: quest.deadline ?? DateTime.now(),
-              lastDate: DateTime(2050),
-              onSelected: _changeQuestLastDateFor(data, quest),
-              label: 'Зупинити після',
+            separator,
+            Expanded(
+              child: DateSelectorFormField(
+                controller: lastDateController,
+                initialDate: quest.limit ?? quest.deadline,
+                firstDate: quest.deadline ?? DateTime.now(),
+                lastDate: DateTime(_DeadlineRow._lastYear),
+                onSelected: _changeQuestLastDateFor(data, quest),
+                label: 'Зупинити після',
+              ),
             ),
-          ].wrap((child) => Expanded(child: child)).separate(separator),
+          ],
         ),
-        separator,
       ],
     );
   }

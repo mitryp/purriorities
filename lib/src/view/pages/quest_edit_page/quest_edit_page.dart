@@ -142,13 +142,11 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
                     ),
                     _ScheduleTile(
                       isPlanerUsed: _isPlanerUsed,
-                      onPlanerModeChanged: (isPlanningEnabled) => setState(
-                        () => _isPlanerUsed = isPlanningEnabled,
-                      ),
+                      onPlanerModeChanged: (isPlanningEnabled) =>
+                          setState(() => _isPlanerUsed = isPlanningEnabled),
                       isRepeating: _isRepeating,
-                      onRepeatingModeChanged: (isRepeating) => setState(
-                        () => _isRepeating = isRepeating,
-                      ),
+                      onRepeatingModeChanged: (isRepeating) =>
+                          setState(() => _isRepeating = isRepeating),
                       childrenPadding: _inputRowPadding,
                       separator: _separator,
                       deadlineDateController: _deadlineDateController,
@@ -159,6 +157,8 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
                 ),
               ),
               const _QuestSkillsSelector(),
+              const SizedBox.square(dimension: 8),
+              const _QuestStagesEditor(), // todo
             ]),
           )
         ],
@@ -182,7 +182,6 @@ class _PriorityCategoryRow extends StatelessWidget {
     required this.selectedPriority,
     required this.onPriorityChanged,
     required this.separator,
-    super.key,
   });
 
   @override
