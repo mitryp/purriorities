@@ -48,35 +48,69 @@ class _MobileQuestsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Квести'),
       ),
-      floatingActionButton: AddButton(onPressed: () => GoRouter.of(context).push(AppRoute.editQuest.route)),
+      floatingActionButton:
+          AddButton(onPressed: () => GoRouter.of(context).push(AppRoute.editQuest.route)),
       children: [
-        _buildFilters(),
+        Card(
+          child: Row(
+            children: [
+              _QuestsFilter(
+                caption: 'Навичка',
+                items: skills,
+                initialSelection: skills[0],
+              ),
+              _QuestsFilter(
+                caption: 'Категорія',
+                items: categories,
+                initialSelection: categories[0],
+              ),
+            ],
+          ),
+        ),
         Card(
           child: QuestsList(items: questsData),
         )
       ],
     );
   }
+}
 
-  Widget _buildFilters() {
-    return Card(
-      child: Row(
-        children: [
-          _buildFilter(caption: 'Навичка', items: skills, initialSelection: skills[0]),
-          _buildFilter(caption: 'Категорія', items: categories, initialSelection: categories[0]),
-        ],
+class _QuestsFilter extends StatelessWidget {
+  final String caption;
+  final List<String> items;
+  final String initialSelection;
+
+  const _QuestsFilter({
+    required this.items,
+    required this.caption,
+    required this.initialSelection,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: DropdownButton<String>(
+        items: items.map((item) {
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(item),
+          );
+        }).toList(),
+        onChanged: (value) {}, // TODO
+        value: initialSelection,
       ),
-    );
-  }
-
-  Widget _buildFilter({required String caption, required List items, required initialSelection}) {
-    return DropdownMenu(
-      helperText: caption,
-      enableSearch: true,
-      initialSelection: initialSelection,
-      dropdownMenuEntries: items.map((item) {
-        return DropdownMenuEntry(value: item, label: item);
-      }).toList(),
+      // child: DropdownMenu(
+      //   helperText: caption,
+      //   enableSearch: true,
+      //   initialSelection: initialSelection,
+      //   dropdownMenuEntries: items.map((item) {
+      //     return DropdownMenuEntry(
+      //         value: item,
+      //         label: item,
+      //         style: ButtonStyle(textStyle: MaterialStatePropertyAll(TextStyl)));
+      //   }).toList(),
+      // ),
     );
   }
 }
