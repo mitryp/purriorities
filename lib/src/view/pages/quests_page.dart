@@ -52,19 +52,23 @@ class _MobileQuestsPage extends StatelessWidget {
           AddButton(onPressed: () => GoRouter.of(context).push(AppRoute.editQuest.route)),
       children: [
         Card(
-          child: Row(
-            children: [
-              _QuestsFilter(
-                caption: 'Навичка',
-                items: skills,
-                initialSelection: skills[0],
-              ),
-              _QuestsFilter(
-                caption: 'Категорія',
-                items: categories,
-                initialSelection: categories[0],
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              children: [
+                _QuestsFilter(
+                  caption: 'Навичка',
+                  items: skills,
+                  initialSelection: skills[0],
+                ),
+                const SizedBox.square(dimension: 8),
+                _QuestsFilter(
+                  caption: 'Категорія',
+                  items: categories,
+                  initialSelection: categories[0],
+                ),
+              ],
+            ),
           ),
         ),
         Card(

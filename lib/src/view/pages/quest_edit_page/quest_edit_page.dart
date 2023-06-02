@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,7 @@ import '../../../typedefs.dart';
 import '../../../util/datetime_comparison.dart';
 import '../../../util/extensions/datetime_extensions.dart';
 import '../../../util/extensions/widget_list_extensions.dart';
+import '../../dialogs/task_edit_dialog.dart';
 import '../../theme.dart';
 import '../../widgets/date_time_selector_fields/date_selector_form_field.dart';
 import '../../widgets/date_time_selector_fields/datetime_editing_controller.dart';
@@ -44,6 +47,8 @@ class QuestEditPage extends StatelessWidget {
                 deadline: deadline,
                 limit: deadline,
                 interval: 1,
+
+                // todo remove
                 skills: const [
                   Skill(
                     name: 'Нявати',
@@ -123,7 +128,7 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
         title: Text('${widget.isEditing ? 'Існуючий' : 'Новий'} квест'),
       ),
       child: CustomScrollView(
-        shrinkWrap: true,
+        // shrinkWrap: true,
         slivers: [
           SliverList(
             delegate: SliverChildListDelegate([

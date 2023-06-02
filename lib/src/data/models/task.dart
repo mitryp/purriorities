@@ -23,6 +23,9 @@ class Task with Prototype<Task> implements Serializable {
     required this.name,
   });
 
+  const Task.empty({required this.stageId, required this.id})
+      : name = '';
+
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
   @override
@@ -42,8 +45,8 @@ class Task with Prototype<Task> implements Serializable {
 
   @override
   Task copyWith({String? name}) => Task(
-      stageId: stageId,
-      id: id,
-      name: name ?? this.name,
-    );
+        stageId: stageId,
+        id: id,
+        name: name ?? this.name,
+      );
 }
