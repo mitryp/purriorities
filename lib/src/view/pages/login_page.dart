@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/enums/app_route.dart';
-import '../../data/enums/sprite.dart';
+import '../../common/enums/sprite.dart';
 import '../../data/login_data.dart';
 import '../../data/util/validators.dart';
 import '../../util/sprite_scaling.dart';

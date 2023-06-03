@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import '../../data/enums/sprite.dart';
+import '../../common/enums/sprite.dart';
 import '../../data/util/validators.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';

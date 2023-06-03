@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
-import '../../../data/enums/sprite.dart';
+import '../../../common/enums/sprite.dart';
 import '../../../util/sprite_scaling.dart';
 import '../../widgets/currency/currency_info.dart';
 import '../../widgets/diamond_text.dart';

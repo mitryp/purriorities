@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/enums/app_route.dart';
-import '../../data/enums/sprite.dart';
+import '../../common/enums/sprite.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/add_button.dart';
 import '../widgets/currency/currency_balance.dart';
