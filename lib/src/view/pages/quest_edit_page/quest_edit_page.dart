@@ -10,15 +10,18 @@ import '../../../data/models/quest_stage.dart';
 import '../../../data/models/skill.dart';
 import '../../../data/models/task.dart';
 import '../../../data/util/notifier_wrapper.dart';
+import '../../../data/util/validators.dart';
 import '../../../typedefs.dart';
 import '../../../util/datetime_comparison.dart';
 import '../../../util/extensions/datetime_extensions.dart';
-import '../../../util/extensions/widget_list_extensions.dart';
+import '../../../util/minutes_format.dart';
+import '../../dialogs/confirmation_dialog.dart';
 import '../../dialogs/task_edit_dialog.dart';
 import '../../theme.dart';
 import '../../widgets/date_time_selector_fields/date_selector_form_field.dart';
 import '../../widgets/date_time_selector_fields/datetime_editing_controller.dart';
 import '../../widgets/date_time_selector_fields/time_selector_form_field.dart';
+import '../../widgets/error_snackbar.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
 import '../../widgets/priority_selector.dart';
@@ -75,6 +78,27 @@ class QuestEditPage extends StatelessWidget {
                     id: 3,
                   ),
                 ],
+                stages: [
+                  const QuestStage(
+                    id: '0',
+                    name: 'Етап 1',
+                    tasks: [
+                      Task(stageId: '0', id: '0', name: 'Кицяти 5 хвилин', minutes: 5),
+                      Task(stageId: '0', id: '1', name: 'Перегортатися', minutes: 20),
+                      Task(stageId: '0', id: '2', name: 'Мурати весь вечір', minutes: 125),
+                      Task(stageId: '0', id: '3', name: 'Нявати щасливо з Катрусею', minutes: 300),
+                      Task(stageId: '0', id: '4', name: 'с:', minutes: 1),
+                    ],
+                  ),
+                  const QuestStage(
+                    id: '1',
+                    name: 'Етап 2',
+                    tasks: [
+                      Task(stageId: '1', id: '0', name: 'Цьомати', minutes: 300),
+                      Task(stageId: '1', id: '1', name: ';3', minutes: 1),
+                    ],
+                  ),
+                ],
               ),
         );
       },
@@ -100,7 +124,9 @@ class MobileQuestEditPage extends StatefulWidget {
 class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
   static const _inputRowPadding = EdgeInsets.symmetric(vertical: 8);
   static const _separator = SizedBox.square(dimension: 8);
+  static const _divider = Divider(height: 16);
 
+  final GlobalKey<FormState> _formKey = GlobalKey();
   final DateTimeEditingController _deadlineDateController = DateTimeEditingController();
   final TimeEditingController _deadlineTimeController = TimeEditingController();
   final DateTimeEditingController _lastDateController = DateTimeEditingController();
@@ -123,59 +149,121 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
     final quest = data.data;
 
     return MobileLayout.child(
-      minimumSafeArea: MobileLayout.defaultSafeArea.copyWith(top: 0, left: 16, right: 16),
+      minimumSafeArea: MobileLayout.defaultSafeArea.copyWith(left: 16, right: 16),
       appBar: AppBar(
-        title: Text('${widget.isEditing ? 'Існуючий' : 'Новий'} квест'),
+        title: Text('${widget.isEditing ? 'Редагувати' : 'Створити'} квест'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _processQuestSaving,
+        child: const Icon(Icons.save),
       ),
       child: CustomScrollView(
-        // shrinkWrap: true,
         slivers: [
-          SliverList(
-            delegate: SliverChildListDelegate([
-              Form(
-                child: Column(
-                  children: [
-                    TextFormField(
-                      initialValue: quest.name,
-                      onChanged: _changeNameFor(data, quest),
-                      decoration: const InputDecoration(labelText: 'Назва квесту'),
-                    ),
-                    _PriorityCategoryRow(
-                      selectedPriority: quest.priority,
-                      onPriorityChanged: _changePriorityFor(data, quest),
-                      separator: _separator,
-                    ),
-                    _ScheduleTile(
-                      isPlanerUsed: _isPlanerUsed,
-                      onPlanerModeChanged: (isPlanningEnabled) =>
-                          setState(() => _isPlanerUsed = isPlanningEnabled),
-                      isRepeating: _isRepeating,
-                      onRepeatingModeChanged: (isRepeating) =>
-                          setState(() => _isRepeating = isRepeating),
-                      childrenPadding: _inputRowPadding,
-                      separator: _separator,
-                      deadlineDateController: _deadlineDateController,
-                      deadlineTimeController: _deadlineTimeController,
-                      lastDateController: _lastDateController,
-                    ),
-                  ].separate(_separator),
-                ),
+          SliverToBoxAdapter(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    validator: notEmpty,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    initialValue: quest.name,
+                    onChanged: _changeNameFor(data, quest),
+                    decoration: const InputDecoration(labelText: 'Назва квесту'),
+                  ),
+                  _separator,
+                  _separator,
+                  _PriorityCategoryRow(
+                    selectedPriority: quest.priority,
+                    onPriorityChanged: _changePriorityFor(data, quest),
+                    separator: _separator,
+                  ),
+                  _separator,
+                  _divider,
+                  _ScheduleTile(
+                    isPlanerUsed: _isPlanerUsed,
+                    onPlanerModeChanged: (isPlanerUsed) =>
+                        setState(() => _isPlanerUsed = isPlanerUsed),
+                    isRepeating: _isRepeating,
+                    onRepeatingModeChanged: (isRepeating) =>
+                        setState(() => _isRepeating = isRepeating),
+                    childrenPadding: _inputRowPadding,
+                    separator: _separator,
+                    deadlineDateController: _deadlineDateController,
+                    deadlineTimeController: _deadlineTimeController,
+                    lastDateController: _lastDateController,
+                  ),
+                  _divider,
+                  _separator,
+                ],
               ),
-              const _QuestSkillsSelector(),
-              const SizedBox.square(dimension: 8),
-              const _QuestStagesEditor(), // todo
-            ]),
-          )
+            ),
+          ),
+          SliverList.list(
+            children: const [
+              _QuestSkillsSelector(),
+              _divider,
+              _QuestStagesEditor(),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Callback<QuestPriority> _changePriorityFor(NotifierWrapper<Quest> wrapper, Quest quest) =>
-      (newPriority) => wrapper.data = quest.copyWith(priority: newPriority);
+  Future<void> _processQuestSaving() async {
+    if (!_validateQuest()) return;
+    // context.pop();
+  }
 
-  Callback<String> _changeNameFor(NotifierWrapper<Quest> wrapper, Quest quest) =>
-      (name) => wrapper.data = quest.copyWith(name: name);
+  bool _validateQuest() {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      showErrorSnackBar(
+        context: context,
+        content: const ErrorSnackBarContent(titleText: 'У квеста повинна бути назва'),
+      );
+      return false;
+    }
+
+    final quest = context.read<NotifierWrapper<Quest>>().data;
+
+    if (quest.stages.isEmpty) {
+      showErrorSnackBar(
+        context: context,
+        content: const ErrorSnackBarContent(titleText: 'Квест повинен мати принаймні один етап'),
+      );
+
+      return false;
+    }
+
+    if (quest.stages.any((stage) => stage.tasks.isEmpty)) {
+      showErrorSnackBar(
+        context: context,
+        content: const ErrorSnackBarContent(
+          titleText: 'Кожен етап повинен містити хоча б одне завдання',
+          subtitleText: 'Спробуйте додати завдання, або видалити зайвий етап',
+        ),
+      );
+
+      return false;
+    }
+
+    log('Successfully validated', name: 'QuestEditPage');
+    return true;
+  }
+
+  Callback<QuestPriority> _changePriorityFor(NotifierWrapper<Quest> wrapper, Quest quest) =>
+      (priority) {
+        if (quest.priority == priority) return;
+
+        wrapper.data = quest.copyWith(priority: priority);
+      };
+
+  Callback<String> _changeNameFor(NotifierWrapper<Quest> wrapper, Quest quest) => (name) {
+        if (quest.name == name) return;
+
+        wrapper.data = quest.copyWith(name: name);
+      };
 }
 
 class _PriorityCategoryRow extends StatelessWidget {
@@ -193,21 +281,26 @@ class _PriorityCategoryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        PrioritySelector(
-          onPriorityChanged: onPriorityChanged,
-          selected: selectedPriority,
+        Expanded(
+          child: PrioritySelector(
+            onPriorityChanged: onPriorityChanged,
+            selected: selectedPriority,
+          ),
         ),
-        Card(
-          margin: EdgeInsets.zero,
-          child: InkWell(
-            onTap: () {}, //todo
-            borderRadius: defaultBorderRadius,
-            child: const ListTile(
-              title: FittedBox(child: Text('Обрати категорію', textAlign: TextAlign.center)),
+        separator,
+        Expanded(
+          child: Card(
+            margin: EdgeInsets.zero,
+            child: InkWell(
+              onTap: () {}, //todo
+              borderRadius: defaultBorderRadius,
+              child: const ListTile(
+                title: FittedBox(child: Text('Обрати категорію', textAlign: TextAlign.center)),
+              ),
             ),
           ),
         ),
-      ].wrap((child) => Expanded(child: child)).separate(separator),
+      ],
     );
   }
 }

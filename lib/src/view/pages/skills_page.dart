@@ -43,10 +43,7 @@ class _MobileSkillsPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(skill.name),
-                    Text('Рівень ${skill.level}')
-                  ],
+                  children: [Text(skill.name), Text('Рівень ${skill.level}')],
                 ),
               ),
               value: skill.progress,

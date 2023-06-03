@@ -17,14 +17,19 @@ class Task with Prototype<Task> implements Serializable {
   /// A user-defined name of this task.
   final String name;
 
+  /// A quantity of minutes which user set for this task.
+  final int minutes;
+
   const Task({
     required this.stageId,
     required this.id,
     required this.name,
+    required this.minutes,
   });
 
   const Task.empty({required this.stageId, required this.id})
-      : name = '';
+      : name = '',
+        minutes = 10;
 
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
@@ -44,9 +49,10 @@ class Task with Prototype<Task> implements Serializable {
   int get hashCode => stageId.hashCode ^ id.hashCode ^ name.hashCode;
 
   @override
-  Task copyWith({String? name}) => Task(
+  Task copyWith({String? name, int? minutes}) => Task(
         stageId: stageId,
         id: id,
         name: name ?? this.name,
+        minutes: minutes ?? this.minutes,
       );
 }

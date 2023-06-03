@@ -28,9 +28,9 @@ class QuestStage with Prototype<QuestStage> implements Serializable {
 
   factory QuestStage.fromJson(Map<String, dynamic> json) => _$QuestStageFromJson(json);
 
-  const QuestStage.empty([int ordinal = 1])
-      : id = '',
-        name = 'Етап $ordinal',
+  const QuestStage.empty([int ordinal = 1, int? displayOrdinal])
+      : id = 'new-$ordinal',
+        name = 'Етап ${displayOrdinal ?? ordinal}',
         tasks = const [];
 
   @override

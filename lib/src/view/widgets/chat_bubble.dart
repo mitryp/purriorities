@@ -27,10 +27,26 @@ class ChatBubble extends StatelessWidget {
                     bottom: bubble.bottom,
                   ))
               .toList(),
-          const _PositionedBubble(size: 18, left: 32, bottom: 28,),
-          const _PositionedBubble(size: 35, left: 38, bottom: 9,),
-          const _PositionedBubble(size: 32, left: 30, bottom: 4,),
-          const _PositionedBubble(size: 18, left: 28, bottom: 3,),
+          const _PositionedBubble(
+            size: 18,
+            left: 32,
+            bottom: 28,
+          ),
+          const _PositionedBubble(
+            size: 35,
+            left: 38,
+            bottom: 9,
+          ),
+          const _PositionedBubble(
+            size: 32,
+            left: 30,
+            bottom: 4,
+          ),
+          const _PositionedBubble(
+            size: 18,
+            left: 28,
+            bottom: 3,
+          ),
           Positioned(
             left: _bubbles.last.left - 1,
             bottom: _bubbles.last.bottom - 1,

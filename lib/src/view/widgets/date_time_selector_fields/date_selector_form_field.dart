@@ -33,10 +33,11 @@ class DateSelectorFormField extends StatefulWidget {
 }
 
 class _DateSelectorFormFieldState extends State<DateSelectorFormField> {
-  late final DateTimeEditingController _controller = widget.controller ?? DateTimeEditingController(
-    format: widget.dateFormat,
-    selectedDate: widget.initialDate,
-  );
+  late final DateTimeEditingController _controller = widget.controller ??
+      DateTimeEditingController(
+        format: widget.dateFormat,
+        selectedDate: widget.initialDate,
+      );
 
   late DateTime? _previousDate = widget.initialDate;
 

@@ -9,15 +9,15 @@ class QuestsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return ListView.separated(
-        shrinkWrap: true,
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final (questName, isRepeated, deadline) = items[index];
+    return ListView.separated(
+      shrinkWrap: true,
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final (questName, isRepeated, deadline) = items[index];
 
-          return QuestTile(questName: questName, isRepeated: isRepeated, deadline: deadline);
-        },
-        separatorBuilder: (context, index) => const Divider(),
-      );
+        return QuestTile(questName: questName, isRepeated: isRepeated, deadline: deadline);
+      },
+      separatorBuilder: (context, index) => const Divider(),
+    );
   }
 }

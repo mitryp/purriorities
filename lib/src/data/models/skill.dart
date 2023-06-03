@@ -47,9 +47,9 @@ class Skill with Prototype<Skill> implements Serializable {
 
   @override
   Skill copyWith({String? name}) => Skill(
-      name: name ?? this.name,
-      level: level,
-      levelExp: levelExp,
-      id: id,
-    );
+        name: name ?? this.name,
+        level: level,
+        levelExp: levelExp,
+        id: id,
+      );
 }

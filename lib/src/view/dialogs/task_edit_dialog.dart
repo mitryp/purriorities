@@ -1,84 +1,112 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import '../../data/models/quest.dart';
 import '../../data/models/quest_stage.dart';
 import '../../data/models/task.dart';
 import '../../data/util/notifier_wrapper.dart';
+import '../../data/util/validators.dart';
 import '../../typedefs.dart';
+import 'confirmation_dialog.dart';
 
-class TaskEditDialog extends StatefulWidget {
+class TaskEditDialog extends StatelessWidget {
   final NotifierWrapper<Quest> questNotifier;
-  final Task task;
+  final Task initialTask;
   final bool isEditing;
 
   const TaskEditDialog({
     required this.questNotifier,
-    required this.task,
+    required this.initialTask,
     required this.isEditing,
     super.key,
   });
 
-  @override
-  State<TaskEditDialog> createState() => _TaskEditDialogState();
-}
+  Task get _task => questNotifier.data.stages
+      .firstWhere((stage) => stage.id == initialTask.stageId)
+      .tasks
+      .firstWhere(
+        (task) => task.id == initialTask.id,
+        orElse: () => initialTask,
+      );
 
-class _TaskEditDialogState extends State<TaskEditDialog> {
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    final titleText = '${isEditing ? 'Редагувати' : 'Створити'} задачу';
+    const titleStyle = TextStyle(fontSize: 19);
+
+    return ConfirmationDialog(
       title: Row(
         children: [
           Expanded(
-            child: FittedBox(
-              child: Text('${widget.isEditing ? 'Редагувати' : 'Стаорити'} задачу'),
-            ),
+            child: Text(titleText, style: titleStyle),
           ),
-          const SizedBox(width: 8),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: _deleteTask,
-          )
+          if (isEditing) ...[
+            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => _deleteTask(context),
+            ),
+          ],
         ],
       ),
-      content: Form(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              initialValue: widget.task.name,
-              onChanged: _changeTaskName(),
-            )
-          ],
+      promptChildren: [
+        TextFormField(
+          autofocus: true,
+          initialValue: initialTask.name,
+          onChanged: _processTaskNameChange(context),
+          decoration: const InputDecoration(labelText: 'Зробити...'),
         ),
-      ),
-      actions: [
-        ElevatedButton.icon(
-          onPressed: () {},
-          icon: const Icon(Icons.check),
-          label: const Text('Готово'),
-        )
+        TextFormField(
+          initialValue: '${initialTask.minutes}',
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          onChanged: _processTaskMinutesChange,
+          keyboardType: TextInputType.number,
+          validator: all([notEmpty, isPositiveInteger]),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          decoration: InputDecoration(
+            labelText: 'Витратити на це...',
+            suffixText: Intl.plural(
+              initialTask.minutes,
+              one: 'хвилину',
+              two: 'хвилини',
+              few: 'хвилини',
+              many: 'хвилин',
+              other: 'хвилин',
+            ),
+          ),
+        ),
       ],
+      confirmLabel: const Text('Готово'),
     );
   }
 
-  Callback<String> _changeTaskName() {
+  Callback<String> _processTaskNameChange(BuildContext context) {
     return (name) {
-      _updateOrCreateTask(widget.task.copyWith(name: name));
+      _updateOrCreateTask(_task.copyWith(name: name));
       if (name.isEmpty) {
-        _deleteTask(willPop: false);
+        _deleteTask(context, userIntended: false);
       }
     };
+  }
+
+  void _processTaskMinutesChange(String minutes) {
+    final intMinutes = max(int.tryParse(minutes) ?? 1, 1);
+    final task = _task;
+
+    if (intMinutes == task.minutes) return;
+
+    _updateOrCreateTask(task.copyWith(minutes: intMinutes));
   }
 
   /// Replaces the task with the respective id and stageId with the given [task] in the quest if
   /// the [task] is present in the stage.
   /// If not, adds the task at the end of the stage task list.
   void _updateOrCreateTask(Task task) {
-    _withTasksInfo((quest, stages, stageIndex, tasks, taskIndex) {
+    _changeQuestWithTasksInfo((quest, stages, stageIndex, tasks, taskIndex) {
       final stage = stages[stageIndex];
 
       if (taskIndex != -1) {
@@ -94,8 +122,19 @@ class _TaskEditDialogState extends State<TaskEditDialog> {
     });
   }
 
-  void _deleteTask({bool willPop = true}) {
-    _withTasksInfo((quest, stages, stageIndex, tasks, taskIndex) {
+  Future<void> _deleteTask(BuildContext context, {bool userIntended = true}) async {
+    final isConfirmed = !userIntended ||
+        await showConfirmationDialog(
+          context: context,
+          prompt: 'Ви дійсно хочете видалити задачу "${initialTask.name}"?',
+          confirmLabelText: 'Так',
+          denyLabelText: 'Ні',
+        );
+
+    // ignore: use_build_context_synchronously
+    if (!context.mounted || !isConfirmed) return;
+
+    _changeQuestWithTasksInfo((quest, stages, stageIndex, tasks, taskIndex) {
       final stage = stages[stageIndex];
 
       tasks.removeAt(taskIndex);
@@ -106,12 +145,12 @@ class _TaskEditDialogState extends State<TaskEditDialog> {
       return quest.copyWith(stages: stages);
     });
 
-    if (willPop) {
+    if (userIntended) {
       context.pop();
     }
   }
 
-  void _withTasksInfo(
+  void _changeQuestWithTasksInfo(
     Quest Function(
       Quest quest,
       List<QuestStage> stages,
@@ -120,16 +159,15 @@ class _TaskEditDialogState extends State<TaskEditDialog> {
       int taskIndex,
     ) func,
   ) {
-    final wrapper = widget.questNotifier;
+    final wrapper = questNotifier;
     final quest = wrapper.data;
-    final task = widget.task;
 
     final stages = quest.stages.toList();
-    final stageIndex = stages.indexWhere((stage) => stage.id == task.stageId);
+    final stageIndex = stages.indexWhere((stage) => stage.id == initialTask.stageId);
     final stage = stages[stageIndex];
     final tasks = stage.tasks.toList();
     final taskIndex = tasks.indexWhere(
-      (t) => t.id == task.id && t.stageId == task.stageId,
+      (t) => t.id == initialTask.id && t.stageId == initialTask.stageId,
     );
 
     final newQuest = func(quest, stages, stageIndex, tasks, taskIndex);

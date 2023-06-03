@@ -18,8 +18,6 @@ class PrioritySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('${priorities.length}');
-
     return DropdownButtonFormField<QuestPriority>(
       value: selected,
       onChanged: _processChange,
@@ -31,7 +29,7 @@ class PrioritySelector extends StatelessWidget {
               child: PrioritySelectItem(priority: e, onSelected: () => onPriorityChanged(e)),
             ),
           )
-          .toList(),
+          .toList(growable: false),
     );
   }
 

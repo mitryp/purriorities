@@ -26,59 +26,67 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
 
   @override
   Widget build(BuildContext context) {
-    const topPadding = 0.0;
     const titleFontSize = 18.0;
     const leftTitlePadding = 16.0;
-    const scrollbarThickness = 1.5;
+    const bottomTitlePadding = 8.0;
+    const scrollbarThickness = 0.5;
+    const skillsBoxHeight = 100.0;
+    const emptySkillsBoxHeight = 75.0;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: topPadding),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Divider(),
-          const Padding(
-            padding: EdgeInsets.only(left: leftTitlePadding),
-            child: Text('Навички', style: TextStyle(fontSize: titleFontSize)),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(left: leftTitlePadding, bottom: bottomTitlePadding),
+          child: Text('Навички', style: TextStyle(fontSize: titleFontSize)),
+        ),
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: _skills.isNotEmpty ? skillsBoxHeight : emptySkillsBoxHeight,
           ),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 100),
-            child: Scrollbar(
-              interactive: false,
-              thickness: scrollbarThickness,
-              controller: _scrollController,
-              thumbVisibility: true,
-              child: ReorderableListView(
-                buildDefaultDragHandles: false,
-                // todo add skill to the quest
-                header: _AddSkillButton(onPressed: () => _processAddSkill(atStart: true)),
-                footer: _skills.isNotEmpty
-                    ? _AddSkillButton(onPressed: () => _processAddSkill(atStart: false))
-                    : null,
-                scrollController: _scrollController,
-                scrollDirection: Axis.horizontal,
-                onReorder: _processSkillsReorder,
-                children: _skills
-                    .asMap()
-                    .entries
-                    .map(
-                      (e) => _DraggableSkillTile(
-                        key: ValueKey('${e.value.id}'),
-                        index: e.key,
-                        skill: e.value,
-                      ),
-                    )
-                    .toList(growable: false),
-              ),
+          child: Scrollbar(
+            interactive: false,
+            thickness: scrollbarThickness,
+            controller: _scrollController,
+            child: ReorderableListView.builder(
+              buildDefaultDragHandles: false,
+              // todo add skill to the quest
+              header: _AddSkillButton(onPressed: () => _processAddSkill(atStart: true)),
+              footer: _skills.isNotEmpty
+                  ? _AddSkillButton(onPressed: () => _processAddSkill(atStart: false))
+                  : null,
+              scrollController: _scrollController,
+              scrollDirection: Axis.horizontal,
+              onReorder: _processSkillsReorder,
+              itemCount: _skills.isNotEmpty ? _skills.length : 1,
+              itemBuilder: (context, index) {
+                if (_skills.isEmpty) {
+                  return const Center(
+                    key: ValueKey('no-skills-text'),
+                    child: Text('Ви можете додати навички до квесту'),
+                  );
+                }
+
+                final skill = _skills[index];
+
+                return _DraggableSkillTile(
+                  index: index,
+                  skill: skill,
+                  useDelayedListener: true,
+                  key: ValueKey(skill.id),
+                );
+              },
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  void _processAddSkill({required bool atStart}) {}
+  void _processAddSkill({required bool atStart}) {
+    // todo
+  }
 
   void _processSkillsReorder(int oldIndex, int newIndex) {
     final wrapper = context.read<NotifierWrapper<Quest>>();
@@ -138,25 +146,34 @@ class _DraggableSkillTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final listenerConstructor = useDelayedListener
-        ? ReorderableDelayedDragStartListener.new
-        : ReorderableDragStartListener.new;
+    // final listenerConstructor = useDelayedListener
+    //     ? ReorderableDelayedDragStartListener.new
+    //     : ReorderableDragStartListener.new;
 
-    return listenerConstructor(
-      index: index,
-      child: Padding(
-        padding: _tilePadding,
-        child: Badge(
-          offset: _handleIconOffset,
-          backgroundColor: Colors.transparent,
-          alignment: Alignment.bottomCenter,
-          label: const Icon(Icons.drag_handle),
-          child: QuestSkillTile(
-            skill,
-            skillPriority: QuestSkillPriority.fromIndex(index),
-          ),
+    final child = Padding(
+      padding: _tilePadding,
+      child: Badge(
+        offset: _handleIconOffset,
+        backgroundColor: Colors.transparent,
+        alignment: Alignment.bottomCenter,
+        label: const Icon(Icons.drag_handle),
+        child: QuestSkillTile(
+          skill,
+          skillPriority: QuestSkillPriority.fromIndex(index),
         ),
       ),
+    );
+
+    if (useDelayedListener) {
+      return ReorderableDelayedDragStartListener(
+        index: index,
+        child: child,
+      );
+    }
+
+    return ReorderableDragStartListener(
+      index: index,
+      child: child,
     );
   }
 }

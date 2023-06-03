@@ -5,7 +5,7 @@ class _ScheduleTile extends StatelessWidget {
   final Callback<bool> onPlanerModeChanged;
   final bool isRepeating;
   final Callback<bool> onRepeatingModeChanged;
-  final EdgeInsetsGeometry childrenPadding;
+  final EdgeInsets childrenPadding;
   final Widget separator;
   final DateTimeEditingController deadlineDateController;
   final TimeEditingController deadlineTimeController;
@@ -31,12 +31,12 @@ class _ScheduleTile extends StatelessWidget {
         dividerColor: Colors.transparent,
       ),
       child: ExpansionTile(
-        title: const Text('Планування'),
+        title: Text(isPlanerUsed ? 'Заплановано' : 'Планування вимкнено'),
         trailing: Icon(isPlanerUsed ? Icons.check : Icons.close),
         onExpansionChanged: onPlanerModeChanged,
         initiallyExpanded: isPlanerUsed,
         maintainState: true,
-        childrenPadding: childrenPadding,
+        childrenPadding: childrenPadding.copyWith(bottom: 0),
         children: [
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -48,6 +48,7 @@ class _ScheduleTile extends StatelessWidget {
                 isRepeating: isRepeating,
                 separator: separator,
               ),
+              separator,
               _RepeatControls(
                 lastDateController: lastDateController,
                 isRepeating: isRepeating,
@@ -174,7 +175,7 @@ class _RepeatControls extends StatelessWidget {
     final quest = data.data;
 
     return ExpansionTile(
-      title: const Text('Повторення'),
+      title: Text(isRepeating ? 'Повторюється' : 'Не повторюється'),
       trailing: Icon(isRepeating ? Icons.check : Icons.close),
       initiallyExpanded: isRepeating,
       onExpansionChanged: onRepeatModeChanged,

@@ -9,6 +9,7 @@ class _QuestStagesEditor extends StatefulWidget {
 
 class _QuestStagesEditorState extends State<_QuestStagesEditor> {
   List<QuestStage> _stages = [];
+  int _stagesAdded = 0;
 
   @override
   void didChangeDependencies() {
@@ -20,7 +21,7 @@ class _QuestStagesEditorState extends State<_QuestStagesEditor> {
   Widget build(BuildContext context) {
     final wrapper = context.watch<NotifierWrapper<Quest>>();
 
-    return ReorderableListView(
+    return ReorderableListView.builder(
       shrinkWrap: true,
       buildDefaultDragHandles: false,
       physics: const NeverScrollableScrollPhysics(),
@@ -33,20 +34,19 @@ class _QuestStagesEditorState extends State<_QuestStagesEditor> {
         ),
         icon: const Icon(Icons.add),
         label: const Text('Додати етап'),
-        onPressed: () {},
+        onPressed: _processAddStage,
       ),
-      children: _stages
-          .asMap()
-          .entries
-          .map(
-            (e) => _QuestStageEntry(
-              e.value,
-              index: e.key,
-              wrapper: wrapper,
-              key: ValueKey(e.value.id),
-            ),
-          )
-          .toList(growable: false),
+      itemCount: _stages.length,
+      itemBuilder: (context, index) {
+        final stage = _stages[index];
+
+        return _QuestStageEntry(
+          stage,
+          index: index,
+          wrapper: wrapper,
+          key: ValueKey(stage.id),
+        );
+      },
     );
   }
 
@@ -60,6 +60,14 @@ class _QuestStagesEditorState extends State<_QuestStagesEditor> {
 
     final data = context.read<NotifierWrapper<Quest>>();
     data.data = data.data.copyWith(stages: _stages);
+  }
+
+  void _processAddStage() {
+    final wrapper = context.read<NotifierWrapper<Quest>>();
+    final quest = wrapper.data;
+
+    setState(() => _stages.add(QuestStage.empty(++_stagesAdded, _stages.length + 1)));
+    wrapper.data = quest.copyWith(stages: _stages);
   }
 }
 
@@ -103,11 +111,15 @@ class _QuestStageEntry extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: _wrapSpacing),
                 child: TextFormField(
                   initialValue: stage.name,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    isDense: true,
-                  ),
                   onChanged: (value) => _processStageNameChange(context, value),
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                    suffixIcon: IconButton(
+                      onPressed: () => _processDeleteStage(context),
+                      icon: const Icon(Icons.remove),
+                    ),
+                  ),
                 ),
               ),
               Wrap(
@@ -115,16 +127,12 @@ class _QuestStageEntry extends StatelessWidget {
                 runSpacing: _wrapSpacing,
                 alignment: WrapAlignment.start,
                 children: stage.tasks
-                    .map(
-                      (e) => _StageTaskEntry(
-                        e,
-                        wrapper: wrapper,
-                      ),
-                    )
+                    .map((e) => _StageTaskEntry(e, wrapper: wrapper))
                     .toList(growable: false),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: _wrapSpacing),
+                padding: const EdgeInsets.symmetric(vertical: _wrapSpacing)
+                    .copyWith(top: stage.tasks.isEmpty ? 0 : null),
                 child: _StageTaskTile(
                   padding: EdgeInsets.zero,
                   child: IconButton(
@@ -138,6 +146,26 @@ class _QuestStageEntry extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _processDeleteStage(BuildContext context) async {
+    final isConfirmed = await showConfirmationDialog(
+      context: context,
+      prompt: 'Ви справді хочете видалити етап "${stage.name}" з цього квесту? '
+          'Цю дію не можна скасувати.',
+      confirmLabelText: 'Так',
+      denyLabelText: 'Ні',
+    );
+
+    // ignore: use_build_context_synchronously
+    if (!context.mounted || !isConfirmed) return;
+
+    final wrapper = context.read<NotifierWrapper<Quest>>();
+    final quest = wrapper.data;
+
+    final stages = quest.stages.toList()..remove(stage);
+
+    wrapper.data = quest.copyWith(stages: stages);
   }
 
   void _processStageNameChange(BuildContext context, String value) {
@@ -156,14 +184,14 @@ class _QuestStageEntry extends StatelessWidget {
   }
 
   Future<void> _processAddTask(BuildContext context) async {
-    final taskId = stage.tasks.length;
+    final taskId = DateTime.now().millisecondsSinceEpoch;
     final stageId = stage.id;
 
     await showDialog(
       context: context,
       builder: (context) => TaskEditDialog(
         questNotifier: wrapper,
-        task: Task.empty(stageId: stageId, id: 'new-$taskId'),
+        initialTask: Task.empty(stageId: stageId, id: 'new-$taskId'),
         isEditing: false,
       ),
     );
@@ -204,18 +232,33 @@ class _StageTaskEntry extends StatelessWidget {
   final NotifierWrapper<Quest> wrapper;
   final Task task;
 
-  const _StageTaskEntry(this.task, {required this.wrapper, super.key});
+  const _StageTaskEntry(this.task, {required this.wrapper});
 
   @override
   Widget build(BuildContext context) {
     return _StageTaskTile(
       onTap: () => _showEditPopup(context),
-      child: Text(
-        task.name,
-        softWrap: true,
-        style: const TextStyle(
-          fontSize: 15,
-          overflow: TextOverflow.visible,
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: '${task.name} '),
+            WidgetSpan(
+              child: Transform.translate(
+                offset: const Offset(0, -7),
+                child: Text(
+                  formatMinutes(task.minutes),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+            ),
+          ],
+          style: const TextStyle(
+            fontSize: 15,
+            overflow: TextOverflow.visible,
+          ),
         ),
       ),
     );
@@ -226,7 +269,7 @@ class _StageTaskEntry extends StatelessWidget {
       context: context,
       builder: (context) => TaskEditDialog(
         questNotifier: wrapper,
-        task: task,
+        initialTask: task,
         isEditing: true,
       ),
     );

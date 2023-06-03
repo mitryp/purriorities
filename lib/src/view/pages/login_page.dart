@@ -133,7 +133,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     ];
   }
 
-  Future<void> _processLogin(BuildContext context) async{
+  Future<void> _processLogin(BuildContext context) async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     final data = context.read<LoginData>();

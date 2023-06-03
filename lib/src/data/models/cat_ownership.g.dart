@@ -12,8 +12,7 @@ CatOwnership _$CatOwnershipFromJson(Map<String, dynamic> json) => CatOwnership(
       catNameId: json['catNameId'] as String,
     );
 
-Map<String, dynamic> _$CatOwnershipToJson(CatOwnership instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$CatOwnershipToJson(CatOwnership instance) => <String, dynamic>{
       'level': instance.level,
       'acquireDate': instance.acquireDate.toIso8601String(),
       'catNameId': instance.catNameId,
