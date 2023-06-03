@@ -21,11 +21,13 @@ class ChatBubble extends StatelessWidget {
       child: Stack(
         children: [
           ..._bubbles
-              .map((bubble) => _PositionedBubble(
-                    size: bubble.size,
-                    left: bubble.left,
-                    bottom: bubble.bottom,
-                  ))
+              .map(
+                (bubble) => _PositionedBubble(
+                  size: bubble.size,
+                  left: bubble.left,
+                  bottom: bubble.bottom,
+                ),
+              )
               .toList(),
           const _PositionedBubble(
             size: 18,
