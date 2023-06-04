@@ -8,6 +8,9 @@ part 'cat.g.dart';
 /// A class representing a collectible cat.
 @JsonSerializable()
 class Cat implements Serializable {
+  /// An internal identifier of this cat.
+  final String nameId;
+
   /// A human-readable name of this cat.
   final String name;
 
@@ -18,6 +21,7 @@ class Cat implements Serializable {
   final CatRarity rarity;
 
   const Cat({
+    required this.nameId,
     required this.name,
     required this.description,
     required this.rarity,

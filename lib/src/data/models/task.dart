@@ -43,10 +43,11 @@ class Task with Prototype<Task> implements Serializable {
           runtimeType == other.runtimeType &&
           stageId == other.stageId &&
           id == other.id &&
-          name == other.name;
+          name == other.name &&
+          minutes == other.minutes;
 
   @override
-  int get hashCode => stageId.hashCode ^ id.hashCode ^ name.hashCode;
+  int get hashCode => stageId.hashCode ^ id.hashCode ^ name.hashCode ^ minutes.hashCode;
 
   @override
   Task copyWith({String? name, int? minutes}) => Task(
