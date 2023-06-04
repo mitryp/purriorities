@@ -50,59 +50,6 @@ class QuestEditPage extends StatelessWidget {
                 deadline: deadline,
                 limit: deadline,
                 interval: 1,
-
-                // todo remove
-                skills: const [
-                  Skill(
-                    name: 'Нявати',
-                    level: 100,
-                    levelExp: 10,
-                    levelCap: 100000,
-                    id: 0,
-                  ),
-                  Skill(
-                    name: 'Мурати',
-                    level: 70,
-                    levelExp: 90,
-                    levelCap: 10000,
-                    id: 1,
-                  ),
-                  Skill(
-                    name: 'Кицяти',
-                    level: 80,
-                    levelExp: 20,
-                    levelCap: 8000,
-                    id: 2,
-                  ),
-                  Skill(
-                    name: 'Перегортатися',
-                    level: 50,
-                    levelExp: 25,
-                    levelCap: 5000,
-                    id: 3,
-                  ),
-                ],
-                stages: [
-                  const QuestStage(
-                    id: '0',
-                    name: 'Етап 1',
-                    tasks: [
-                      Task(stageId: '0', id: '0', name: 'Кицяти 5 хвилин', minutes: 5),
-                      Task(stageId: '0', id: '1', name: 'Перегортатися', minutes: 20),
-                      Task(stageId: '0', id: '2', name: 'Мурати весь вечір', minutes: 125),
-                      Task(stageId: '0', id: '3', name: 'Нявати щасливо з Катрусею', minutes: 300),
-                      Task(stageId: '0', id: '4', name: 'с:', minutes: 1),
-                    ],
-                  ),
-                  const QuestStage(
-                    id: '1',
-                    name: 'Етап 2',
-                    tasks: [
-                      Task(stageId: '1', id: '0', name: 'Цьомати', minutes: 300),
-                      Task(stageId: '1', id: '1', name: ';3', minutes: 1),
-                    ],
-                  ),
-                ],
               ),
         );
       },
