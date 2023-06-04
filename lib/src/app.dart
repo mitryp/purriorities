@@ -1,9 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import 'common/enums/app_route.dart';
 import 'data/main_navigation_data.dart';
 import 'data/models/quest.dart';
+import 'services/http/client.dart';
 import 'view/pages/login_page.dart';
 import 'view/pages/quest_edit_page/quest_edit_page.dart';
 import 'view/pages/quests_page.dart';
@@ -52,11 +55,18 @@ class PurrioritiesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: darkTheme,
-      //
-      routerConfig: _router,
+    return MultiProvider(
+      providers: [
+        Provider<Dio>(
+          create: (context) => createHttpClient(),
+        ),
+      ],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: darkTheme,
+        //
+        routerConfig: _router,
+      ),
     );
   }
 }

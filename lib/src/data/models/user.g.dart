@@ -9,7 +9,6 @@ part of 'user.dart';
 User _$UserFromJson(Map<String, dynamic> json) => User(
       nickname: json['nickname'] as String,
       email: json['email'] as String,
-      joinDate: DateTime.parse(json['joinDate'] as String),
       locale: json['locale'] as String,
       timezone: json['timezone'] as String,
       level: json['level'] as int,

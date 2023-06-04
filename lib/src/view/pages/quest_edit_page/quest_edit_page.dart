@@ -21,7 +21,7 @@ import '../../theme.dart';
 import '../../widgets/date_time_selector_fields/date_selector_form_field.dart';
 import '../../widgets/date_time_selector_fields/datetime_editing_controller.dart';
 import '../../widgets/date_time_selector_fields/time_selector_form_field.dart';
-import '../../widgets/error_snackbar.dart';
+import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
 import '../../widgets/priority_selector.dart';

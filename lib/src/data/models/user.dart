@@ -15,10 +15,6 @@ class User extends Serializable with Prototype<User> {
   /// An email of this user.
   final String email;
 
-  /// A date at which this user joined the service.
-  @JsonKey(includeToJson: false)
-  final DateTime joinDate;
-
   /// A localization set for this user.
   final String locale;
 
@@ -57,7 +53,6 @@ class User extends Serializable with Prototype<User> {
   const User({
     required this.nickname,
     required this.email,
-    required this.joinDate,
     required this.locale,
     required this.timezone,
     required this.level,
@@ -67,6 +62,18 @@ class User extends Serializable with Prototype<User> {
     required this.catnip,
     required this.trust,
   });
+
+  const User.register({
+    required this.nickname,
+    required this.email,
+    required this.locale,
+    required this.timezone,
+  })  : level = 0,
+        levelExp = 0,
+        levelCap = 0,
+        feed = 0,
+        catnip = 0,
+        trust = 0;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
@@ -80,7 +87,6 @@ class User extends Serializable with Prototype<User> {
           runtimeType == other.runtimeType &&
           nickname == other.nickname &&
           email == other.email &&
-          joinDate == other.joinDate &&
           locale == other.locale &&
           timezone == other.timezone &&
           level == other.level &&
@@ -94,7 +100,6 @@ class User extends Serializable with Prototype<User> {
   int get hashCode =>
       nickname.hashCode ^
       email.hashCode ^
-      joinDate.hashCode ^
       locale.hashCode ^
       timezone.hashCode ^
       level.hashCode ^
@@ -116,7 +121,6 @@ class User extends Serializable with Prototype<User> {
       User(
         nickname: nickname ?? this.nickname,
         email: email ?? this.email,
-        joinDate: joinDate,
         locale: locale ?? this.locale,
         timezone: timezone ?? this.timezone,
         level: level,

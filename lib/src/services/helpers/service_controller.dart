@@ -1,12 +1,13 @@
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+
 import 'status_code_predicates.dart';
 
 import 'exceptions.dart';
 
-typedef ControllerLogic<T> = T Function(http.Response response);
+typedef ControllerLogic<T> = T Function(Response response);
 
 Future<T> httpServiceController<T>(
-  http.Response response,
+  Response response,
   ControllerLogic<T> successLogic, [
   ControllerLogic<T>? unsuccessfulLogic,
 ]) async {
@@ -19,5 +20,5 @@ Future<T> httpServiceController<T>(
   if (unsuccessfulLogic != null) {
     return unsuccessfulLogic(res);
   }
-  throw ResourceNotFetchedException(res.reasonPhrase);
+  throw ResourceNotFetchedException(res.statusMessage);
 }
