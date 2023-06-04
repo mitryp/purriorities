@@ -9,6 +9,6 @@ part of 'cat_ownership.dart';
 CatOwnership _$CatOwnershipFromJson(Map<String, dynamic> json) => CatOwnership(
       level: json['level'] as int,
       catNameId: json['catNameId'] as String,
-      isAway: json['isAway'] as bool,
       xpBoost: (json['xpBoost'] as num).toDouble(),
+      price: json['price'] as int?,
     );
