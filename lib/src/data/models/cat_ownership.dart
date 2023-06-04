@@ -14,8 +14,11 @@ class CatOwnership {
   /// It is a string of the following look: `strawberry_cat` etc.
   final String catNameId;
 
+  /// A price the user has to pay to return this cat.
+  final int? price;
+
   /// Whether an owned cat with this [catNameId] is away.
-  final bool isAway;
+  bool get isAway => price != null;
 
   /// An percent xp boost.
   final double xpBoost;
@@ -23,8 +26,8 @@ class CatOwnership {
   const CatOwnership({
     required this.level,
     required this.catNameId,
-    required this.isAway,
     required this.xpBoost,
+    this.price,
   });
 
   factory CatOwnership.fromJson(Map<String, dynamic> json) => _$CatOwnershipFromJson(json);

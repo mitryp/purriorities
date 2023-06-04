@@ -8,12 +8,12 @@ part 'quest_category.g.dart';
 
 /// A class representing a user-defined category of [Quest]s.
 @JsonSerializable()
-class QuestCategory with Prototype<QuestCategory> implements Serializable {
+class QuestCategory extends Serializable with Prototype<QuestCategory> {
   /// A user-defined name of this category.
   final String name;
 
   /// An id of this category.
-  final int id;
+  final String id;
 
   const QuestCategory({
     required this.name,
@@ -21,13 +21,16 @@ class QuestCategory with Prototype<QuestCategory> implements Serializable {
   });
 
   const QuestCategory.empty()
-      : id = 0,
-        name = 'Без категорії';
+      : id = '',
+        name = '';
 
   factory QuestCategory.fromJson(Map<String, dynamic> json) => _$QuestCategoryFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$QuestCategoryToJson(this);
+
+  @override
+  Set<String> get excludeCreateKeys => {'id'};
 
   @override
   bool operator ==(Object other) =>

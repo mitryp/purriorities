@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../enums/cat_rarity.dart';
-import 'abs/serializable.dart';
 
 part 'cat.g.dart';
 
@@ -34,10 +33,11 @@ class Cat {
       identical(this, other) ||
       other is Cat &&
           runtimeType == other.runtimeType &&
+          nameId == other.nameId &&
           name == other.name &&
           description == other.description &&
           rarity == other.rarity;
 
   @override
-  int get hashCode => name.hashCode ^ description.hashCode ^ rarity.hashCode;
+  int get hashCode => nameId.hashCode ^ name.hashCode ^ description.hashCode ^ rarity.hashCode;
 }

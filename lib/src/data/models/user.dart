@@ -1,17 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'abs/serializable.dart';
 import 'abs/prototype.dart';
-import 'cat_ownership.dart';
+import 'abs/serializable.dart';
 import 'punishments.dart';
-import 'quest_category.dart';
-import 'skill.dart';
 
 part 'user.g.dart';
 
 /// A class representing the current user of the application.
 @JsonSerializable()
-class User with Prototype<User> implements Serializable {
+class User extends Serializable with Prototype<User> {
   /// A nickname of this user.
   final String nickname;
 

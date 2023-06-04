@@ -7,7 +7,7 @@ part 'task.g.dart';
 
 /// A class representing the task in a quest stage.
 @JsonSerializable()
-class Task with Prototype<Task> implements Serializable {
+class Task extends Serializable with Prototype<Task> {
   /// An id of the stage, which this task is bound to.
   @JsonKey(includeToJson: false)
   final String stageId;
@@ -36,6 +36,9 @@ class Task with Prototype<Task> implements Serializable {
 
   @override
   Map<String, dynamic> toJson() => _$TaskToJson(this);
+
+  @override
+  Set<String> get excludeCreateKeys => {'id'};
 
   @override
   bool operator ==(Object other) =>

@@ -9,7 +9,7 @@ part 'quest_stage.g.dart';
 
 /// A class representing a single stage of a [Quest].
 @JsonSerializable()
-class QuestStage with Prototype<QuestStage> implements Serializable {
+class QuestStage extends Serializable with Prototype<QuestStage> {
   /// An id of this quest stage.
   final String id;
 
@@ -35,6 +35,13 @@ class QuestStage with Prototype<QuestStage> implements Serializable {
 
   @override
   Map<String, dynamic> toJson() => _$QuestStageToJson(this);
+
+  @override
+  Set<String> get excludeCreateKeys => {'id'};
+
+  @override
+  Map<String, dynamic> toCreateJson() =>
+      super.toCreateJson()..['tasks'] = tasks.map((e) => e.toCreateJson()).toList(growable: false);
 
   @override
   bool operator ==(Object other) =>

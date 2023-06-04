@@ -7,7 +7,7 @@ part 'skill.g.dart';
 
 /// A class representing a user-defined skill with the information about its current [level].
 @JsonSerializable()
-class Skill with Prototype<Skill> implements Serializable {
+class Skill extends Serializable with Prototype<Skill> {
   /// A name of this skill, defined by the user during the skill creation.
   final String name;
 
@@ -24,7 +24,7 @@ class Skill with Prototype<Skill> implements Serializable {
   final int levelCap;
 
   /// An id of this skill.
-  final int id;
+  final String id;
 
   const Skill({
     required this.name,
@@ -35,6 +35,9 @@ class Skill with Prototype<Skill> implements Serializable {
   });
 
   factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
+
+  @override
+  Set<String> get excludeCreateKeys => {'id'};
 
   @override
   Map<String, dynamic> toJson() => _$SkillToJson(this);

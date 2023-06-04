@@ -10,15 +10,10 @@ Quest _$QuestFromJson(Map<String, dynamic> json) => Quest(
       id: json['id'] as int,
       name: json['name'] as String,
       priority: $enumDecode(_$QuestPriorityEnumMap, json['priority']),
-      deadline: json['deadline'] == null
-          ? null
-          : DateTime.parse(json['deadline'] as String),
-      limit: json['limit'] == null
-          ? null
-          : DateTime.parse(json['limit'] as String),
+      deadline: json['deadline'] == null ? null : DateTime.parse(json['deadline'] as String),
+      limit: json['limit'] == null ? null : DateTime.parse(json['limit'] as String),
       interval: json['interval'] as int?,
-      category:
-          QuestCategory.fromJson(json['category'] as Map<String, dynamic>),
+      category: QuestCategory.fromJson(json['category'] as Map<String, dynamic>),
       skills: (json['skills'] as List<dynamic>)
           .map((e) => Skill.fromJson(e as Map<String, dynamic>))
           .toList(),
