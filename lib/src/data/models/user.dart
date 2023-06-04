@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'abs/serializable.dart';
 import 'abs/prototype.dart';
+import 'punishments.dart';
 
 part 'user.g.dart';
 
@@ -102,6 +103,8 @@ class User with Prototype<User> implements Serializable {
     String? email,
     String? locale,
     String? timezone,
+    int? feed,
+    int? trust,
   }) =>
       User(
         id: id,
@@ -112,8 +115,18 @@ class User with Prototype<User> implements Serializable {
         timezone: timezone ?? this.timezone,
         level: level,
         levelExp: levelExp,
-        feed: feed,
+        feed: feed ?? this.feed,
         catnip: catnip,
-        trust: trust,
+        trust: trust ?? this.trust,
       );
+
+  /// Returns a copy of this user object after the given [punishment] applied.
+  User applyPunishment(PendingPunishment punishment) {
+    final trust =
+        this.trust - punishment.overdueQuests.fold<int>(0, (val, e) => val + e.totalTrustLost);
+    final feed = this.feed - punishment.runawayCats.fold<int>(0, (val, e) => val + e.feedLost);
+
+    // todo do something with the cat ownerships
+    return copyWith(trust: trust, feed: feed);
+  }
 }
