@@ -12,10 +12,16 @@ class Skill with Prototype<Skill> implements Serializable {
   final String name;
 
   /// A level of this skill.
+  @JsonKey(includeToJson: false)
   final int level;
 
   /// An experience points which the current user has gained on this [level].
+  @JsonKey(includeToJson: false)
   final int levelExp;
+
+  /// An experience points required to level up this skill.
+  @JsonKey(includeToJson: false)
+  final int levelCap;
 
   /// An id of this skill.
   final int id;
@@ -24,6 +30,7 @@ class Skill with Prototype<Skill> implements Serializable {
     required this.name,
     required this.level,
     required this.levelExp,
+    required this.levelCap,
     required this.id,
   });
 
@@ -40,16 +47,19 @@ class Skill with Prototype<Skill> implements Serializable {
           name == other.name &&
           level == other.level &&
           levelExp == other.levelExp &&
+          levelCap == other.levelCap &&
           id == other.id;
 
   @override
-  int get hashCode => name.hashCode ^ level.hashCode ^ levelExp.hashCode ^ id.hashCode;
+  int get hashCode =>
+      name.hashCode ^ level.hashCode ^ levelExp.hashCode ^ levelCap.hashCode ^ id.hashCode;
 
   @override
   Skill copyWith({String? name}) => Skill(
         name: name ?? this.name,
         level: level,
         levelExp: levelExp,
+        levelCap: levelCap,
         id: id,
       );
 }

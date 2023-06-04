@@ -2,16 +2,16 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'abs/serializable.dart';
 import 'abs/prototype.dart';
+import 'cat_ownership.dart';
 import 'punishments.dart';
+import 'quest_category.dart';
+import 'skill.dart';
 
 part 'user.g.dart';
 
 /// A class representing the current user of the application.
 @JsonSerializable()
 class User with Prototype<User> implements Serializable {
-  /// An id of this user.
-  final String id;
-
   /// A nickname of this user.
   final String nickname;
 
@@ -19,6 +19,7 @@ class User with Prototype<User> implements Serializable {
   final String email;
 
   /// A date at which this user joined the service.
+  @JsonKey(includeToJson: false)
   final DateTime joinDate;
 
   /// A localization set for this user.
@@ -29,26 +30,34 @@ class User with Prototype<User> implements Serializable {
 
   /// A current level of this user.
   /// Must be non-negative.
+  @JsonKey(includeToJson: false)
   final int level;
 
   /// An experience points which this user has gained on his [level].
   /// Must be non-negative.
+  @JsonKey(includeToJson: false)
   final int levelExp;
+
+  /// An amount of XP needed for the user to level up.
+  @JsonKey(includeToJson: false)
+  final int levelCap;
 
   /// An amount of cat food that this user has gained.
   /// Must be non-negative.
+  @JsonKey(includeToJson: false)
   final int feed;
 
   /// An amount of catnip that this user has gained.
   /// Must be non-negative.
+  @JsonKey(includeToJson: false)
   final int catnip;
 
   /// An amount of cats' trust that this user have.
   /// Must be non-negative.
+  @JsonKey(includeToJson: false)
   final int trust;
 
   const User({
-    required this.id,
     required this.nickname,
     required this.email,
     required this.joinDate,
@@ -56,6 +65,7 @@ class User with Prototype<User> implements Serializable {
     required this.timezone,
     required this.level,
     required this.levelExp,
+    required this.levelCap,
     required this.feed,
     required this.catnip,
     required this.trust,
@@ -71,7 +81,6 @@ class User with Prototype<User> implements Serializable {
       identical(this, other) ||
       other is User &&
           runtimeType == other.runtimeType &&
-          id == other.id &&
           nickname == other.nickname &&
           email == other.email &&
           joinDate == other.joinDate &&
@@ -79,13 +88,13 @@ class User with Prototype<User> implements Serializable {
           timezone == other.timezone &&
           level == other.level &&
           levelExp == other.levelExp &&
+          levelCap == other.levelCap &&
           feed == other.feed &&
           catnip == other.catnip &&
           trust == other.trust;
 
   @override
   int get hashCode =>
-      id.hashCode ^
       nickname.hashCode ^
       email.hashCode ^
       joinDate.hashCode ^
@@ -93,6 +102,7 @@ class User with Prototype<User> implements Serializable {
       timezone.hashCode ^
       level.hashCode ^
       levelExp.hashCode ^
+      levelCap.hashCode ^
       feed.hashCode ^
       catnip.hashCode ^
       trust.hashCode;
@@ -107,7 +117,6 @@ class User with Prototype<User> implements Serializable {
     int? trust,
   }) =>
       User(
-        id: id,
         nickname: nickname ?? this.nickname,
         email: email ?? this.email,
         joinDate: joinDate,
@@ -115,6 +124,7 @@ class User with Prototype<User> implements Serializable {
         timezone: timezone ?? this.timezone,
         level: level,
         levelExp: levelExp,
+        levelCap: levelCap,
         feed: feed ?? this.feed,
         catnip: catnip,
         trust: trust ?? this.trust,
@@ -126,7 +136,6 @@ class User with Prototype<User> implements Serializable {
         this.trust - punishment.overdueQuests.fold<int>(0, (val, e) => val + e.totalTrustLost);
     final feed = this.feed - punishment.runawayCats.fold<int>(0, (val, e) => val + e.feedLost);
 
-    // todo do something with the cat ownerships
     return copyWith(trust: trust, feed: feed);
   }
 }

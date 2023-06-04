@@ -9,6 +9,7 @@ part 'task.g.dart';
 @JsonSerializable()
 class Task with Prototype<Task> implements Serializable {
   /// An id of the stage, which this task is bound to.
+  @JsonKey(includeToJson: false)
   final String stageId;
 
   /// An id of this task.

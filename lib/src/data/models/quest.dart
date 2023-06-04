@@ -13,6 +13,7 @@ part 'quest.g.dart';
 @JsonSerializable()
 class Quest with Prototype<Quest> implements Serializable {
   /// An id of this quest.
+  @JsonKey(includeToJson: false)
   final int id;
 
   /// A name of this quest.
@@ -44,9 +45,11 @@ class Quest with Prototype<Quest> implements Serializable {
   final int? interval;
 
   /// A [QuestCategory] of this quest.
+  @JsonKey(toJson: _serializeQuestCategory)
   final QuestCategory category;
 
   /// A list of [Skill]s of connected to this quest;
+  @JsonKey(toJson: _serializeQuestSkills)
   final List<Skill> skills;
 
   /// A list of [QuestStage]s of this quest.
@@ -150,3 +153,8 @@ class Quest with Prototype<Quest> implements Serializable {
         interval: interval,
       );
 }
+
+int _serializeQuestCategory(QuestCategory category) => category.id;
+
+List<int> _serializeQuestSkills(List<Skill> skills) =>
+    skills.map((skill) => skill.id).toList(growable: false);

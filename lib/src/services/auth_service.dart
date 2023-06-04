@@ -2,7 +2,7 @@ import 'helpers/request.dart';
 import 'helpers/service_controller.dart';
 
 class AuthenticationService {
-  final baseRoute = 'http://localhost:5000/api';
+  final baseRoute = 'localhost:5000/api';
 
   //TODO change generic
   Future<dynamic> login() async {

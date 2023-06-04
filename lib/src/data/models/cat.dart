@@ -6,8 +6,8 @@ import 'abs/serializable.dart';
 part 'cat.g.dart';
 
 /// A class representing a collectible cat.
-@JsonSerializable()
-class Cat implements Serializable {
+@JsonSerializable(createToJson: false)
+class Cat {
   /// An internal identifier of this cat.
   final String nameId;
 
@@ -28,9 +28,6 @@ class Cat implements Serializable {
   });
 
   factory Cat.fromJson(Map<String, dynamic> json) => _$CatFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$CatToJson(this);
 
   @override
   bool operator ==(Object other) =>

@@ -5,28 +5,29 @@ import 'abs/serializable.dart';
 part 'cat_ownership.g.dart';
 
 /// A class representing the cat ownership of the current user.
-@JsonSerializable()
-class CatOwnership implements Serializable {
+@JsonSerializable(createToJson: false)
+class CatOwnership {
   /// A level of the cat with the [catNameId] name-id owned by the current user.
   final int level;
-
-  /// A date when the cat with the [catNameId] name-id was acquired bu the current user.
-  final DateTime acquireDate;
 
   /// A name-id of this cat.
   /// It is a string of the following look: `strawberry_cat` etc.
   final String catNameId;
 
+  /// Whether an owned cat with this [catNameId] is away.
+  final bool isAway;
+
+  /// An percent xp boost.
+  final double xpBoost;
+
   const CatOwnership({
     required this.level,
-    required this.acquireDate,
     required this.catNameId,
+    required this.isAway,
+    required this.xpBoost,
   });
 
   factory CatOwnership.fromJson(Map<String, dynamic> json) => _$CatOwnershipFromJson(json);
-
-  @override
-  Map<String, dynamic> toJson() => _$CatOwnershipToJson(this);
 
   @override
   bool operator ==(Object other) =>
@@ -34,9 +35,9 @@ class CatOwnership implements Serializable {
       other is CatOwnership &&
           runtimeType == other.runtimeType &&
           level == other.level &&
-          acquireDate == other.acquireDate &&
-          catNameId == other.catNameId;
+          catNameId == other.catNameId &&
+          xpBoost == other.xpBoost;
 
   @override
-  int get hashCode => level.hashCode ^ acquireDate.hashCode ^ catNameId.hashCode;
+  int get hashCode => level.hashCode ^ catNameId.hashCode ^ xpBoost.hashCode;
 }
