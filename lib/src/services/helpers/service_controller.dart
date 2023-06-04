@@ -10,8 +10,6 @@ Future<T> httpServiceController<T>(
   ControllerLogic<T> successLogic, [
   ControllerLogic<T>? unsuccessfulLogic,
 ]) async {
-  //final res = await applyResponseMiddleware(response);
-
   final res = response;
 
   if (hasSuccessCode(res)) {

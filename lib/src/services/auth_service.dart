@@ -1,7 +1,7 @@
 import 'helpers/request.dart';
 import 'helpers/service_controller.dart';
 
-abstract class AuthenticationService {
+class AuthenticationService {
   final baseRoute = 'http://localhost:5000/api';
 
   //TODO change generic
