@@ -6,7 +6,10 @@ import 'package:provider/provider.dart';
 import 'common/enums/app_route.dart';
 import 'data/main_navigation_data.dart';
 import 'data/models/quest.dart';
-import 'services/http/client.dart';
+import 'data/models/user.dart';
+import 'data/util/notifier_wrapper.dart';
+import 'services/http/auth_service.dart';
+import 'services/http/util/client.dart';
 import 'view/pages/login_page.dart';
 import 'view/pages/quest_edit_page/quest_edit_page.dart';
 import 'view/pages/quests_page.dart';
@@ -57,9 +60,11 @@ class PurrioritiesApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<Dio>(
-          create: (context) => createHttpClient(),
-        ),
+        Provider<Dio>(create: (_) => createHttpClient()),
+        ProxyProvider<Dio, AuthService>(update: (_, client, __) => AuthService(client)),
+        ChangeNotifierProvider<NotifierWrapper<User?>>(
+          create: (_) => NotifierWrapper(null),
+        )
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
