@@ -1,21 +1,23 @@
 import 'package:dio/dio.dart';
 
 import '../../../data/models/user.dart';
-import '../../../typedefs.dart';
 import '../util/fetch_result.dart';
 import 'fetch_service.dart';
 
-class UserFetchService extends ModifyingFetchService<User> {
+class UserFetchService extends FetchService<User> with ModifyFetchMixin<User> {
   const UserFetchService(Dio client)
       : super(
-          path: 'users',
+          path: 'users/me',
           client: client,
           fromJsonConverter: User.fromJson,
         );
 
-  Future<FetchResult<User>> me() async {
-    final res = client.get<JsonMap>('$path/me');
+  @override
+  Future<FetchResult<User>> getOne([covariant String primaryKey = '']) {
+    assert(primaryKey.isEmpty);
 
-    return defaultResponseTransform(res);
+    return super.getOne(primaryKey);
   }
+
+  Future<FetchResult<User>> me() async => getOne();
 }

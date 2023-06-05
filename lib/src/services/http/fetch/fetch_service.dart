@@ -22,31 +22,27 @@ abstract class FetchService<T> {
   const FetchService({required this.client, required this.path, required this.fromJsonConverter});
 
   /// Fetches a single resource with the given [primaryKey].
-  Future<FetchResult<T>> getSingle(Object primaryKey) =>
-      defaultResponseTransform(client.get<JsonMap>('$path/$primaryKey'));
+  Future<FetchResult<T>> getOne(Object primaryKey) =>
+      _defaultResponseTransform(client.get<JsonMap>('$path/$primaryKey'));
 
+  Future<FetchResult<T>> _defaultResponseTransform(Future<Response<JsonMap>> res) =>
+      FetchResult.transformResponse(res, fromJsonConverter);
+}
+
+mixin ReadManyFetchMixin<T> on FetchService<T> {
   // todo pagination
   /// Fetches a [PaginatedData] of [T] based on the [queryData].
-  Future<FetchResult<PaginatedData<T>>> getAll([dynamic queryData]) {
+  Future<FetchResult<PaginatedData<T>>> getMany([dynamic queryData]) {
     final res = client.get<JsonMap>(path);
 
     return FetchResult.transformResponse(
       res,
-      (json) => PaginatedData.fromJson<T>(json, fromJsonConverter),
+          (json) => PaginatedData.fromJson<T>(json, fromJsonConverter),
     );
   }
-
-  Future<FetchResult<T>> defaultResponseTransform(Future<Response<JsonMap>> res) =>
-      FetchResult.transformResponse(res, fromJsonConverter);
 }
 
-abstract class ModifyingFetchService<S extends Serializable> extends FetchService<S> {
-  const ModifyingFetchService({
-    required super.client,
-    required super.path,
-    required super.fromJsonConverter,
-  });
-
+mixin ModifyFetchMixin<S extends Serializable> on FetchService<S> {
   /// Posts a [serializable] json created with [Serializable.toCreateJson] method.
   /// Returns a created resource.
   Future<FetchResult<S>> create(S serializable) async {
@@ -55,7 +51,7 @@ abstract class ModifyingFetchService<S extends Serializable> extends FetchServic
       data: serializable.toCreateJson(),
     );
 
-    return defaultResponseTransform(res);
+    return _defaultResponseTransform(res);
   }
 
   /// Patches a [serializable] json created with [Serializable.toCreateJson] method.
@@ -69,6 +65,6 @@ abstract class ModifyingFetchService<S extends Serializable> extends FetchServic
     final patchJson = oldSerializable?.diff(serializable) ?? serializable.toJson();
     final res = client.patch<JsonMap>('$path/$primaryKey', data: patchJson);
 
-    return defaultResponseTransform(res);
+    return _defaultResponseTransform(res);
   }
 }
