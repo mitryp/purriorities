@@ -11,9 +11,9 @@ part 'quest.g.dart';
 
 /// A class representing a quest
 @JsonSerializable()
-class Quest with Prototype<Quest> implements Serializable {
+class Quest extends Serializable with Prototype<Quest> {
   /// An id of this quest.
-  final int id;
+  final String id;
 
   /// A name of this quest.
   final String name;
@@ -44,9 +44,12 @@ class Quest with Prototype<Quest> implements Serializable {
   final int? interval;
 
   /// A [QuestCategory] of this quest.
+  /// Is serialized as an int id
+  @JsonKey(toJson: _serializeQuestCategory)
   final QuestCategory category;
 
   /// A list of [Skill]s of connected to this quest;
+  @JsonKey(toJson: _serializeQuestSkills)
   final List<Skill> skills;
 
   /// A list of [QuestStage]s of this quest.
@@ -65,7 +68,7 @@ class Quest with Prototype<Quest> implements Serializable {
   });
 
   const Quest.empty()
-      : id = -1,
+      : id = '',
         name = '',
         priority = QuestPriority.regular,
         deadline = null,
@@ -79,6 +82,13 @@ class Quest with Prototype<Quest> implements Serializable {
 
   @override
   Map<String, dynamic> toJson() => _$QuestToJson(this);
+
+  @override
+  Set<String> get generatedIdentifiers => {'id'};
+
+  @override
+  Map<String, dynamic> toCreateJson() => super.toCreateJson()
+    ..['stages'] = stages.map((e) => e.toCreateJson()).toList(growable: false);
 
   @override
   bool operator ==(Object other) =>
@@ -150,3 +160,8 @@ class Quest with Prototype<Quest> implements Serializable {
         interval: interval,
       );
 }
+
+String _serializeQuestCategory(QuestCategory category) => category.id;
+
+List<String> _serializeQuestSkills(List<Skill> skills) =>
+    skills.map((skill) => skill.id).toList(growable: false);

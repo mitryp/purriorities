@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +8,11 @@ import 'package:provider/provider.dart';
 import '../../common/enums/app_route.dart';
 import '../../common/enums/sprite.dart';
 import '../../data/login_data.dart';
+import '../../data/util/notifier_wrapper.dart';
 import '../../data/util/validators.dart';
+import '../../services/http/auth_service.dart';
+import '../../services/synchronizer.dart';
+import '../../util/extensions/context_synchronizer.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';
 import '../widgets/layouts/layout_selector.dart';
@@ -22,8 +27,16 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => LoginData(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginData()),
+        ProxyProvider<Dio, AuthService>(
+          update: (_, value, __) => AuthService(value),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => NotifierWrapper<DioError?>(null, checkEquality: false),
+        )
+      ],
       child: LayoutSelector(
         mobileLayoutBuilder: (context) => const MobileLoginForm(),
         desktopLayoutBuilder: (context) => const Placeholder(),
@@ -41,19 +54,48 @@ class MobileLoginForm extends StatefulWidget {
 
 class _MobileLoginFormState extends State<MobileLoginForm> {
   final _formKey = GlobalKey<FormState>();
+  late final Synchronizer synchronizer = context.synchronizer();
+  bool _isRestoringSession = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreSession();
+  }
+
+  Future<void> _restoreSession() async {
+    setState(() => _isRestoringSession = true);
+    final user = await synchronizer.syncUser();
+    if (mounted) {
+      setState(() => _isRestoringSession = false);
+    }
+
+    if (user == null) return;
+
+    _redirectToApp();
+  }
+
+  void _redirectToApp() {
+    if (!mounted) return;
+    context.go(AppRoute.dashboard.route);
+  }
 
   @override
   Widget build(BuildContext context) {
     return MobileLayout.child(
       minimumSafeArea: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-      child: FormLayout(
-        leading: _buildLeading(),
-        form: Form(
-          key: _formKey,
-          child: _buildFormContent(context),
-        ),
-        trailing: _buildTrailing(context),
-      ),
+      child: !_isRestoringSession
+          ? FormLayout(
+              leading: _buildLeading(),
+              form: Form(
+                key: _formKey,
+                child: _buildFormContent(context),
+              ),
+              trailing: _buildTrailing(context),
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 
@@ -85,26 +127,37 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
   }
 
   Widget _buildFormContent(BuildContext context) {
-    // final data = Provider.of<LoginData>(context, [listen: true]);
-    final data = context.watch<LoginData>();
+    final loginData = context.watch<LoginData>();
+    final error = context.watch<NotifierWrapper<DioError?>>().data;
+    final errorMessage = (error?.response?.data as Map<String, dynamic>?)?['message'];
+    final errorColor = Theme.of(context).colorScheme.error;
 
     return Column(
       children: [
         TextFormField(
-          initialValue: data.email,
+          initialValue: loginData.email,
           validator: isEmail,
-          onChanged: (newEmail) => data.email = newEmail,
+          onChanged: (newEmail) => loginData.email = newEmail,
           decoration: const InputDecoration(labelText: 'Email'),
           autovalidateMode: AutovalidateMode.onUserInteraction,
+          keyboardType: TextInputType.emailAddress,
         ),
         TextFormField(
           obscureText: true,
-          initialValue: data.password,
+          initialValue: loginData.password,
           validator: isLongerOrEqual(8),
-          onChanged: (newPassword) => data.password = newPassword,
+          onChanged: (newPassword) => loginData.password = newPassword,
           decoration: const InputDecoration(labelText: 'Пароль'),
           autovalidateMode: AutovalidateMode.onUserInteraction,
         ),
+        if (errorMessage != null)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              errorMessage,
+              style: TextStyle(color: errorColor),
+            ),
+          ),
       ],
     );
   }
@@ -136,11 +189,24 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
   Future<void> _processLogin(BuildContext context) async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
+    final authService = context.read<AuthService>();
     final data = context.read<LoginData>();
-    // loginService.login(data);
-    log('${data.email}, ${data.password}');
 
-    //await Future.delayed(const Duration(seconds: 2));
+    final res = await authService.login(email: data.email, password: data.password);
+
+    log('$res, ${res.error?.response}');
+
+    if (!mounted) return;
+    if (!res.isSuccessful) {
+      context.read<NotifierWrapper<DioError?>>().data = res.error;
+      return;
+    }
+
+    final user = await synchronizer.syncUser();
+    assert(user != null);
+
+    log('redirecting to app; user ${user?.email}', name: 'LoginPage');
+    _redirectToApp();
   }
 
   void _processRegisterRedirect(BuildContext context) {
@@ -148,10 +214,5 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     final data = context.read<LoginData>();
 
     context.push(AppRoute.register.route, extra: data.email);
-
-    // todo
-    // Navigator.of(context).push(MaterialPageRoute(
-    //   builder: (context) => RegisterPage(email: data.email),
-    // ));
   }
 }

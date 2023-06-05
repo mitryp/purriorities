@@ -8,7 +8,7 @@ part of 'quest_category.dart';
 
 QuestCategory _$QuestCategoryFromJson(Map<String, dynamic> json) => QuestCategory(
       name: json['name'] as String,
-      id: json['id'] as int,
+      id: json['id'] as String,
     );
 
 Map<String, dynamic> _$QuestCategoryToJson(QuestCategory instance) => <String, dynamic>{

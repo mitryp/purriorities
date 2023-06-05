@@ -8,12 +8,7 @@ part of 'cat_ownership.dart';
 
 CatOwnership _$CatOwnershipFromJson(Map<String, dynamic> json) => CatOwnership(
       level: json['level'] as int,
-      acquireDate: DateTime.parse(json['acquireDate'] as String),
       catNameId: json['catNameId'] as String,
+      xpBoost: (json['xpBoost'] as num).toDouble(),
+      price: json['price'] as int?,
     );
-
-Map<String, dynamic> _$CatOwnershipToJson(CatOwnership instance) => <String, dynamic>{
-      'level': instance.level,
-      'acquireDate': instance.acquireDate.toIso8601String(),
-      'catNameId': instance.catNameId,
-    };

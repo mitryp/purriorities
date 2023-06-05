@@ -7,8 +7,9 @@ part 'task.g.dart';
 
 /// A class representing the task in a quest stage.
 @JsonSerializable()
-class Task with Prototype<Task> implements Serializable {
+class Task extends Serializable with Prototype<Task> {
   /// An id of the stage, which this task is bound to.
+  @JsonKey(includeToJson: false)
   final String stageId;
 
   /// An id of this task.
@@ -37,16 +38,20 @@ class Task with Prototype<Task> implements Serializable {
   Map<String, dynamic> toJson() => _$TaskToJson(this);
 
   @override
+  Set<String> get generatedIdentifiers => {'id'};
+
+  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Task &&
           runtimeType == other.runtimeType &&
           stageId == other.stageId &&
           id == other.id &&
-          name == other.name;
+          name == other.name &&
+          minutes == other.minutes;
 
   @override
-  int get hashCode => stageId.hashCode ^ id.hashCode ^ name.hashCode;
+  int get hashCode => stageId.hashCode ^ id.hashCode ^ name.hashCode ^ minutes.hashCode;
 
   @override
   Task copyWith({String? name, int? minutes}) => Task(

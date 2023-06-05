@@ -1,13 +1,21 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/enums/sprite.dart';
+import '../../data/models/user.dart';
 import '../../data/util/validators.dart';
+import '../../services/http/auth_service.dart';
 import '../../util/sprite_scaling.dart';
+import '../widgets/error_snack_bar.dart';
 import '../widgets/layouts/form_layout.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
+import '../widgets/progress_indicator_button.dart';
 import '../widgets/sprite_avatar.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -67,7 +75,15 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
         trailing: [
           Padding(
             padding: const EdgeInsets.only(top: 24, bottom: 72),
-            child: ElevatedButton(onPressed: _processRegister, child: const Text('Продовжити')),
+            child: ProgressIndicatorButton(
+              onPressed: _processRegister,
+              buttonBuilder: ({required child, required onPressed, style}) => ElevatedButton(
+                onPressed: onPressed,
+                style: style,
+                child: child,
+              ),
+              child: const Text('Продовжити'),
+            ),
           ),
         ],
       ),
@@ -100,6 +116,7 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
             autofocus: i == 0,
             controller: formFields[i].$2,
             decoration: InputDecoration(labelText: formFields[i].$1),
+            obscureText: i >= 2,
             validator: formFields[i].$3,
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
@@ -115,14 +132,46 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
     return 'Паролі повинні співпадати';
   }
 
-  void _processRegister() {
+  Future<void> _processRegister() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    // todo
-    final username = _usernameController.text;
-    final email = _emailController.text;
+    final authService = context.read<AuthService>();
+
+    final nickname = _usernameController.text.trim();
+    final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    log('Registering user $username, $email, $password');
+    final user = User.register(
+      nickname: nickname,
+      email: email,
+      locale: Intl.systemLocale,
+      timezone: DateTime.now().timeZoneName,
+    );
+
+    final res = await authService.register(user, password);
+
+    if (!mounted) return;
+
+    if (res.isSuccessful) {
+      showErrorSnackBar(
+        context: context,
+        content: ListTile(
+          tileColor: Theme.of(context).cardColor,
+          title: const Text('Ви успішно зареєструвалися!'),
+          subtitle: const Text('Все, що залишилось - увійти в акаунт'),
+        ),
+      );
+      context.pop();
+
+      return;
+    }
+
+    showErrorSnackBar(
+      context: context,
+      content: ErrorSnackBarContent(
+        titleText: 'Під час реєстрації сталася помилка',
+        subtitleText: 'Повідомлення від сервера: ${res.errorMessage}',
+      ),
+    );
   }
 }

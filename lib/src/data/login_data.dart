@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 
 class LoginData with ChangeNotifier {
@@ -11,7 +9,6 @@ class LoginData with ChangeNotifier {
 
   set email(String value) {
     _email = value;
-    log('new email is $value');
     notifyListeners();
   }
 
@@ -19,7 +16,6 @@ class LoginData with ChangeNotifier {
 
   set password(String value) {
     _password = value;
-    log('new password is $value');
     notifyListeners();
   }
 }

@@ -7,7 +7,7 @@ part of 'quest.dart';
 // **************************************************************************
 
 Quest _$QuestFromJson(Map<String, dynamic> json) => Quest(
-      id: json['id'] as int,
+      id: json['id'] as String,
       name: json['name'] as String,
       priority: $enumDecode(_$QuestPriorityEnumMap, json['priority']),
       deadline: json['deadline'] == null ? null : DateTime.parse(json['deadline'] as String),
@@ -29,8 +29,8 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'deadline': instance.deadline?.toIso8601String(),
       'limit': instance.limit?.toIso8601String(),
       'interval': instance.interval,
-      'category': instance.category,
-      'skills': instance.skills,
+      'category': _serializeQuestCategory(instance.category),
+      'skills': _serializeQuestSkills(instance.skills),
       'stages': instance.stages,
     };
 
