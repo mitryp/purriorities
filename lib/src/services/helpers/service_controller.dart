@@ -5,10 +5,11 @@ import 'exceptions.dart';
 
 Future<T> httpServiceController<TData, T>(
   Future<Response<TData>> response,
-  ResultMapper<TData, T> successMapper, [
+  ResultMapper<TData, T> successMapper, {
   AnyResultMapper<TData, T>? failureMapper,
-]) async {
-  final res = await FetchResult.fromResponse(response);
+  TData? orElseIfNotFailed,
+}) async {
+  final res = await FetchResult.fromResponse<TData>(response, orElseIfNotFailed);
 
   if (res.isSuccessful) {
     return res.map(successMapper);
@@ -23,10 +24,11 @@ Future<T> httpServiceController<TData, T>(
 
 Future<FetchResult<T>> httpServiceControllerRes<TData, T>(
   Future<Response<TData>> response,
-  ResultMapper<TData, T> mapper, [
+  ResultMapper<TData, T> mapper, {
   AnyResultMapper<TData, T>? failureMapper,
-]) async {
-  final res = await FetchResult.fromResponse(response);
+  TData? orElseIfNotFailed,
+}) async {
+  final res = await FetchResult.fromResponse(response, orElseIfNotFailed);
 
   if (!res.isSuccessful && failureMapper != null) {
     return FetchResult.success(res.mapAny(failureMapper));

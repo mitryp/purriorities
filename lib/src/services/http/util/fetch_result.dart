@@ -19,14 +19,19 @@ class FetchResult<T> {
         _result = null;
 
   static Future<FetchResult<T>> fromResponse<T>(
-    FutureOr<Response<T>> resFuture,
-  ) async {
+    FutureOr<Response<T>> resFuture, [
+    T? orElseIfNotFailed,
+  ]) async {
     try {
       final res = await resFuture;
       final data = res.data;
 
       if (data != null) {
         return FetchResult<T>.success(data);
+      }
+
+      if (orElseIfNotFailed != null) {
+        return FetchResult<T>.success(orElseIfNotFailed);
       }
 
       return FetchResult<T>.failure();
@@ -69,9 +74,17 @@ class FetchResult<T> {
   }
 
   R mapAny<R>(AnyResultMapper<T, R> mapper) => mapper(_result, error);
-}
 
-// enum FetchResultStatus {
-//   success,
-//   failure;
-// }
+  String? get errorMessage => (error?.response?.data as Map<String, dynamic>?)?['message'];
+
+  @override
+  String toString() {
+    final str = '$runtimeType';
+
+    if (isSuccessful) {
+      return '$str.success($_result)';
+    }
+
+    return '$str.failure(${errorMessage ?? error?.message})';
+  }
+}

@@ -23,13 +23,13 @@ class AuthService {
       },
     );
 
-    return httpServiceControllerRes(response, (res) => true);
+    return httpServiceControllerRes(response, (res) => true, orElseIfNotFailed: true);
   }
 
   Future<FetchResult<bool>> logout() async {
     final response = client.delete<void>('auth/logout');
 
-    return httpServiceControllerRes(response, (res) => true);
+    return httpServiceControllerRes(response, (res) => true, orElseIfNotFailed: true);
   }
 
   Future<FetchResult<bool>> register(User newUser, String password) async {
@@ -40,6 +40,6 @@ class AuthService {
       data: data,
     );
 
-    return httpServiceControllerRes(response, (res) => true);
+    return httpServiceControllerRes(response, (res) => true, orElseIfNotFailed: true);
   }
 }
