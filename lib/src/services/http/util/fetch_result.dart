@@ -40,6 +40,16 @@ class FetchResult<T> {
     }
   }
 
+  static Future<FetchResult<R>> transformResponse<T, R>(
+    FutureOr<Response<T>> resFuture,
+    ResultMapper<T, R> transform, {
+    T? orElseIfNotFailed,
+  }) async {
+    final res = await fromResponse(resFuture);
+
+    return res.transform(transform);
+  }
+
   T result() {
     final res = _result;
 

@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 
 import '../../../data/models/abs/serializable.dart';
 import '../../../data/util/paginated_data.dart';
+import '../../../data/util/serializable_difference.dart';
 import '../../../typedefs.dart';
 import '../../../util/extensions/serializable_difference_extension.dart';
-import '../util/client.dart';
 import '../util/fetch_result.dart';
 
 typedef FromJsonConverter<T> = T Function(Map<String, dynamic> json);
@@ -22,21 +22,22 @@ abstract class FetchService<T> {
   const FetchService({required this.client, required this.path, required this.fromJsonConverter});
 
   /// Fetches a single resource with the given [primaryKey].
-  Future<FetchResult<T>> getSingle(Object primaryKey) async {
-    final res = client.get<JsonMap>('$path/$primaryKey');
-    final result = await FetchResult.fromResponse(res);
-
-    return result.transform(fromJsonConverter);
-  }
+  Future<FetchResult<T>> getSingle(Object primaryKey) =>
+      defaultResponseTransform(client.get<JsonMap>('$path/$primaryKey'));
 
   // todo pagination
-  /// Fetches a [PaginatedData] of [T] based on the [paginationData].
-  Future<FetchResult<PaginatedData<T>>> getAll([dynamic paginationData]) async {
+  /// Fetches a [PaginatedData] of [T] based on the [queryData].
+  Future<FetchResult<PaginatedData<T>>> getAll([dynamic queryData]) {
     final res = client.get<JsonMap>(path);
-    final result = await FetchResult.fromResponse(res);
 
-    return result.transform((json) => PaginatedData.fromJson<T>(json, fromJsonConverter));
+    return FetchResult.transformResponse(
+      res,
+      (json) => PaginatedData.fromJson<T>(json, fromJsonConverter),
+    );
   }
+
+  Future<FetchResult<T>> defaultResponseTransform(Future<Response<JsonMap>> res) =>
+      FetchResult.transformResponse(res, fromJsonConverter);
 }
 
 abstract class ModifyingFetchService<S extends Serializable> extends FetchService<S> {
@@ -53,9 +54,8 @@ abstract class ModifyingFetchService<S extends Serializable> extends FetchServic
       path,
       data: serializable.toCreateJson(),
     );
-    final result = await FetchResult.fromResponse(res);
 
-    return result.transform(fromJsonConverter);
+    return defaultResponseTransform(res);
   }
 
   /// Patches a [serializable] json created with [Serializable.toCreateJson] method.
@@ -68,8 +68,7 @@ abstract class ModifyingFetchService<S extends Serializable> extends FetchServic
   Future<FetchResult<S>> update(Object primaryKey, S serializable, {S? oldSerializable}) async {
     final patchJson = oldSerializable?.diff(serializable) ?? serializable.toJson();
     final res = client.patch<JsonMap>('$path/$primaryKey', data: patchJson);
-    final result = await FetchResult.fromResponse(res);
 
-    return result.transform(fromJsonConverter);
+    return defaultResponseTransform(res);
   }
 }

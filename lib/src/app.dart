@@ -9,7 +9,9 @@ import 'data/models/quest.dart';
 import 'data/models/user.dart';
 import 'data/util/notifier_wrapper.dart';
 import 'services/http/auth_service.dart';
+import 'services/http/fetch/user_fetch_service.dart';
 import 'services/http/util/client.dart';
+import 'services/synchronizer.dart';
 import 'view/pages/login_page.dart';
 import 'view/pages/quest_edit_page/quest_edit_page.dart';
 import 'view/pages/quests_page.dart';
@@ -18,7 +20,7 @@ import 'view/theme.dart';
 import 'view/widgets/main_navigation.dart';
 
 final _router = GoRouter(
-  initialLocation: AppRoute.dashboard.route,
+  initialLocation: AppRoute.login.route,
   routes: [
     ShellRoute(
       builder: (context, state, child) => MainNavigation(child: child),
@@ -61,10 +63,13 @@ class PurrioritiesApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<Dio>(create: (_) => createHttpClient()),
-        ProxyProvider<Dio, AuthService>(update: (_, client, __) => AuthService(client)),
-        ChangeNotifierProvider<NotifierWrapper<User?>>(
-          create: (_) => NotifierWrapper(null),
-        )
+        ChangeNotifierProvider<NotifierWrapper<User?>>(create: (_) => NotifierWrapper(null)),
+        ProxyProvider<Dio, AuthService>(
+          update: (_, client, __) => AuthService(client),
+        ),
+        ProxyProvider<Dio, Synchronizer>(
+          update: (context, client, __) => Synchronizer(context, UserFetchService(client)),
+        ),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

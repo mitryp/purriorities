@@ -11,6 +11,8 @@ import '../../data/login_data.dart';
 import '../../data/util/notifier_wrapper.dart';
 import '../../data/util/validators.dart';
 import '../../services/http/auth_service.dart';
+import '../../services/synchronizer.dart';
+import '../../util/extensions/context_synchronizer.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';
 import '../widgets/layouts/layout_selector.dart';
@@ -32,7 +34,7 @@ class LoginPage extends StatelessWidget {
           update: (_, value, __) => AuthService(value),
         ),
         ChangeNotifierProvider(
-          create: (context) => NotifierWrapper<DioError?>(null),
+          create: (context) => NotifierWrapper<DioError?>(null, checkEquality: false),
         )
       ],
       child: LayoutSelector(
@@ -52,6 +54,26 @@ class MobileLoginForm extends StatefulWidget {
 
 class _MobileLoginFormState extends State<MobileLoginForm> {
   final _formKey = GlobalKey<FormState>();
+  late final Synchronizer synchronizer = context.synchronizer();
+
+  @override
+  void initState() {
+    super.initState();
+    _restoreSession();
+  }
+
+  Future<void> _restoreSession() async {
+    final user = await synchronizer.syncUser();
+
+    if (user == null) return;
+
+    _redirectToApp();
+  }
+
+  void _redirectToApp() {
+    if (!mounted) return;
+    context.go(AppRoute.dashboard.route);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +131,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
           onChanged: (newEmail) => loginData.email = newEmail,
           decoration: const InputDecoration(labelText: 'Email'),
           autovalidateMode: AutovalidateMode.onUserInteraction,
+          keyboardType: TextInputType.emailAddress,
         ),
         TextFormField(
           obscureText: true,
@@ -157,10 +180,10 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
   Future<void> _processLogin(BuildContext context) async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    final loginService = context.read<AuthService>();
+    final authService = context.read<AuthService>();
     final data = context.read<LoginData>();
 
-    final res = await loginService.login(email: data.email, password: data.password);
+    final res = await authService.login(email: data.email, password: data.password);
 
     log('$res, ${res.error?.response}');
 
@@ -170,8 +193,11 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
       return;
     }
 
-    log('redirecting to app', name: 'LoginPage');
-    //await Future.delayed(const Duration(seconds: 2));
+    final user = await synchronizer.syncUser();
+    assert(user != null);
+
+    log('redirecting to app; user ${user?.email}', name: 'LoginPage');
+    _redirectToApp();
   }
 
   void _processRegisterRedirect(BuildContext context) {
@@ -179,10 +205,5 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     final data = context.read<LoginData>();
 
     context.push(AppRoute.register.route, extra: data.email);
-
-    // todo
-    // Navigator.of(context).push(MaterialPageRoute(
-    //   builder: (context) => RegisterPage(email: data.email),
-    // ));
   }
 }

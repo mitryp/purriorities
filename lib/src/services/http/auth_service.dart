@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 
 import '../../data/models/user.dart';
@@ -7,15 +5,15 @@ import '../helpers/service_controller.dart';
 import 'util/fetch_result.dart';
 
 class AuthService {
-  final Dio client;
+  final Dio _client;
 
-  const AuthService(this.client);
+  const AuthService(this._client);
 
   Future<FetchResult<bool>> login({
     required String email,
     required String password,
   }) async {
-    final response = client.post<Map<String, dynamic>>(
+    final response = _client.post<Map<String, dynamic>>(
       'auth/login',
       data: {
         'email': email,
@@ -27,7 +25,7 @@ class AuthService {
   }
 
   Future<FetchResult<bool>> logout() async {
-    final response = client.delete<void>('auth/logout');
+    final response = _client.delete<void>('auth/logout');
 
     return httpServiceControllerRes(response, (res) => true, orElseIfNotFailed: true);
   }
@@ -35,7 +33,7 @@ class AuthService {
   Future<FetchResult<bool>> register(User newUser, String password) async {
     final data = newUser.toCreateJson()..['password'] = password;
 
-    final response = client.post(
+    final response = _client.post(
       'users/signup',
       data: data,
     );
