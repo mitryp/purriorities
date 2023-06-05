@@ -53,7 +53,7 @@ class User extends Serializable with Prototype<User> {
   @JsonKey(includeToJson: false)
   final int trust;
 
-  @JsonKey(includeToJson: false)
+  @JsonKey(includeToJson: false, required: false)
   final List<CatOwnership> cats;
 
   const User({
@@ -67,7 +67,7 @@ class User extends Serializable with Prototype<User> {
     required this.feed,
     required this.catnip,
     required this.trust,
-    required this.cats,
+    this.cats = const [],
   });
 
   const User.register({
