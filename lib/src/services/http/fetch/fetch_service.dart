@@ -29,7 +29,7 @@ abstract class FetchService<T> {
       FetchResult.transformResponse(res, fromJsonConverter);
 }
 
-mixin ReadManyFetchMixin<T> on FetchService<T> {
+mixin GetManyFetchMixin<T> on FetchService<T> {
   // todo pagination
   /// Fetches a [PaginatedData] of [T] based on the [queryData].
   Future<FetchResult<PaginatedData<T>>> getMany([dynamic queryData]) {
