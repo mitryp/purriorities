@@ -114,6 +114,7 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
             autofocus: i == 0,
             controller: formFields[i].$2,
             decoration: InputDecoration(labelText: formFields[i].$1),
+            obscureText: i >= 2,
             validator: formFields[i].$3,
             autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
