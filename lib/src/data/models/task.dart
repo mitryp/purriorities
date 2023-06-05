@@ -38,7 +38,7 @@ class Task extends Serializable with Prototype<Task> {
   Map<String, dynamic> toJson() => _$TaskToJson(this);
 
   @override
-  Set<String> get excludeCreateKeys => {'id'};
+  Set<String> get generatedIdentifiers => {'id'};
 
   @override
   bool operator ==(Object other) =>

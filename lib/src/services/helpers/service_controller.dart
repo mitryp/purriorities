@@ -1,24 +1,40 @@
 import 'package:dio/dio.dart';
 
-import 'status_code_predicates.dart';
-
+import '../http/util/fetch_result.dart';
 import 'exceptions.dart';
 
-typedef ControllerLogic<T> = T Function(Response response);
-
-Future<T> httpServiceController<T>(
-  Response response,
-  ControllerLogic<T> successLogic, [
-  ControllerLogic<T>? unsuccessfulLogic,
+Future<T> httpServiceController<TData, T>(
+  Future<Response<TData>> response,
+  ResultMapper<TData, T> successMapper, [
+  AnyResultMapper<TData, T>? failureMapper,
 ]) async {
-  final res = response;
+  final res = await FetchResult.fromResponse(response);
 
-  if (hasSuccessCode(res)) {
-    return successLogic(res);
+  if (res.isSuccessful) {
+    return res.map(successMapper);
   }
 
-  if (unsuccessfulLogic != null) {
-    return unsuccessfulLogic(res);
+  if (failureMapper != null) {
+    return res.mapAny(failureMapper);
   }
-  throw ResourceNotFetchedException(res.statusMessage);
+
+  throw ResourceNotFetchedException(res.error?.message);
+}
+
+Future<FetchResult<T>> httpServiceControllerRes<TData, T>(
+  Future<Response<TData>> response,
+  ResultMapper<TData, T> mapper, [
+  AnyResultMapper<TData, T>? failureMapper,
+]) async {
+  final res = await FetchResult.fromResponse(response);
+
+  if (!res.isSuccessful && failureMapper != null) {
+    return FetchResult.success(res.mapAny(failureMapper));
+  }
+
+  if (res.isSuccessful) {
+    return res.transform(mapper);
+  }
+
+  return FetchResult<T>.failure(res.error);
 }

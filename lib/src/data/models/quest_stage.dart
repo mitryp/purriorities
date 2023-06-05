@@ -37,7 +37,7 @@ class QuestStage extends Serializable with Prototype<QuestStage> {
   Map<String, dynamic> toJson() => _$QuestStageToJson(this);
 
   @override
-  Set<String> get excludeCreateKeys => {'id'};
+  Set<String> get generatedIdentifiers => {'id'};
 
   @override
   Map<String, dynamic> toCreateJson() =>

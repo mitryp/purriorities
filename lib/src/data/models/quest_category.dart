@@ -30,7 +30,7 @@ class QuestCategory extends Serializable with Prototype<QuestCategory> {
   Map<String, dynamic> toJson() => _$QuestCategoryToJson(this);
 
   @override
-  Set<String> get excludeCreateKeys => {'id'};
+  Set<String> get generatedIdentifiers => {'id'};
 
   @override
   bool operator ==(Object other) =>
