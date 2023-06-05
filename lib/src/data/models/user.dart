@@ -1,7 +1,10 @@
+import 'dart:collection';
+
 import 'package:json_annotation/json_annotation.dart';
 
 import 'abs/prototype.dart';
 import 'abs/serializable.dart';
+import 'cat_ownership.dart';
 import 'punishments.dart';
 
 part 'user.g.dart';
@@ -50,6 +53,9 @@ class User extends Serializable with Prototype<User> {
   @JsonKey(includeToJson: false)
   final int trust;
 
+  @JsonKey(includeToJson: false)
+  final List<CatOwnership> cats;
+
   const User({
     required this.nickname,
     required this.email,
@@ -61,6 +67,7 @@ class User extends Serializable with Prototype<User> {
     required this.feed,
     required this.catnip,
     required this.trust,
+    required this.cats,
   });
 
   const User.register({
@@ -73,7 +80,8 @@ class User extends Serializable with Prototype<User> {
         levelCap = 0,
         feed = 0,
         catnip = 0,
-        trust = 0;
+        trust = 0,
+        cats = const [];
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
@@ -94,7 +102,8 @@ class User extends Serializable with Prototype<User> {
           levelCap == other.levelCap &&
           feed == other.feed &&
           catnip == other.catnip &&
-          trust == other.trust;
+          trust == other.trust &&
+          cats == other.cats;
 
   @override
   int get hashCode =>
@@ -107,7 +116,8 @@ class User extends Serializable with Prototype<User> {
       levelCap.hashCode ^
       feed.hashCode ^
       catnip.hashCode ^
-      trust.hashCode;
+      trust.hashCode ^
+      cats.hashCode;
 
   @override
   User copyWith({
@@ -117,6 +127,7 @@ class User extends Serializable with Prototype<User> {
     String? timezone,
     int? feed,
     int? trust,
+    List<CatOwnership>? cats,
   }) =>
       User(
         nickname: nickname ?? this.nickname,
@@ -129,6 +140,7 @@ class User extends Serializable with Prototype<User> {
         feed: feed ?? this.feed,
         catnip: catnip,
         trust: trust ?? this.trust,
+        cats: cats ?? this.cats,
       );
 
   /// Returns a copy of this user object after the given [punishment] applied.
@@ -137,6 +149,9 @@ class User extends Serializable with Prototype<User> {
         this.trust - punishment.overdueQuests.fold<int>(0, (val, e) => val + e.totalTrustLost);
     final feed = this.feed - punishment.runawayCats.fold<int>(0, (val, e) => val + e.feedLost);
 
-    return copyWith(trust: trust, feed: feed);
+    final runawayCatIds = HashSet.of(punishment.runawayCats.map((e) => e.nameId));
+    final cats = this.cats.toList()..removeWhere((cat) => runawayCatIds.contains(cat.catNameId));
+
+    return copyWith(trust: trust, feed: feed, cats: cats.toList(growable: false));
   }
 }
