@@ -4,13 +4,13 @@ import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../../helpers/cookie_storage.dart';
+import '../../../config.dart' as config;
+import 'secure_cookie_storage.dart';
 
-const String baseUrl = 'http://localhost:80/api/';
-
-/// Creates a [Dio] HTTP client and attaches a cookie interceptor to it, if the platform is not web.
+/// Creates a [Dio] HTTP client and attaches a cookie interceptor to it, if needed.
 Dio createHttpClient() {
-  final client = Dio()..options.baseUrl = baseUrl;
+  final client = Dio(BaseOptions(extra: {'withCredentials': true}))
+    ..options.baseUrl = config.baseUrl;
 
   if (!kIsWeb) {
     _addCookieInterceptorTo(client);
@@ -27,7 +27,6 @@ void _addCookieInterceptorTo(Dio client) {
   );
 
   const cookieStorage = SecureCookieStorage(secureStorage);
-
   final cookieJar = PersistCookieJar(storage: cookieStorage);
 
   client.interceptors.add(CookieManager(cookieJar));
