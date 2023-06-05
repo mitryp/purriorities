@@ -145,7 +145,7 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
       timezone: DateTime.now().timeZoneName,
     );
 
-    final res = await authService.register(user);
+    final res = await authService.register(user, password);
 
     log('Registering user with $nickname, $email, $password. Got $res');
   }

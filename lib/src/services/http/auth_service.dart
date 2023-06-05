@@ -24,11 +24,6 @@ class AuthService {
     );
 
     return httpServiceControllerRes(response, (res) => true);
-
-    // return httpServiceController(response, (res) => true, (res, error) {
-    //   print('$error, ${error?.response}, ${error?.message}');
-    //   return false;
-    // });
   }
 
   Future<FetchResult<bool>> logout() async {
@@ -37,10 +32,12 @@ class AuthService {
     return httpServiceControllerRes(response, (res) => true);
   }
 
-  Future<FetchResult<bool>> register(User newUser) async {
+  Future<FetchResult<bool>> register(User newUser, String password) async {
+    final data = newUser.toCreateJson()..['password'] = password;
+
     final response = client.post(
       'users/signup',
-      data: newUser.toCreateJson(),
+      data: data,
     );
 
     return httpServiceControllerRes(response, (res) => true);
