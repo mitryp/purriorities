@@ -5,6 +5,7 @@ import '../../common/enums/app_route.dart';
 import '../../common/enums/sprite.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/add_button.dart';
+import '../widgets/authorizer.dart';
 import '../widgets/currency/currency_balance.dart';
 import '../widgets/layouts/desktop.dart';
 import '../widgets/layouts/layout_selector.dart';
@@ -19,9 +20,11 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutSelector(
-      mobileLayoutBuilder: (context) => const _MobileHomepage(),
-      desktopLayoutBuilder: (context) => const _DesktopHomepage(),
+    return Authorizer(
+      child: LayoutSelector(
+        mobileLayoutBuilder: (context) => const _MobileHomepage(),
+        desktopLayoutBuilder: (context) => const _DesktopHomepage(),
+      ),
     );
   }
 }

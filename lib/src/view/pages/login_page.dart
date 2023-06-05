@@ -55,6 +55,7 @@ class MobileLoginForm extends StatefulWidget {
 class _MobileLoginFormState extends State<MobileLoginForm> {
   final _formKey = GlobalKey<FormState>();
   late final Synchronizer synchronizer = context.synchronizer();
+  bool _isRestoringSession = false;
 
   @override
   void initState() {
@@ -63,7 +64,11 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
   }
 
   Future<void> _restoreSession() async {
+    setState(() => _isRestoringSession = true);
     final user = await synchronizer.syncUser();
+    if (mounted) {
+      setState(() => _isRestoringSession = false);
+    }
 
     if (user == null) return;
 
@@ -79,14 +84,18 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
   Widget build(BuildContext context) {
     return MobileLayout.child(
       minimumSafeArea: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-      child: FormLayout(
-        leading: _buildLeading(),
-        form: Form(
-          key: _formKey,
-          child: _buildFormContent(context),
-        ),
-        trailing: _buildTrailing(context),
-      ),
+      child: !_isRestoringSession
+          ? FormLayout(
+              leading: _buildLeading(),
+              form: Form(
+                key: _formKey,
+                child: _buildFormContent(context),
+              ),
+              trailing: _buildTrailing(context),
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 
