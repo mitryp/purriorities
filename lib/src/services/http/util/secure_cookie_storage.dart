@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -22,7 +24,5 @@ class SecureCookieStorage extends Storage {
   Future<void> write(String key, String value) => _storage.write(key: key, value: value);
 
   @override
-  Future<String?> read(String key) {
-    return _storage.read(key: key);
-  }
+  Future<String?> read(String key) => _storage.read(key: key);
 }
