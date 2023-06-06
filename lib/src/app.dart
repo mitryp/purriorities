@@ -11,8 +11,12 @@ import 'data/util/notifier_wrapper.dart';
 import 'services/cats_info_cache.dart';
 import 'services/http/auth_service.dart';
 import 'services/http/fetch/cat_fetch_service.dart';
+import 'services/http/fetch/categories_fetch_service.dart';
+import 'services/http/fetch/quests_fetch_service.dart';
+import 'services/http/fetch/skills_fetch_service.dart';
 import 'services/http/fetch/user_fetch_service.dart';
 import 'services/http/util/client.dart';
+import 'services/http/util/fetch_service_bundle.dart';
 import 'services/synchronizer.dart';
 import 'typedefs.dart';
 import 'view/pages/init_page.dart';
@@ -78,15 +82,18 @@ class PurrioritiesApp extends StatelessWidget {
       providers: [
         Provider<Dio>(create: (_) => createHttpClient()),
         ChangeNotifierProvider<NotifierWrapper<User?>>(create: (_) => NotifierWrapper(null)),
-        ProxyProvider<Dio, CatsInfoCache>(
-          update: (_, client, __) => CatsInfoCache(CatFetchService(client)),
-        ),
         ProxyProvider<NotifierWrapper<User?>, User?>(update: (_, wrapper, __) => wrapper.data),
         ProxyProvider<Dio, AuthService>(
           update: (_, client, __) => AuthService(client),
         ),
-        ProxyProvider<Dio, Synchronizer>(
-          update: (context, client, __) => Synchronizer(context, UserFetchService(client)),
+        ProxyProvider<Dio, FetchServiceBundle>(
+          update: (_, client, __) => bundleFetchServices(client),
+        ),
+        ProxyProvider<FetchServiceBundle, CatsInfoCache>(
+          update: (_, bundle, __) => CatsInfoCache(bundle.catsFetchService),
+        ),
+        ProxyProvider<FetchServiceBundle, Synchronizer>(
+          update: (context, bundle, __) => Synchronizer(context, bundle.usersFetchService),
         ),
       ],
       child: MaterialApp.router(

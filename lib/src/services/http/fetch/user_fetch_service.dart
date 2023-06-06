@@ -4,8 +4,8 @@ import '../../../data/models/user.dart';
 import '../util/fetch_result.dart';
 import 'fetch_service.dart';
 
-class UserFetchService extends FetchService<User> with ModifyFetchMixin<User> {
-  const UserFetchService(Dio client)
+class UsersFetchService extends FetchService<User> with ModifyFetchMixin<User> {
+  const UsersFetchService(Dio client)
       : super(
           path: 'users/me',
           client: client,

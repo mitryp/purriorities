@@ -2,7 +2,7 @@ import '../data/models/cat.dart';
 import 'http/fetch/cat_fetch_service.dart';
 
 class CatsInfoCache {
-  final CatFetchService _catFetchService;
+  final CatsFetchService _catFetchService;
 
   late final List<Cat> _cats;
 

@@ -7,7 +7,7 @@ import 'http/fetch/user_fetch_service.dart';
 
 class Synchronizer {
   final BuildContext _context;
-  final UserFetchService _userFetchService;
+  final UsersFetchService _userFetchService;
 
   const Synchronizer(this._context, this._userFetchService);
 
