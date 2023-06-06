@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/enums/currency.dart';
 import '../../../config.dart';
 import '../../../constants.dart';
 import '../../../data/models/cat.dart';
@@ -8,6 +9,7 @@ import '../../../data/models/cat_ownership.dart';
 import '../../../data/models/user.dart';
 import '../../../data/user_data.dart';
 import '../../../services/cats_info_cache.dart';
+import '../../../typedefs.dart';
 import '../../../util/extensions/context_synchronizer.dart';
 import '../../../util/sprite_scaling.dart';
 import '../../widgets/authorizer.dart';
@@ -129,8 +131,7 @@ class CollectionCat implements Comparable<CollectionCat> {
 
   bool get isOwned => ownership != null;
 
-  int get _value =>
-      (isOwned ? 100 : 0) + (ownership?.xpBoost ?? 0).toInt();
+  int get _value => (isOwned ? 100 : 0) + (ownership?.xpBoost ?? 0).toInt();
 
   @override
   int compareTo(CollectionCat other) => other._value - _value;

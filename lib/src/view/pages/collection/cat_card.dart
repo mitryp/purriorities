@@ -40,7 +40,12 @@ class CatCard extends StatelessWidget {
                   height: height / 6,
                   child: catPrice == null
                       ? Center(child: Text('+${ownership?.xpBoost ?? '???'}% XP'))
-                      : _PurchaseButton(price: catPrice),
+                      : _PurchaseButton(
+                          price: catPrice,
+                          onPressed: () async {
+                            // todo purchase the cat back
+                          },
+                        ),
                 ),
               ],
             ),
@@ -95,15 +100,16 @@ class _ShadedCatAvatar extends StatelessWidget {
 
 class _PurchaseButton extends StatelessWidget {
   final int price;
+  final FutureVoidCallback<void> onPressed;
 
-  const _PurchaseButton({required this.price});
+  const _PurchaseButton({required this.price, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return ProgressIndicatorButton.elevated(
-      onPressed: () async {}, //TODO
+      onPressed: onPressed,
       style: accentButtonStyle,
-      child: CurrencyInfo(quantity: price, currency: Currency.common),
+      child: CurrencyInfo(quantity: price, currency: Currency.feed),
     );
   }
 }

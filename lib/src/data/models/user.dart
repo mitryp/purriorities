@@ -140,7 +140,7 @@ class User extends Serializable with Prototype<User> {
         feed: feed ?? this.feed,
         catnip: catnip,
         trust: trust ?? this.trust,
-        catOwnerships: cats ?? this.catOwnerships,
+        catOwnerships: cats ?? catOwnerships,
       );
 
   /// Returns a copy of this user object after the given [punishment] applied.
@@ -150,7 +150,8 @@ class User extends Serializable with Prototype<User> {
     final feed = this.feed - punishment.runawayCats.fold<int>(0, (val, e) => val + e.feedLost);
 
     final runawayCatIds = HashSet.of(punishment.runawayCats.map((e) => e.nameId));
-    final cats = this.catOwnerships.toList()..removeWhere((cat) => runawayCatIds.contains(cat.catNameId));
+    final cats = catOwnerships.toList()
+      ..removeWhere((cat) => runawayCatIds.contains(cat.catNameId));
 
     return copyWith(trust: trust, feed: feed, cats: cats.toList(growable: false));
   }

@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/enums/sprite.dart';
+import '../../../common/enums/currency.dart';
 import '../../../util/sprite_scaling.dart';
-
-enum Currency {
-  common(Sprite.fishFood),
-  rare(Sprite.valerian);
-
-  final Sprite sprite;
-
-  const Currency(this.sprite);
-}
 
 const _defaultCurrencyImageSize = 25.0;
 

@@ -1,9 +1,17 @@
-import 'package:flutter/material.dart';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../common/enums/currency.dart';
+import '../../common/enums/loot_box.dart';
 import '../../constants.dart';
-import '../../common/enums/sprite.dart';
+import '../../data/models/user.dart';
+import '../../data/user_data.dart';
+import '../../typedefs.dart';
+import '../../util/extensions/context_synchronizer.dart';
 import '../../util/sprite_scaling.dart';
-import '../theme.dart';
+import '../widgets/authorizer.dart';
 import '../widgets/currency/currency_balance.dart';
 import '../widgets/currency/currency_info.dart';
 import '../widgets/layouts/layout_selector.dart';
@@ -16,48 +24,50 @@ class StorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutSelector(
-      mobileLayoutBuilder: (context) => const _MobileStorePage(),
-      desktopLayoutBuilder: (context) => const Placeholder(),
+    return Authorizer(
+      child: LayoutSelector(
+        mobileLayoutBuilder: (context) => const _MobileStorePage(),
+        desktopLayoutBuilder: (context) => const Placeholder(),
+      ),
     );
   }
 }
 
-class _MobileStorePage extends StatelessWidget {
+class _MobileStorePage extends StatefulWidget {
   const _MobileStorePage();
 
   @override
+  State<_MobileStorePage> createState() => _MobileStorePageState();
+}
+
+class _MobileStorePageState extends State<_MobileStorePage> {
+  @override
+  void initState() {
+    super.initState();
+
+    context.synchronizer().syncUser();
+  }
+
+  Future<void> _processLootBoxPurchase(LootBoxType type) async {
+    log('Intending to purchase a box of type ${type.name}', name: 'StorePage');
+  }
+
+  Future<void> _processCurrencyPurchase() async {
+    log('Intending to purchase some currency', name: 'StorePage');
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const commonCurrencyBalance = 100;
-    const rareCurrencyBalance = 10;
-
-    const goldLootboxPrice = 20;
-    const commonLootboxPrice = 100;
-
-    const commonCurrencyBought = 100;
-    const priceOfCommonCurrency = 2;
-
-    final List<({Currency currency, Sprite sprite, int price, Color? bgColor})>
-        lootboxPurchaseColumns = [
-      (
-        currency: Currency.rare,
-        sprite: Sprite.grayCat,
-        price: goldLootboxPrice,
-        bgColor: legendaryColor,
-      ),
-      (
-        currency: Currency.common,
-        sprite: Sprite.grayCat,
-        price: commonLootboxPrice,
-        bgColor: null,
-      ),
-    ];
+    final rate = Currency.catnip.rate.entries.first;
 
     return MobileLayout(
       children: [
-        const CurrencyBalance(
-          commonCurrencyBalance: commonCurrencyBalance,
-          rareCurrencyBalance: rareCurrencyBalance,
+        Selector<UserData, User>(
+          selector: (_, data) => data.user!,
+          builder: (context, user, _) => CurrencyBalance(
+            commonCurrencyBalance: user.feed,
+            rareCurrencyBalance: user.catnip,
+          ),
         ),
         Expanded(
           child: Center(
@@ -73,27 +83,25 @@ class _MobileStorePage extends StatelessWidget {
                       Wrap(
                         runSpacing: 10.0,
                         spacing: 30.0,
-                        children: lootboxPurchaseColumns.map((lootboxInfo) {
-                          return _LootboxPurchaseColumn(
-                            currency: lootboxInfo.currency,
-                            lootboxAsset: lootboxInfo.sprite.asset,
-                            price: lootboxInfo.price,
+                        children: LootBoxType.values.map((type) {
+                          return _LootBoxPurchaseColumn(
+                            type: type,
                             radius: 50,
-                            backgroundColor: lootboxInfo.bgColor,
+                            onPurchaseIntent: _processLootBoxPurchase,
                           );
-                        }).toList(),
+                        }).toList(growable: false),
                       ),
                       const SizedBox(height: 20.0),
                       ProgressIndicatorButton.elevated(
-                        onPressed: () async {}, //TODO
+                        onPressed: _processCurrencyPurchase, //TODO
                         style: accentButtonStyle,
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('+ $commonCurrencyBought '),
-                            CurrencyImage(currency: Currency.common),
-                            Text(' за $priceOfCommonCurrency '),
-                            CurrencyImage(currency: Currency.rare),
+                            Text('+ ${rate.value} '),
+                            const CurrencyImage(currency: Currency.feed),
+                            const Text(' за 1 '),
+                            const CurrencyImage(currency: Currency.catnip),
                           ],
                         ),
                       )
@@ -109,19 +117,20 @@ class _MobileStorePage extends StatelessWidget {
   }
 }
 
-class _LootboxPurchaseColumn extends StatelessWidget {
-  final String lootboxAsset;
+class _LootBoxPurchaseColumn extends StatelessWidget {
+  // final String lootBoxAsset;
+  // final Currency currency;
+  // final Color? backgroundColor;
+  // final int price;
+  final LootBoxType type;
   final double radius;
-  final Currency currency;
-  final int price;
-  final Color? backgroundColor;
+  final FutureCallback<void, LootBoxType> onPurchaseIntent;
 
-  const _LootboxPurchaseColumn({
-    required this.lootboxAsset,
-    required this.currency,
-    required this.price,
+  const _LootBoxPurchaseColumn({
+    required this.type,
+    required this.onPurchaseIntent,
     this.radius = 32,
-    this.backgroundColor,
+    // this.backgroundColor,
   });
 
   @override
@@ -131,19 +140,20 @@ class _LootboxPurchaseColumn extends StatelessWidget {
       child: Column(
         children: [
           SpriteAvatar.asset(
-            lootboxAsset,
+            type.sprite.asset,
             minRadius: radius,
             scale: scaleToFitCircle(radius),
-            backgroundColor: backgroundColor,
+            backgroundColor: type.catRarity.color,
           ),
           const SizedBox(
             height: 10.0,
           ),
-          ElevatedButton(
-            onPressed: () {},
+          ProgressIndicatorButton(
+            buttonBuilder: OutlinedButton.new,
+            onPressed: () => onPurchaseIntent(type),
             child: CurrencyInfo(
-              currency: currency,
-              quantity: price,
+              currency: type.currency,
+              quantity: type.price,
             ),
           ),
         ],

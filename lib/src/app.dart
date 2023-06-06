@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -8,16 +7,9 @@ import 'package:provider/provider.dart';
 import 'common/enums/app_route.dart';
 import 'data/main_navigation_data.dart';
 import 'data/models/quest.dart';
-import 'data/models/user.dart';
 import 'data/user_data.dart';
-import 'data/util/notifier_wrapper.dart';
 import 'services/cats_info_cache.dart';
 import 'services/http/auth_service.dart';
-import 'services/http/fetch/cat_fetch_service.dart';
-import 'services/http/fetch/categories_fetch_service.dart';
-import 'services/http/fetch/quests_fetch_service.dart';
-import 'services/http/fetch/skills_fetch_service.dart';
-import 'services/http/fetch/user_fetch_service.dart';
 import 'services/http/util/client.dart';
 import 'services/http/util/fetch_service_bundle.dart';
 import 'services/synchronizer.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../common/enums/currency.dart';
 import 'currency_info.dart';
 
 class CurrencyBalance extends StatelessWidget {
@@ -17,9 +18,9 @@ class CurrencyBalance extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        CurrencyInfo(quantity: commonCurrencyBalance, currency: Currency.common),
+        CurrencyInfo(quantity: commonCurrencyBalance, currency: Currency.feed),
         const SizedBox(width: 20),
-        CurrencyInfo(quantity: rareCurrencyBalance, currency: Currency.rare),
+        CurrencyInfo(quantity: rareCurrencyBalance, currency: Currency.catnip),
       ],
     );
   }

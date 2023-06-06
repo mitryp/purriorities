@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 
-import 'abs/serializable.dart';
 
 part 'cat_ownership.g.dart';
 

@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/enums/app_route.dart';
-import '../../data/models/user.dart';
 import '../../data/user_data.dart';
 
 class Authorizer extends StatelessWidget {

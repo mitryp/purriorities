@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../data/models/quest.dart';
-import '../../data/user_data.dart';
 import 'quest_tile.dart';
 
 class QuestsList extends StatelessWidget {

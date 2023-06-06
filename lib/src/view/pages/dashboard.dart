@@ -15,8 +15,6 @@ import '../widgets/layouts/desktop.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_bars/labeled_progress_bar.dart';
-import '../widgets/progress_indicator_button.dart';
-import '../widgets/quests_list.dart';
 import '../widgets/sprite_avatar.dart';
 
 class Dashboard extends StatelessWidget {

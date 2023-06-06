@@ -29,6 +29,3 @@ class PaginationMetadata {
 
   factory PaginationMetadata.fromJson(JsonMap json) => _$PaginationMetadataFromJson(json);
 }
-
-int _totalPagesFromJson(JsonMap json) =>
-    (json['meta'] as Map<String, dynamic>)['totalPages'] as int;
