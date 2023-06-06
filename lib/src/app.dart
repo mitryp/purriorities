@@ -78,30 +78,68 @@ class PurrioritiesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<Dio>(create: (_) => createHttpClient()),
-        ChangeNotifierProvider<NotifierWrapper<User?>>(create: (_) => NotifierWrapper(null)),
-        ProxyProvider<NotifierWrapper<User?>, User?>(update: (_, wrapper, __) => wrapper.data),
-        ProxyProvider<Dio, AuthService>(
-          update: (_, client, __) => AuthService(client),
-        ),
-        ProxyProvider<Dio, FetchServiceBundle>(
-          update: (_, client, __) => bundleFetchServices(client),
-        ),
-        ProxyProvider<FetchServiceBundle, CatsInfoCache>(
-          update: (_, bundle, __) => CatsInfoCache(bundle.catsFetchService),
-        ),
-        ProxyProvider<FetchServiceBundle, Synchronizer>(
-          update: (context, bundle, __) => Synchronizer(context, bundle.usersFetchService),
-        ),
-      ],
+    return _AppTopProviders(
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: darkTheme,
         //
         routerConfig: _router,
       ),
+    );
+  }
+}
+
+/// A widget holding a layer of top-level providers of this application.
+class _AppTopProviders extends StatelessWidget {
+  final Widget child;
+
+  const _AppTopProviders({required this.child, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        // an HTTP client singleton provider
+        Provider<Dio>(
+          create: (_) => createHttpClient(),
+        ),
+
+        // a User provider with a change notifier wrapper
+        ChangeNotifierProvider<NotifierWrapper<User?>>(
+          create: (_) => NotifierWrapper(null),
+        ),
+
+        // a User proxy provider
+        ProxyProvider<NotifierWrapper<User?>, User?>(
+          update: (_, wrapper, __) => wrapper.data,
+        ),
+
+        // a Quests provider with a change notifier
+        ChangeNotifierProvider<NotifierWrapper<List<Quest>?>>(
+          create: (_) => NotifierWrapper(null),
+        ),
+
+        // an AuthService singleton provider dependant on the HTTP client
+        ProxyProvider<Dio, AuthService>(
+          update: (_, client, __) => AuthService(client),
+        ),
+
+        // a provider of all the fetch services singletons. depends on the HTTP client
+        ProxyProvider<Dio, FetchServiceBundle>(
+          update: (_, client, __) => bundleFetchServices(client),
+        ),
+
+        // a CatsInfoCache singleton provider. depends on the fetch services bundle
+        ProxyProvider<FetchServiceBundle, CatsInfoCache>(
+          update: (_, bundle, __) => CatsInfoCache(bundle.catsFetchService),
+        ),
+
+        // a Synchronizer provider. depends on the fetch services bundle
+        ProxyProvider<FetchServiceBundle, Synchronizer>(
+          update: (context, bundle, __) => Synchronizer(context, bundle.usersFetchService),
+        ),
+      ],
+      child: child,
     );
   }
 }
