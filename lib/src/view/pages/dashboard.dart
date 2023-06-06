@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/enums/app_route.dart';
 import '../../common/enums/sprite.dart';
+import '../../data/models/user.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/add_button.dart';
 import '../widgets/authorizer.dart';
@@ -100,39 +102,45 @@ class _MobileHomepage extends StatelessWidget {
     const nFish = 10;
     const nValerian = 1;
 
-    return IntrinsicHeight(
-      child: Row(
-        children: [
-          SpriteAvatar.asset(
-            sprite.asset,
-            minRadius: radius,
-            scale: scaleToFitCircle(radius),
-          ),
-          const Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                LabeledProgressBar(
-                  label: 'Довіра',
-                  value: trustValue,
-                  maxValue: maxTrust,
+    return Consumer<User?>(
+      builder: (context, maybeUser, child) {
+        final user = maybeUser!;
+
+        return IntrinsicHeight(
+          child: Row(
+            children: [
+              SpriteAvatar.asset(
+                sprite.asset,
+                minRadius: radius,
+                scale: scaleToFitCircle(radius),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    LabeledProgressBar(
+                      label: 'Довіра',
+                      value: user.trust,
+                      maxValue: maxTrust,
+                    ),
+                    LabeledProgressBar(
+                      label: 'XP',
+                      value: user.levelExp,
+                      maxValue: user.levelCap,
+                      progressBarCaption: 'Рівень ${user.level}',
+                    ),
+                    CurrencyBalance(
+                      commonCurrencyBalance: user.feed,
+                      rareCurrencyBalance: user.catnip,
+                    ),
+                  ],
                 ),
-                LabeledProgressBar(
-                  label: 'XP',
-                  value: xpValue,
-                  maxValue: maxXp,
-                  progressBarCaption: 'Рівень $xpLevel',
-                ),
-                CurrencyBalance(
-                  commonCurrencyBalance: nFish,
-                  rareCurrencyBalance: nValerian,
-                )
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
