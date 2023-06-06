@@ -1,9 +1,10 @@
 enum AppRoute {
+  init('/init'),
+  login('/login'),
   dashboard('/dashboard'),
   cats('/cats'),
   store('/store'),
   skills('/skills'),
-  login('/login'),
   register('/register'),
   editQuest('/edit_quest'),
   allQuests('/all_quests');

@@ -12,6 +12,7 @@ import '../../data/util/notifier_wrapper.dart';
 import '../../data/util/validators.dart';
 import '../../services/http/auth_service.dart';
 import '../../services/synchronizer.dart';
+import '../../typedefs.dart';
 import '../../util/extensions/context_synchronizer.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';
@@ -55,7 +56,6 @@ class MobileLoginForm extends StatefulWidget {
 class _MobileLoginFormState extends State<MobileLoginForm> {
   final _formKey = GlobalKey<FormState>();
   late final Synchronizer synchronizer = context.synchronizer();
-  bool _isRestoringSession = false;
 
   @override
   void initState() {
@@ -64,38 +64,25 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
   }
 
   Future<void> _restoreSession() async {
-    setState(() => _isRestoringSession = true);
     final user = await synchronizer.syncUser();
-    if (mounted) {
-      setState(() => _isRestoringSession = false);
-    }
 
     if (user == null) return;
 
-    _redirectToApp();
-  }
-
-  void _redirectToApp() {
-    if (!mounted) return;
-    context.go(AppRoute.dashboard.route);
+    _redirectToApp(sessionRestored: true);
   }
 
   @override
   Widget build(BuildContext context) {
     return MobileLayout.child(
       minimumSafeArea: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-      child: !_isRestoringSession
-          ? FormLayout(
-              leading: _buildLeading(),
-              form: Form(
-                key: _formKey,
-                child: _buildFormContent(context),
-              ),
-              trailing: _buildTrailing(context),
-            )
-          : const Center(
-              child: CircularProgressIndicator(),
-            ),
+      child: FormLayout(
+        leading: _buildLeading(),
+        form: Form(
+          key: _formKey,
+          child: _buildFormContent(context),
+        ),
+        trailing: _buildTrailing(context),
+      ),
     );
   }
 
@@ -202,11 +189,15 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
       return;
     }
 
-    final user = await synchronizer.syncUser();
-    assert(user != null);
-
-    log('redirecting to app; user ${user?.email}', name: 'LoginPage');
     _redirectToApp();
+  }
+
+  void _redirectToApp({bool sessionRestored = false}) {
+    if (!mounted) return;
+    context.go(
+      AppRoute.init.route,
+      extra: (sessionRestored: sessionRestored) as SessionRestorationExtra,
+    );
   }
 
   void _processRegisterRedirect(BuildContext context) {

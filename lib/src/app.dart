@@ -8,10 +8,14 @@ import 'data/main_navigation_data.dart';
 import 'data/models/quest.dart';
 import 'data/models/user.dart';
 import 'data/util/notifier_wrapper.dart';
+import 'services/cats_info_cache.dart';
 import 'services/http/auth_service.dart';
+import 'services/http/fetch/cat_fetch_service.dart';
 import 'services/http/fetch/user_fetch_service.dart';
 import 'services/http/util/client.dart';
 import 'services/synchronizer.dart';
+import 'typedefs.dart';
+import 'view/pages/init_page.dart';
 import 'view/pages/login_page.dart';
 import 'view/pages/quest_edit_page/quest_edit_page.dart';
 import 'view/pages/quests_page.dart';
@@ -20,7 +24,7 @@ import 'view/theme.dart';
 import 'view/widgets/main_navigation.dart';
 
 final _router = GoRouter(
-  initialLocation: AppRoute.login.route,
+  initialLocation: AppRoute.init.route,
   routes: [
     ShellRoute(
       builder: (context, state, child) => MainNavigation(child: child),
@@ -31,6 +35,16 @@ final _router = GoRouter(
             builder: action.goRouterWidgetBuilder,
           )
       ],
+    ),
+    GoRoute(
+      path: AppRoute.init.route,
+      builder: (context, state) {
+        final extra = state.extra;
+
+        return InitPage(
+          sessionRestored: extra is SessionRestorationExtra ? extra.sessionRestored : false,
+        );
+      },
     ),
     GoRoute(
       path: AppRoute.login.route,
