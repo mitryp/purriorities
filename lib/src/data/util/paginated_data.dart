@@ -7,11 +7,10 @@ part 'paginated_data.g.dart';
 
 @JsonSerializable(createToJson: false, genericArgumentFactories: true)
 class PaginatedData<T> {
-  @JsonKey(fromJson: _totalPagesFromJson)
-  final int totalPages;
+  final PaginationMetadata? meta;
   final List<T> data;
 
-  const PaginatedData({required this.data, required this.totalPages});
+  const PaginatedData({required this.data, required this.meta});
 
   static PaginatedData<T> fromJson<T>(JsonMap json, FromJsonConverter<T> converter) =>
       _$PaginatedDataFromJson(

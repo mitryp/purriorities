@@ -64,6 +64,9 @@ class PurrioritiesApp extends StatelessWidget {
       providers: [
         Provider<Dio>(create: (_) => createHttpClient()),
         ChangeNotifierProvider<NotifierWrapper<User?>>(create: (_) => NotifierWrapper(null)),
+        ProxyProvider<Dio, CatsInfoCache>(
+          update: (_, client, __) => CatsInfoCache(CatFetchService(client)),
+        ),
         ProxyProvider<NotifierWrapper<User?>, User?>(update: (_, wrapper, __) => wrapper.data),
         ProxyProvider<Dio, AuthService>(
           update: (_, client, __) => AuthService(client),

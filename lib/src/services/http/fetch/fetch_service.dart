@@ -37,7 +37,7 @@ mixin GetManyFetchMixin<T> on FetchService<T> {
 
     return FetchResult.transformResponse(
       res,
-          (json) => PaginatedData.fromJson<T>(json, fromJsonConverter),
+      (json) => PaginatedData.fromJson<T>(json, fromJsonConverter),
     );
   }
 }

@@ -12,7 +12,9 @@ PaginatedData<T> _$PaginatedDataFromJson<T>(
 ) =>
     PaginatedData<T>(
       data: (json['data'] as List<dynamic>).map(fromJsonT).toList(),
-      totalPages: _totalPagesFromJson(json['totalPages'] as Map<String, dynamic>),
+      meta: json['meta'] == null
+          ? null
+          : PaginationMetadata.fromJson(json['meta'] as Map<String, dynamic>),
     );
 
 PaginationMetadata _$PaginationMetadataFromJson(Map<String, dynamic> json) => PaginationMetadata(
