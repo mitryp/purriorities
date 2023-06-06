@@ -19,7 +19,8 @@ abstract class FetchService<T> {
   /// A FromJsonConverter for the resource type.
   final FromJsonConverter<T> fromJsonConverter;
 
-  const FetchService({required this.client, required this.path, required this.fromJsonConverter});
+  const FetchService({required this.client, required String path, required this.fromJsonConverter})
+      : path = 'api/$path';
 
   /// Fetches a single resource with the given [primaryKey].
   Future<FetchResult<T>> getOne(Object primaryKey) =>

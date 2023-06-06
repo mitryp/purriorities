@@ -1,120 +1,244 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/enums/app_route.dart';
+import '../../data/models/quest.dart';
+import '../../data/models/quest_category.dart';
+import '../../data/models/skill.dart';
+import '../../services/http/fetch/quests_fetch_service.dart';
+import '../../services/http/util/fetch_service_bundle.dart';
+import '../../typedefs.dart';
 import '../widgets/add_button.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/quests_list.dart';
 
-const skills = [
-  'Всі',
-  'Навчання',
-  'Програмування',
-  'Тайм-менеджмент',
-];
+class _QuestsPageData with ChangeNotifier {
+  List<QuestCategory?> categories = [null];
+  List<Skill?> skills = [null];
+  bool _isFiltersLoaded = false;
 
-const categories = [
-  'Завдання',
-  'Програмування',
-  'Самоорганізація',
-];
+  QuestCategory? _filterCategory;
+  Skill? _filterSkill;
 
-class QuestsPage extends StatelessWidget {
+  List<Quest> _quests = [];
+  bool _isLoaded = false;
+  DioError? _error;
+
+  QuestCategory? get filterCategory => _filterCategory;
+
+  bool get isFiltersLoaded => _isFiltersLoaded;
+
+  DioError? get error => _error;
+
+  set error(DioError? error) {
+    _error = error;
+    notifyListeners();
+  }
+
+  set isFiltersLoaded(bool value) {
+    _isFiltersLoaded = value;
+    notifyListeners();
+  }
+
+  set filterCategory(QuestCategory? category) {
+    _filterCategory = category;
+    notifyListeners();
+  }
+
+  Skill? get filterSkill => _filterSkill;
+
+  set filterSkill(Skill? skill) {
+    _filterSkill = skill;
+    notifyListeners();
+  }
+
+  bool get isLoaded => _isLoaded;
+
+  set isLoaded(bool value) {
+    _isLoaded = value;
+    notifyListeners();
+  }
+
+  List<Quest> get quests => _quests;
+
+  set quests(List<Quest> value) {
+    _quests = value;
+    notifyListeners();
+  }
+}
+
+class QuestsPage extends StatefulWidget {
   const QuestsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutSelector(
-      mobileLayoutBuilder: (context) => const _MobileQuestsPage(),
-      desktopLayoutBuilder: (context) => const Placeholder(),
-    );
-  }
+  State<QuestsPage> createState() => _QuestsPageState();
 }
 
-final List<(String name, bool isRepeated, DateTime? deadline)> questsData = [
-  ('Нявчитися писати бекенд...', false, DateTime(2023, 05, 24, 23, 59)),
-  ('Позайматися', true, DateTime(2023, 05, 24, 18, 0)),
-  ('Нявчитися нявати', false, DateTime(2023, 05, 30, 23, 59)),
-  ('Помуркотіти коханого :3', false, null),
-];
+class _QuestsPageState extends State<QuestsPage> {
+  final _QuestsPageData _data = _QuestsPageData();
+  late final QuestsFetchService _questsFetchService;
 
-class _MobileQuestsPage extends StatelessWidget {
-  const _MobileQuestsPage();
+  @override
+  void initState() {
+    super.initState();
+    _loadFilters();
+    _fetchFilteredQuests();
+  }
+
+  Future<void> _loadFilters() async {
+    final bundle = context.read<FetchServiceBundle>();
+    _questsFetchService = bundle.questsFetchService;
+    final categoriesFetcher = bundle.categoriesFetchService;
+    final skillsFetcher = bundle.skillsFetchService;
+
+    final results = await Future.wait([categoriesFetcher.getMany(), skillsFetcher.getMany()])
+        .then((res) => res.map((res) => res.result().data));
+
+    if (!mounted) return;
+
+    _data.categories.addAll(results.first as List<QuestCategory>);
+    _data.skills.addAll(results.last as List<Skill>); // todo temp fix
+    _data.isFiltersLoaded = true;
+  }
+
+  Future<void> _fetchFilteredQuests() async {
+    final questsRes = await _questsFetchService.getMany().then(
+          (res) => res.transform((data) => data.data),
+        );
+
+    if (!questsRes.isSuccessful) {
+      _data.error = questsRes.error;
+      return;
+    }
+
+    _data.quests = questsRes.result();
+    _data.isLoaded = true;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MobileLayout(
-      appBar: AppBar(
-        title: const Text('Квести'),
-      ),
-      floatingActionButton:
-          AddButton(onPressed: () => GoRouter.of(context).push(AppRoute.editQuest.route)),
-      children: [
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              children: [
-                _QuestsFilter(
-                  caption: 'Навичка',
-                  items: skills,
-                  initialSelection: skills[0],
-                ),
-                const SizedBox.square(dimension: 8),
-                _QuestsFilter(
-                  caption: 'Категорія',
-                  items: categories,
-                  initialSelection: categories[0],
-                ),
-              ],
-            ),
-          ),
+    return ChangeNotifierProvider<_QuestsPageData>.value(
+      value: _data,
+      builder: (_, __) => LayoutSelector(
+        mobileLayoutBuilder: (context) => _MobileQuestsPage(
+          filterUpdateCallback: _fetchFilteredQuests,
         ),
-        Card(
-          child: QuestsList(items: questsData),
-        )
-      ],
+        desktopLayoutBuilder: (context) => const Placeholder(),
+      ),
     );
   }
 }
 
-class _QuestsFilter extends StatelessWidget {
+class _MobileQuestsPage extends StatelessWidget {
+  final VoidCallback _filterUpdateCallback;
+
+  const _MobileQuestsPage({required VoidCallback filterUpdateCallback})
+      : _filterUpdateCallback = filterUpdateCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<_QuestsPageData>(
+      builder: (context, data, _) {
+        return MobileLayout(
+          appBar: AppBar(title: const Text('Квести')),
+          floatingActionButton: AddButton(
+            onPressed: () => context.push(AppRoute.editQuest.route),
+          ),
+          children: [
+            if (data.isFiltersLoaded)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _QuestsFilter<Skill?>(
+                          caption: 'Навичка',
+                          items: data.skills,
+                          initialSelection: null,
+                          onChanged: (skill) {
+                            if (data.filterSkill == skill) return;
+                            data.filterSkill = skill;
+                            _filterUpdateCallback();
+                          },
+                          presenter: (skill) => skill?.name ?? 'Всі',
+                        ),
+                      ),
+                      const SizedBox.square(dimension: 8),
+                      Expanded(
+                        child: _QuestsFilter<QuestCategory?>(
+                          caption: 'Категорія',
+                          items: data.categories,
+                          initialSelection: null,
+                          onChanged: (category) {
+                            if (data.filterCategory == category) return;
+                            data.filterCategory = category;
+                            _filterUpdateCallback();
+                          },
+                          presenter: (category) => category?.name ?? 'Всі',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+            if (data.error == null)
+              Card(
+                child: data.isLoaded
+                    ? QuestsList(items: data.quests)
+                    : const CircularProgressIndicator(),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Center(
+                  child: Text(data.error?.message ?? 'Сталась помилка'),
+                ),
+              )
+          ],
+        );
+      },
+    );
+  }
+}
+
+typedef StringTPresenter<T> = String Function(T);
+
+class _QuestsFilter<T> extends StatelessWidget {
   final String caption;
-  final List<String> items;
-  final String initialSelection;
+  final List<T> items;
+  final T initialSelection;
+  final Callback<T?> onChanged;
+  final StringTPresenter<T> presenter;
 
   const _QuestsFilter({
     required this.items,
     required this.caption,
     required this.initialSelection,
-    super.key,
+    required this.onChanged,
+    required this.presenter,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: DropdownButton<String>(
-        items: items.map((item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item),
-          );
-        }).toList(),
-        onChanged: (value) {}, // TODO
-        value: initialSelection,
-      ),
-      // child: DropdownMenu(
-      //   helperText: caption,
-      //   enableSearch: true,
-      //   initialSelection: initialSelection,
-      //   dropdownMenuEntries: items.map((item) {
-      //     return DropdownMenuEntry(
-      //         value: item,
-      //         label: item,
-      //         style: ButtonStyle(textStyle: MaterialStatePropertyAll(TextStyl)));
-      //   }).toList(),
-      // ),
+    return DropdownButtonFormField<T>(
+      isDense: true,
+      onChanged: onChanged,
+      value: initialSelection,
+      decoration: InputDecoration(labelText: caption),
+      items: items.map((item) {
+        return DropdownMenuItem<T>(
+          value: item,
+          child: Text(presenter(item)),
+        );
+      }).toList(growable: false),
     );
   }
 }

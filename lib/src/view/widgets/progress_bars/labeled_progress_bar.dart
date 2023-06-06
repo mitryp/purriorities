@@ -7,6 +7,11 @@ class LabeledProgressBar extends StatelessWidget {
   final int maxValue;
   final int value;
   final String? progressBarCaption;
+  final double spacing;
+  final TextAlign labelAlign;
+  final double progressBarHeight;
+  final int labelFlex;
+  final int barFlex;
 
   const LabeledProgressBar({
     required this.label,
@@ -14,6 +19,11 @@ class LabeledProgressBar extends StatelessWidget {
     required this.maxValue,
     this.minValue = 0,
     this.progressBarCaption,
+    this.spacing = 8.0,
+    this.labelAlign = TextAlign.end,
+    this.progressBarHeight = 25.0,
+    this.labelFlex = 2,
+    this.barFlex = 5,
     super.key,
   });
 
@@ -25,19 +35,21 @@ class LabeledProgressBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
-          child: Text(label, textAlign: TextAlign.end),
+          flex: labelFlex,
+          child: Text(label, textAlign: labelAlign),
         ),
-        const SizedBox(
-          width: 20,
-        ),
+        SizedBox(width: spacing),
         Expanded(
-          flex: 3,
-          child: ProgressBar(
-            minValue: minValue,
-            maxValue: maxValue,
-            value: value,
-            height: 25,
-            overlayingWidget: caption != null ? Text(caption) : null,
+          flex: barFlex,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: ProgressBar(
+              minValue: minValue,
+              maxValue: maxValue,
+              value: value,
+              height: progressBarHeight,
+              overlayingWidget: caption != null ? Text(caption) : null,
+            ),
           ),
         ),
       ],

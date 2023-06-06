@@ -1,21 +1,22 @@
 part of 'collection_page.dart';
 
-typedef Cat = ({String asset, String? name, int? level, double? xp, int? price});
-
 const _radius = 50.0;
 
 class CatCard extends StatelessWidget {
-  final Cat cat;
+  final CollectionCat cat;
 
   const CatCard({required this.cat, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final info = cat.info;
+    final ownership = cat.ownership;
+    final catPrice = ownership?.price;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
-        final catLevel = cat.level;
 
         return Stack(
           alignment: Alignment.center,
@@ -25,23 +26,25 @@ class CatCard extends StatelessWidget {
               children: [
                 SizedBox.square(
                   dimension: _radius * 2,
-                  child: cat.price != null ? _ShadedCatAvatar(cat: cat) : _CatAvatar(cat: cat),
+                  child: (ownership?.isAway ?? false)
+                      ? _ShadedCatAvatar(cat.info, isOwned: cat.isOwned)
+                      : _CatAvatar(cat.info, isOwned: cat.isOwned),
                 ),
                 FittedBox(
                   child: Text(
-                    cat.name ?? '???',
+                    !(ownership?.isAway ?? true) ? info.name : '???',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
                 SizedBox(
                   height: height / 6,
-                  child: cat.price == null
-                      ? Center(child: Text('+${cat.xp ?? '?'}% XP'))
-                      : _PurchaseButton(price: cat.price!),
+                  child: catPrice == null
+                      ? Center(child: Text('+${ownership?.xpBoost ?? '???'}% XP'))
+                      : _PurchaseButton(price: catPrice),
                 ),
               ],
             ),
-            if (catLevel != null) _LevelDiamond(width: width, level: catLevel)
+            if (ownership != null) _LevelDiamond(width: width, level: ownership.level)
           ],
         );
       },
@@ -51,18 +54,20 @@ class CatCard extends StatelessWidget {
 
 class _CatAvatar extends StatelessWidget {
   final Cat cat;
+  final bool isOwned;
 
-  const _CatAvatar({required this.cat});
+  const _CatAvatar(this.cat, {required this.isOwned});
 
   @override
   Widget build(BuildContext context) {
     return SpriteAvatar(
-      image: Image.asset(
-        cat.asset,
-        color: cat.name == null ? Colors.black : null,
+      image: Image.network(
+        cat.spritePath,
+        color: isOwned ? null : Colors.black,
         filterQuality: FilterQuality.none,
         scale: scaleToFitCircle(_radius),
       ),
+      backgroundColor: cat.rarity.color,
       minRadius: _radius,
     );
   }
@@ -70,8 +75,9 @@ class _CatAvatar extends StatelessWidget {
 
 class _ShadedCatAvatar extends StatelessWidget {
   final Cat cat;
+  final bool isOwned;
 
-  const _ShadedCatAvatar({required this.cat});
+  const _ShadedCatAvatar(this.cat, {required this.isOwned});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +87,7 @@ class _ShadedCatAvatar extends StatelessWidget {
           Color.fromARGB(175, 0, 0, 0),
           BlendMode.darken,
         ),
-        child: _CatAvatar(cat: cat),
+        child: _CatAvatar(cat, isOwned: isOwned),
       ),
     );
   }

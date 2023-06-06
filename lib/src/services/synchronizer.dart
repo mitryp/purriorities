@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 import '../data/models/user.dart';
-import '../data/util/notifier_wrapper.dart';
+import '../data/user_data.dart';
 import 'http/fetch/user_fetch_service.dart';
 
 class Synchronizer {
@@ -17,7 +17,7 @@ class Synchronizer {
     // ignore: use_build_context_synchronously
     if (!_context.mounted) return null;
 
-    _context.read<NotifierWrapper<User?>>().data = user;
+    _context.read<UserData>().user = user;
 
     return user;
   }

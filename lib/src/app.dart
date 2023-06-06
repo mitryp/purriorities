@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +9,7 @@ import 'common/enums/app_route.dart';
 import 'data/main_navigation_data.dart';
 import 'data/models/quest.dart';
 import 'data/models/user.dart';
+import 'data/user_data.dart';
 import 'data/util/notifier_wrapper.dart';
 import 'services/cats_info_cache.dart';
 import 'services/http/auth_service.dart';
@@ -104,39 +107,34 @@ class _AppTopProviders extends StatelessWidget {
           create: (_) => createHttpClient(),
         ),
 
-        // a User provider with a change notifier wrapper
-        ChangeNotifierProvider<NotifierWrapper<User?>>(
-          create: (_) => NotifierWrapper(null),
-        ),
-
-        // a User proxy provider
-        ProxyProvider<NotifierWrapper<User?>, User?>(
-          update: (_, wrapper, __) => wrapper.data,
-        ),
-
-        // a Quests provider with a change notifier
-        ChangeNotifierProvider<NotifierWrapper<List<Quest>?>>(
-          create: (_) => NotifierWrapper(null),
+        // a UserData provider with a change notifier wrapper
+        ChangeNotifierProvider<UserData>(
+          create: (_) => UserData(),
         ),
 
         // an AuthService singleton provider dependant on the HTTP client
         ProxyProvider<Dio, AuthService>(
-          update: (_, client, __) => AuthService(client),
+          update: (_, client, prev) => prev ?? AuthService(client),
         ),
 
         // a provider of all the fetch services singletons. depends on the HTTP client
         ProxyProvider<Dio, FetchServiceBundle>(
-          update: (_, client, __) => bundleFetchServices(client),
+          update: (_, client, prev) => prev ?? bundleFetchServices(client),
         ),
 
         // a CatsInfoCache singleton provider. depends on the fetch services bundle
         ProxyProvider<FetchServiceBundle, CatsInfoCache>(
-          update: (_, bundle, __) => CatsInfoCache(bundle.catsFetchService),
+          update: (_, bundle, prev) => prev ?? CatsInfoCache(bundle.catsFetchService),
         ),
 
         // a Synchronizer provider. depends on the fetch services bundle
         ProxyProvider<FetchServiceBundle, Synchronizer>(
-          update: (context, bundle, __) => Synchronizer(context, bundle.usersFetchService),
+          update: (context, bundle, prev) =>
+              prev ??
+              Synchronizer(
+                context,
+                bundle.usersFetchService,
+              ),
         ),
       ],
       child: child,

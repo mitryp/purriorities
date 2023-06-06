@@ -15,14 +15,19 @@ class QuestCategory extends Serializable with Prototype<QuestCategory> {
   /// An id of this category.
   final String id;
 
+  /// If this category is a default one.
+  final bool inbox;
+
   const QuestCategory({
     required this.name,
     required this.id,
+    required this.inbox,
   });
 
   const QuestCategory.empty()
       : id = '',
-        name = '';
+        name = '',
+        inbox = false;
 
   factory QuestCategory.fromJson(Map<String, dynamic> json) => _$QuestCategoryFromJson(json);
 
@@ -47,5 +52,6 @@ class QuestCategory extends Serializable with Prototype<QuestCategory> {
   QuestCategory copyWith({String? name}) => QuestCategory(
         name: name ?? this.name,
         id: id,
+        inbox: inbox,
       );
 }

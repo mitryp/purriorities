@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../data/models/cat.dart';
 import 'http/fetch/cat_fetch_service.dart';
 
@@ -18,6 +20,8 @@ class CatsInfoCache {
     if (isLoaded) return true;
 
     final result = await _catFetchService.getMany();
+
+    log('fetch cats result: $result', name: 'CatsInfoCache');
 
     if (!result.isSuccessful) return false;
 

@@ -34,6 +34,13 @@ class Skill extends Serializable with Prototype<Skill> {
     required this.id,
   });
 
+  const Skill.empty()
+      : name = '',
+        id = '',
+        level = 0,
+        levelCap = 0,
+        levelExp = 0;
+
   factory Skill.fromJson(Map<String, dynamic> json) => _$SkillFromJson(json);
 
   @override

@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../config.dart';
 import '../enums/cat_rarity.dart';
 
 part 'cat.g.dart';
@@ -27,6 +28,8 @@ class Cat {
   });
 
   factory Cat.fromJson(Map<String, dynamic> json) => _$CatFromJson(json);
+
+  String get spritePath => '${baseUrl}api/cats/$nameId/image';
 
   @override
   bool operator ==(Object other) =>

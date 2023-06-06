@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../common/enums/app_route.dart';
 import '../../data/models/user.dart';
+import '../../data/user_data.dart';
 
 class Authorizer extends StatelessWidget {
   static const Widget _unauthorizedPlaceholder = Center(
@@ -21,9 +22,9 @@ class Authorizer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<User?>(
-      builder: (context, user, child) {
-        if (user != null) {
+    return Consumer<UserData>(
+      builder: (context, data, child) {
+        if (data.isLoggedIn) {
           return child ?? this.child;
         }
 

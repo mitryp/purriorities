@@ -54,7 +54,7 @@ class User extends Serializable with Prototype<User> {
   final int trust;
 
   @JsonKey(includeToJson: false, required: false)
-  final List<CatOwnership> cats;
+  final List<CatOwnership> catOwnerships;
 
   const User({
     required this.nickname,
@@ -67,7 +67,7 @@ class User extends Serializable with Prototype<User> {
     required this.feed,
     required this.catnip,
     required this.trust,
-    this.cats = const [],
+    this.catOwnerships = const [],
   });
 
   const User.register({
@@ -81,7 +81,7 @@ class User extends Serializable with Prototype<User> {
         feed = 0,
         catnip = 0,
         trust = 0,
-        cats = const [];
+        catOwnerships = const [];
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
@@ -103,7 +103,7 @@ class User extends Serializable with Prototype<User> {
           feed == other.feed &&
           catnip == other.catnip &&
           trust == other.trust &&
-          cats == other.cats;
+          catOwnerships == other.catOwnerships;
 
   @override
   int get hashCode =>
@@ -117,7 +117,7 @@ class User extends Serializable with Prototype<User> {
       feed.hashCode ^
       catnip.hashCode ^
       trust.hashCode ^
-      cats.hashCode;
+      catOwnerships.hashCode;
 
   @override
   User copyWith({
@@ -140,7 +140,7 @@ class User extends Serializable with Prototype<User> {
         feed: feed ?? this.feed,
         catnip: catnip,
         trust: trust ?? this.trust,
-        cats: cats ?? this.cats,
+        catOwnerships: cats ?? this.catOwnerships,
       );
 
   /// Returns a copy of this user object after the given [punishment] applied.
@@ -150,7 +150,7 @@ class User extends Serializable with Prototype<User> {
     final feed = this.feed - punishment.runawayCats.fold<int>(0, (val, e) => val + e.feedLost);
 
     final runawayCatIds = HashSet.of(punishment.runawayCats.map((e) => e.nameId));
-    final cats = this.cats.toList()..removeWhere((cat) => runawayCatIds.contains(cat.catNameId));
+    final cats = this.catOwnerships.toList()..removeWhere((cat) => runawayCatIds.contains(cat.catNameId));
 
     return copyWith(trust: trust, feed: feed, cats: cats.toList(growable: false));
   }

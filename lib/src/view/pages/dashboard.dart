@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import '../../common/enums/app_route.dart';
 import '../../common/enums/sprite.dart';
 import '../../data/models/user.dart';
+import '../../data/user_data.dart';
 import '../../util/sprite_scaling.dart';
+import '../widgets/active_quests_view.dart';
 import '../widgets/add_button.dart';
 import '../widgets/authorizer.dart';
 import '../widgets/currency/currency_balance.dart';
@@ -24,8 +26,8 @@ class Dashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Authorizer(
       child: LayoutSelector(
-        mobileLayoutBuilder: (context) => const _MobileHomepage(),
-        desktopLayoutBuilder: (context) => const _DesktopHomepage(),
+        mobileLayoutBuilder: (context) => const _MobileDashboard(),
+        desktopLayoutBuilder: (context) => const _DesktopDashboard(),
       ),
     );
   }
@@ -39,8 +41,8 @@ final List<(String name, bool isRepeated, DateTime? deadline)> questsData = [
   ('Помуркотіти коханого :3', false, null),
 ];
 
-class _MobileHomepage extends StatelessWidget {
-  const _MobileHomepage();
+class _MobileDashboard extends StatelessWidget {
+  const _MobileDashboard();
 
   @override
   Widget build(BuildContext context) {
@@ -48,38 +50,34 @@ class _MobileHomepage extends StatelessWidget {
       floatingActionButton: AddButton(onPressed: () => context.push(AppRoute.editQuest.route)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
-          child: _buildUserInfoBar(),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 8.0),
+          child: _UserInfoSection(),
         ),
         Expanded(
           child: Card(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: Text(
-                    'Не втратьте довіру: виконайте квести!',
-                    style: TextStyle(fontSize: 22),
-                    textAlign: TextAlign.center,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      'Не втратьте довіру: виконайте квести!',
+                      style: TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-                Expanded(child: QuestsList(items: questsData)),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ProgressIndicatorButton.elevated(
-                      onPressed: () async {
-                        context.push(AppRoute.allQuests.route);
-                        //TODO remove
-                        await Future.delayed(const Duration(seconds: 1));
-                      },
+                  const Expanded(child: ActiveQuestsView()),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      onPressed: () async => context.push(AppRoute.allQuests.route),
                       child: const Text('Всі квести'),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -87,25 +85,20 @@ class _MobileHomepage extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buildUserInfoBar() {
-    const sprite = Sprite.grayCat;
-    const radius = 50.0;
+class _UserInfoSection extends StatelessWidget {
+  static const Sprite sprite = Sprite.grayCat;
+  static const double radius = 50.0;
+  static const int maxTrust = 100;
 
-    const trustValue = 10;
-    const maxTrust = 100;
+  const _UserInfoSection({super.key});
 
-    const xpValue = 40;
-    const maxXp = 100;
-    const xpLevel = 2;
-
-    const nFish = 10;
-    const nValerian = 1;
-
-    return Consumer<User?>(
-      builder: (context, maybeUser, child) {
-        final user = maybeUser!;
-
+  @override
+  Widget build(BuildContext context) {
+    return Selector<UserData, User>(
+      selector: (context, data) => data.user!,
+      builder: (context, user, child) {
         return IntrinsicHeight(
           child: Row(
             children: [
@@ -114,6 +107,7 @@ class _MobileHomepage extends StatelessWidget {
                 minRadius: radius,
                 scale: scaleToFitCircle(radius),
               ),
+              const SizedBox(width: 8),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
@@ -145,8 +139,8 @@ class _MobileHomepage extends StatelessWidget {
   }
 }
 
-class _DesktopHomepage extends StatelessWidget {
-  const _DesktopHomepage();
+class _DesktopDashboard extends StatelessWidget {
+  const _DesktopDashboard();
 
   @override
   Widget build(BuildContext context) => const DesktopLayout();

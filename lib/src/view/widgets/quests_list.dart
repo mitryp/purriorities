@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../data/models/quest.dart';
+import '../../data/user_data.dart';
 import 'quest_tile.dart';
 
 class QuestsList extends StatelessWidget {
-  final List<(String name, bool isRepeated, DateTime? deadline)> items;
+  final List<Quest> items;
 
   const QuestsList({required this.items, super.key});
 
@@ -11,13 +14,26 @@ class QuestsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.separated(
       shrinkWrap: true,
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        final (questName, isRepeated, deadline) = items[index];
+      itemCount: items.isNotEmpty ? items.length : 1,
+      itemBuilder: (_, index) {
+        if (items.isEmpty) {
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(
+              child: Text('Поки немає квестів для відображення'),
+            ),
+          );
+        }
 
-        return QuestTile(questName: questName, isRepeated: isRepeated, deadline: deadline);
+        final quest = items[index];
+
+        return QuestTile(
+          questName: quest.name,
+          isRepeated: quest.interval != null,
+          deadline: quest.deadline,
+        );
       },
-      separatorBuilder: (context, index) => const Divider(),
+      separatorBuilder: (_, __) => const Divider(),
     );
   }
 }
