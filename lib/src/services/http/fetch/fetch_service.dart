@@ -24,7 +24,7 @@ abstract class FetchService<T> {
       : path = 'api/$path';
 
   /// Fetches a single resource with the given [primaryKey].
-  Future<FetchResult<T>> getOne(Object primaryKey) =>
+  Future<FetchResult<T>> getOne(String primaryKey) =>
       _defaultResponseTransform(client.get<JsonMap>('$path/$primaryKey'));
 
   Future<FetchResult<T>> _defaultResponseTransform(Future<Response<JsonMap>> res) =>

@@ -13,7 +13,7 @@ class UsersFetchService extends FetchService<User> with ModifyFetchMixin<User> {
         );
 
   @override
-  Future<FetchResult<User>> getOne([covariant String primaryKey = '']) {
+  Future<FetchResult<User>> getOne([String primaryKey = '']) {
     assert(primaryKey.isEmpty);
 
     return super.getOne(primaryKey);
