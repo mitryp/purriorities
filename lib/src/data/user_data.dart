@@ -23,6 +23,17 @@ class UserData with ChangeNotifier {
     notifyListeners();
   }
 
+  void addQuest(Quest quest) {
+    _quests
+      ..add(quest)
+      ..sort(
+        (a, b) =>
+            (a.deadline?.millisecondsSinceEpoch ?? 0) - (b.deadline?.millisecondsSinceEpoch ?? 0),
+      );
+
+    notifyListeners();
+  }
+
   List<PendingPunishment> get pendingPunishments => _punishments;
 
   set pendingPunishments(List<PendingPunishment> punishments) {

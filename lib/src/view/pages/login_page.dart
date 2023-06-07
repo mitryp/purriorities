@@ -12,7 +12,6 @@ import '../../data/util/notifier_wrapper.dart';
 import '../../data/util/validators.dart';
 import '../../services/http/auth_service.dart';
 import '../../services/synchronizer.dart';
-import '../../typedefs.dart';
 import '../../util/extensions/context_synchronizer.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/layouts/form_layout.dart';
@@ -196,7 +195,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     if (!mounted) return;
     context.go(
       AppRoute.init.route,
-      extra: (sessionRestored: sessionRestored) as SessionRestorationExtra,
+      extra: (sessionRestored: sessionRestored),
     );
   }
 

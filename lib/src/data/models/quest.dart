@@ -123,7 +123,7 @@ class Quest extends Serializable with Prototype<Quest> {
     String? name,
     QuestPriority? priority,
     QuestCategory? category,
-    List<Skill>? skills,
+    List<Skill>? questSkills,
     List<QuestStage>? stages,
   }) =>
       Quest(
@@ -132,7 +132,7 @@ class Quest extends Serializable with Prototype<Quest> {
         priority: priority ?? this.priority,
         category: category ?? this.category,
         stages: stages ?? this.stages,
-        questSkills: skills ?? this.questSkills,
+        questSkills: questSkills ?? this.questSkills,
         deadline: deadline,
         limit: limit,
         interval: interval,
@@ -145,7 +145,7 @@ class Quest extends Serializable with Prototype<Quest> {
     String? name,
     QuestPriority? priority,
     QuestCategory? category,
-    List<Skill>? skills,
+    List<Skill>? questSkills,
     List<QuestStage>? stages,
   }) =>
       Quest(
@@ -153,7 +153,7 @@ class Quest extends Serializable with Prototype<Quest> {
         name: name ?? this.name,
         priority: priority ?? this.priority,
         category: category ?? this.category,
-        questSkills: skills ?? this.questSkills,
+        questSkills: questSkills ?? this.questSkills,
         stages: stages ?? this.stages,
         deadline: deadline,
         limit: limit,

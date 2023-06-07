@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/enums/quest_priority.dart';
@@ -9,8 +10,10 @@ import '../../../data/models/quest.dart';
 import '../../../data/models/quest_stage.dart';
 import '../../../data/models/skill.dart';
 import '../../../data/models/task.dart';
+import '../../../data/user_data.dart';
 import '../../../data/util/notifier_wrapper.dart';
 import '../../../data/util/validators.dart';
+import '../../../services/http/util/fetch_service_bundle.dart';
 import '../../../typedefs.dart';
 import '../../../util/datetime_comparison.dart';
 import '../../../util/extensions/datetime_extensions.dart';
@@ -28,9 +31,7 @@ import '../../widgets/priority_selector.dart';
 import '../../widgets/quest_skill_tile/quest_skill_tile.dart';
 
 part 'quest_schedule_tile.dart';
-
 part 'quest_skills_selector.dart';
-
 part 'quest_stages_editor.dart';
 
 class QuestEditPage extends StatelessWidget {
@@ -42,7 +43,7 @@ class QuestEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-        final deadline = DateTime.now().add(const Duration(days: 1));
+        late final deadline = DateTime.now().add(const Duration(days: 1));
 
         return NotifierWrapper<Quest>(
           initialQuest ??
@@ -164,7 +165,27 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
 
   Future<void> _processQuestSaving() async {
     if (!_validateQuest()) return;
-    // context.pop();
+    final service = context.read<FetchServiceBundle>().questsFetchService;
+    final quest = context.read<NotifierWrapper<Quest>>().data;
+
+    final res = await service.create(quest);
+    if (!mounted) return;
+
+    if (res.isSuccessful) {
+      final data = context.read<UserData>();
+      data.addQuest(res.result());
+      context.pop();
+
+      return;
+    }
+
+    showErrorSnackBar(
+      context: context,
+      content: ErrorSnackBarContent(
+        titleText: 'Сталась помилка під час створення квесту',
+        subtitleText: res.errorMessage,
+      ),
+    );
   }
 
   bool _validateQuest() {
