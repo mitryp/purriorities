@@ -1,0 +1,1350 @@
+@startuml
+set namespaceSeparator ::
+
+class "purriorities::src::app.dart::PurrioritiesApp" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::app.dart::PurrioritiesApp"
+
+class "purriorities::src::app.dart::_AppTopProviders" {
+  +Widget child
+  +Widget build()
+}
+
+"purriorities::src::app.dart::_AppTopProviders" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::app.dart::_AppTopProviders"
+
+class "purriorities::src::common::enums::app_route.dart::AppRoute" {
+  +int index
+  {static} +List<AppRoute> values
+  {static} +AppRoute init
+}
+
+"purriorities::src::common::enums::app_route.dart::AppRoute" o-- "purriorities::src::common::enums::app_route.dart::AppRoute"
+"dart::core::Enum" <|-- "purriorities::src::common::enums::app_route.dart::AppRoute"
+
+class "purriorities::src::common::enums::currency.dart::Currency" {
+  +int index
+  {static} +List<Currency> values
+  {static} +Currency feed
+}
+
+"purriorities::src::common::enums::currency.dart::Currency" o-- "purriorities::src::common::enums::currency.dart::Currency"
+"dart::core::Enum" <|-- "purriorities::src::common::enums::currency.dart::Currency"
+
+class "purriorities::src::common::enums::loot_box.dart::LootBoxType" {
+  +int index
+  {static} +List<LootBoxType> values
+  {static} +LootBoxType common
+}
+
+"purriorities::src::common::enums::loot_box.dart::LootBoxType" o-- "purriorities::src::common::enums::loot_box.dart::LootBoxType"
+"dart::core::Enum" <|-- "purriorities::src::common::enums::loot_box.dart::LootBoxType"
+
+class "purriorities::src::common::enums::sprite.dart::Sprite" {
+  +int index
+  {static} +List<Sprite> values
+  {static} +Sprite grayCat
+}
+
+"purriorities::src::common::enums::sprite.dart::Sprite" o-- "purriorities::src::common::enums::sprite.dart::Sprite"
+"dart::core::Enum" <|-- "purriorities::src::common::enums::sprite.dart::Sprite"
+
+class "purriorities::src::data::enums::cat_rarity.dart::CatRarity" {
+  +int index
+  {static} +List<CatRarity> values
+  {static} +CatRarity common
+}
+
+"purriorities::src::data::enums::cat_rarity.dart::CatRarity" o-- "purriorities::src::data::enums::cat_rarity.dart::CatRarity"
+"dart::core::Enum" <|-- "purriorities::src::data::enums::cat_rarity.dart::CatRarity"
+
+class "purriorities::src::data::enums::quest_priority.dart::QuestPriority" {
+  +int index
+  {static} +List<QuestPriority> values
+  {static} +QuestPriority optional
+}
+
+"purriorities::src::data::enums::quest_priority.dart::QuestPriority" o-- "purriorities::src::data::enums::quest_priority.dart::QuestPriority"
+"dart::core::Enum" <|-- "purriorities::src::data::enums::quest_priority.dart::QuestPriority"
+
+class "purriorities::src::data::login_data.dart::LoginData" {
+  -String _email
+  -String _password
+  +String email
+  +String password
+}
+
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "purriorities::src::data::login_data.dart::LoginData"
+
+class "purriorities::src::data::main_navigation_data.dart::MainNavigationData" {
+  -MainNavAction _action
+  +MainNavAction currentPage
+  +int index
+}
+
+"purriorities::src::data::main_navigation_data.dart::MainNavigationData" o-- "purriorities::src::data::main_navigation_data.dart::MainNavAction"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "purriorities::src::data::main_navigation_data.dart::MainNavigationData"
+
+class "purriorities::src::data::main_navigation_data.dart::MainNavAction" {
+  +int index
+  {static} +List<MainNavAction> values
+  {static} +MainNavAction dashboard
+}
+
+"purriorities::src::data::main_navigation_data.dart::MainNavAction" o-- "purriorities::src::data::main_navigation_data.dart::MainNavAction"
+"dart::core::Enum" <|-- "purriorities::src::data::main_navigation_data.dart::MainNavAction"
+
+abstract class "purriorities::src::data::models::abs::prototype.dart::Prototype" {
+  +T copyWith()
+}
+
+abstract class "purriorities::src::data::models::abs::serializable.dart::Serializable" {
+  +Set<String> generatedIdentifiers
+  +Map<String, dynamic> toJson()
+  +Map<String, dynamic> toCreateJson()
+}
+
+class "purriorities::src::data::models::cat.dart::Cat" {
+  +String nameId
+  +String name
+  +String description
+  +CatRarity rarity
+  +String spritePath
+  +int hashCode
+  +bool ==()
+}
+
+"purriorities::src::data::models::cat.dart::Cat" o-- "purriorities::src::data::enums::cat_rarity.dart::CatRarity"
+
+class "purriorities::src::data::models::cat_ownership.dart::CatOwnership" {
+  +int level
+  +String catNameId
+  +int? price
+  +double xpBoost
+  +bool isAway
+  +int hashCode
+  +bool ==()
+}
+
+class "purriorities::src::data::models::punishments.dart::PendingPunishment" {
+  +List<OverdueQuest> overdueQuests
+  +List<RunawayCat> runawayCats
+  +int hashCode
+  +bool ==()
+}
+
+class "purriorities::src::data::models::punishments.dart::OverdueQuest" {
+  +String id
+  +int totalTrustLost
+  +int hashCode
+  +bool ==()
+}
+
+class "purriorities::src::data::models::punishments.dart::RunawayCat" {
+  +String nameId
+  +int feedLost
+  +int hashCode
+  +bool ==()
+}
+
+class "purriorities::src::data::models::quest.dart::Quest" {
+  +String id
+  +String name
+  +QuestPriority priority
+  +DateTime? deadline
+  +DateTime? limit
+  +int? interval
+  +QuestCategory category
+  +List<Skill> questSkills
+  +List<QuestStage> stages
+  +Set<String> generatedIdentifiers
+  +int hashCode
+  +Map<String, dynamic> toJson()
+  +Map<String, dynamic> toCreateJson()
+  +bool ==()
+  +Quest copyWith()
+  +Quest copyWithSchedule()
+}
+
+"purriorities::src::data::models::quest.dart::Quest" o-- "purriorities::src::data::enums::quest_priority.dart::QuestPriority"
+"purriorities::src::data::models::quest.dart::Quest" o-- "purriorities::src::data::models::quest_category.dart::QuestCategory"
+"purriorities::src::data::models::abs::serializable.dart::Serializable" <|-- "purriorities::src::data::models::quest.dart::Quest"
+"purriorities::src::data::models::abs::prototype.dart::Prototype" <|-- "purriorities::src::data::models::quest.dart::Quest"
+
+class "purriorities::src::data::models::quest_category.dart::QuestCategory" {
+  +String name
+  +String id
+  +bool inbox
+  +Set<String> generatedIdentifiers
+  +int hashCode
+  +Map<String, dynamic> toJson()
+  +bool ==()
+  +QuestCategory copyWith()
+}
+
+"purriorities::src::data::models::abs::serializable.dart::Serializable" <|-- "purriorities::src::data::models::quest_category.dart::QuestCategory"
+"purriorities::src::data::models::abs::prototype.dart::Prototype" <|-- "purriorities::src::data::models::quest_category.dart::QuestCategory"
+
+class "purriorities::src::data::models::quest_stage.dart::QuestStage" {
+  +String id
+  +String name
+  +List<Task> tasks
+  +Set<String> generatedIdentifiers
+  +int hashCode
+  +Map<String, dynamic> toJson()
+  +Map<String, dynamic> toCreateJson()
+  +bool ==()
+  +QuestStage copyWith()
+}
+
+"purriorities::src::data::models::abs::serializable.dart::Serializable" <|-- "purriorities::src::data::models::quest_stage.dart::QuestStage"
+"purriorities::src::data::models::abs::prototype.dart::Prototype" <|-- "purriorities::src::data::models::quest_stage.dart::QuestStage"
+
+class "purriorities::src::data::models::skill.dart::Skill" {
+  +String name
+  +int level
+  +int levelExp
+  +int levelCap
+  +String id
+  +Set<String> generatedIdentifiers
+  +int hashCode
+  +Map<String, dynamic> toJson()
+  +bool ==()
+  +Skill copyWith()
+}
+
+"purriorities::src::data::models::abs::serializable.dart::Serializable" <|-- "purriorities::src::data::models::skill.dart::Skill"
+"purriorities::src::data::models::abs::prototype.dart::Prototype" <|-- "purriorities::src::data::models::skill.dart::Skill"
+
+class "purriorities::src::data::models::task.dart::Task" {
+  +String stageId
+  +String id
+  +String name
+  +int minutes
+  +Set<String> generatedIdentifiers
+  +int hashCode
+  +Map<String, dynamic> toJson()
+  +bool ==()
+  +Task copyWith()
+}
+
+"purriorities::src::data::models::abs::serializable.dart::Serializable" <|-- "purriorities::src::data::models::task.dart::Task"
+"purriorities::src::data::models::abs::prototype.dart::Prototype" <|-- "purriorities::src::data::models::task.dart::Task"
+
+class "purriorities::src::data::models::user.dart::User" {
+  +String nickname
+  +String email
+  +int level
+  +int levelExp
+  +int levelCap
+  +int feed
+  +int catnip
+  +double trust
+  +List<CatOwnership> catOwnerships
+  +int hashCode
+  +Map<String, dynamic> toJson()
+  +bool ==()
+  +User copyWith()
+  +User applyPunishment()
+}
+
+"purriorities::src::data::models::abs::serializable.dart::Serializable" <|-- "purriorities::src::data::models::user.dart::User"
+"purriorities::src::data::models::abs::prototype.dart::Prototype" <|-- "purriorities::src::data::models::user.dart::User"
+
+class "purriorities::src::data::user_data.dart::UserData" {
+  -User? _user
+  -List<Quest> _quests
+  -List<PendingPunishment> _punishments
+  +User? user
+  +List<Quest> quests
+  +List<PendingPunishment> pendingPunishments
+  +bool isLoggedIn
+}
+
+"purriorities::src::data::user_data.dart::UserData" o-- "purriorities::src::data::models::user.dart::User"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "purriorities::src::data::user_data.dart::UserData"
+
+class "purriorities::src::data::util::notifier_wrapper.dart::NotifierWrapper" {
+  +bool checkEquality
+  -T _data
+  +T data
+}
+
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "purriorities::src::data::util::notifier_wrapper.dart::NotifierWrapper"
+
+class "purriorities::src::data::util::paginated_data.dart::PaginatedData" {
+  +PaginationMetadata? meta
+  +List<T> data
+  {static} +PaginatedData<T> fromJson()
+}
+
+"purriorities::src::data::util::paginated_data.dart::PaginatedData" o-- "purriorities::src::data::util::paginated_data.dart::PaginationMetadata"
+
+class "purriorities::src::data::util::paginated_data.dart::PaginationMetadata" {
+  +int totalPages
+}
+
+class "purriorities::src::services::cats_info_cache.dart::CatsInfoCache" {
+  -CatsFetchService _catFetchService
+  -List<Cat> _cats
+  -bool _isLoaded
+  +bool isLoaded
+  +List<Cat> cats
+  +int hashCode
+  +dynamic loadCats()
+  +bool ==()
+}
+
+"purriorities::src::services::cats_info_cache.dart::CatsInfoCache" o-- "purriorities::src::services::http::fetch::cat_fetch_service.dart::CatsFetchService"
+
+class "purriorities::src::services::helpers::exceptions.dart::ResourceNotFetchedException" {
+}
+
+"dart::core::StateError" <|-- "purriorities::src::services::helpers::exceptions.dart::ResourceNotFetchedException"
+
+class "purriorities::src::services::helpers::pagination_data.dart::SortOrder" {
+  +int index
+  {static} +List<SortOrder> values
+  {static} +SortOrder asc
+  {static} +SortOrder desc
+}
+
+"purriorities::src::services::helpers::pagination_data.dart::SortOrder" o-- "purriorities::src::services::helpers::pagination_data.dart::SortOrder"
+"dart::core::Enum" <|-- "purriorities::src::services::helpers::pagination_data.dart::SortOrder"
+
+class "purriorities::src::services::http::auth_service.dart::AuthService" {
+  -Dio _client
+  +dynamic login()
+  +dynamic logout()
+  +dynamic register()
+}
+
+"purriorities::src::services::http::auth_service.dart::AuthService" o-- "dio::src::dio.dart::Dio"
+
+class "purriorities::src::services::http::fetch::categories_fetch_service.dart::CategoriesFetchService" {
+}
+
+"purriorities::src::services::http::fetch::fetch_service.dart::FetchService" <|-- "purriorities::src::services::http::fetch::categories_fetch_service.dart::CategoriesFetchService"
+"purriorities::src::services::http::fetch::fetch_service.dart::GetManyFetchMixin" <|-- "purriorities::src::services::http::fetch::categories_fetch_service.dart::CategoriesFetchService"
+"purriorities::src::services::http::fetch::fetch_service.dart::ModifyFetchMixin" <|-- "purriorities::src::services::http::fetch::categories_fetch_service.dart::CategoriesFetchService"
+
+class "purriorities::src::services::http::fetch::cat_fetch_service.dart::CatsFetchService" {
+}
+
+"purriorities::src::services::http::fetch::fetch_service.dart::FetchService" <|-- "purriorities::src::services::http::fetch::cat_fetch_service.dart::CatsFetchService"
+"purriorities::src::services::http::fetch::fetch_service.dart::GetManyFetchMixin" <|-- "purriorities::src::services::http::fetch::cat_fetch_service.dart::CatsFetchService"
+
+abstract class "purriorities::src::services::http::fetch::fetch_service.dart::FetchService" {
+  +Dio client
+  +String path
+  +T Function(Map<String, dynamic>) fromJsonConverter
+  +dynamic getOne()
+  -dynamic _defaultResponseTransform()
+}
+
+"purriorities::src::services::http::fetch::fetch_service.dart::FetchService" o-- "dio::src::dio.dart::Dio"
+"purriorities::src::services::http::fetch::fetch_service.dart::FetchService" o-- "purriorities::src::services::http::fetch::fetch_service.dart::T Function(Map<String, dynamic>)"
+
+abstract class "purriorities::src::services::http::fetch::fetch_service.dart::GetManyFetchMixin" {
+  +dynamic getMany()
+}
+
+abstract class "purriorities::src::services::http::fetch::fetch_service.dart::ModifyFetchMixin" {
+  +dynamic create()
+  +dynamic update()
+}
+
+class "purriorities::src::services::http::fetch::quests_fetch_service.dart::QuestsFetchService" {
+}
+
+"purriorities::src::services::http::fetch::fetch_service.dart::FetchService" <|-- "purriorities::src::services::http::fetch::quests_fetch_service.dart::QuestsFetchService"
+"purriorities::src::services::http::fetch::fetch_service.dart::GetManyFetchMixin" <|-- "purriorities::src::services::http::fetch::quests_fetch_service.dart::QuestsFetchService"
+"purriorities::src::services::http::fetch::fetch_service.dart::ModifyFetchMixin" <|-- "purriorities::src::services::http::fetch::quests_fetch_service.dart::QuestsFetchService"
+
+class "purriorities::src::services::http::fetch::skills_fetch_service.dart::SkillsFetchService" {
+}
+
+"purriorities::src::services::http::fetch::fetch_service.dart::FetchService" <|-- "purriorities::src::services::http::fetch::skills_fetch_service.dart::SkillsFetchService"
+"purriorities::src::services::http::fetch::fetch_service.dart::GetManyFetchMixin" <|-- "purriorities::src::services::http::fetch::skills_fetch_service.dart::SkillsFetchService"
+"purriorities::src::services::http::fetch::fetch_service.dart::ModifyFetchMixin" <|-- "purriorities::src::services::http::fetch::skills_fetch_service.dart::SkillsFetchService"
+
+class "purriorities::src::services::http::fetch::user_fetch_service.dart::UsersFetchService" {
+  +dynamic getOne()
+  +dynamic me()
+}
+
+"purriorities::src::services::http::fetch::fetch_service.dart::FetchService" <|-- "purriorities::src::services::http::fetch::user_fetch_service.dart::UsersFetchService"
+"purriorities::src::services::http::fetch::fetch_service.dart::ModifyFetchMixin" <|-- "purriorities::src::services::http::fetch::user_fetch_service.dart::UsersFetchService"
+
+class "purriorities::src::services::http::util::fetch_result.dart::FetchResult" {
+  -T? _result
+  +DioError? error
+  +bool isSuccessful
+  +String errorMessage
+  {static} +dynamic fromResponse()
+  {static} +dynamic transformResponse()
+  +T result()
+  +FetchResult<R> transform()
+  +R map()
+  +R mapAny()
+  +String toString()
+}
+
+"purriorities::src::services::http::util::fetch_result.dart::FetchResult" o-- "dio::src::dio_error.dart::DioError"
+
+class "purriorities::src::services::http::util::secure_cookie_storage.dart::SecureCookieStorage" {
+  -FlutterSecureStorage _storage
+  +dynamic init()
+  +dynamic deleteAll()
+  +dynamic delete()
+  +dynamic write()
+  +dynamic read()
+}
+
+"purriorities::src::services::http::util::secure_cookie_storage.dart::SecureCookieStorage" o-- "flutter_secure_storage::flutter_secure_storage.dart::FlutterSecureStorage"
+"cookie_jar::src::storage.dart::Storage" <|-- "purriorities::src::services::http::util::secure_cookie_storage.dart::SecureCookieStorage"
+
+class "purriorities::src::services::synchronizer.dart::Synchronizer" {
+  -BuildContext _context
+  -UsersFetchService _userFetchService
+  -QuestsFetchService _questFetchService
+  -T? _updateUserData()
+  +dynamic syncUser()
+  +dynamic syncQuests()
+}
+
+"purriorities::src::services::synchronizer.dart::Synchronizer" o-- "flutter::src::widgets::framework.dart::BuildContext"
+"purriorities::src::services::synchronizer.dart::Synchronizer" o-- "purriorities::src::services::http::fetch::user_fetch_service.dart::UsersFetchService"
+"purriorities::src::services::synchronizer.dart::Synchronizer" o-- "purriorities::src::services::http::fetch::quests_fetch_service.dart::QuestsFetchService"
+
+class "purriorities::src::view::dialogs::confirmation_dialog.dart::ConfirmationDialog" {
+  {static} +Widget defaultConfirmLabel
+  {static} +Widget defaultDenyLabel
+  +Widget? title
+  +List<Widget> promptChildren
+  +void Function()? onConfirm
+  +void Function()? onDeny
+  +Widget confirmLabel
+  +Widget? denyLabel
+  +bool barrierDismissible
+  +Widget build()
+  -void _processDeny()
+  -void _processConfirm()
+}
+
+"purriorities::src::view::dialogs::confirmation_dialog.dart::ConfirmationDialog" o-- "flutter::src::widgets::framework.dart::Widget"
+"purriorities::src::view::dialogs::confirmation_dialog.dart::ConfirmationDialog" o-- "dart::ui::void Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::dialogs::confirmation_dialog.dart::ConfirmationDialog"
+
+class "purriorities::src::view::dialogs::task_completion_dialog.dart::TaskCompletionDialog" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::dialogs::task_completion_dialog.dart::TaskCompletionDialog"
+
+class "purriorities::src::view::dialogs::task_edit_dialog.dart::TaskEditDialog" {
+  +NotifierWrapper<Quest> questNotifier
+  +Task initialTask
+  +bool isEditing
+  -Task _task
+  +Widget build()
+  -void Function(String) _processTaskNameChange()
+  -void _processTaskMinutesChange()
+  -void _updateOrCreateTask()
+  -dynamic _deleteTask()
+  -void _changeQuestWithTasksInfo()
+}
+
+"purriorities::src::view::dialogs::task_edit_dialog.dart::TaskEditDialog" o-- "purriorities::src::data::util::notifier_wrapper.dart::NotifierWrapper<Quest>"
+"purriorities::src::view::dialogs::task_edit_dialog.dart::TaskEditDialog" o-- "purriorities::src::data::models::task.dart::Task"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::dialogs::task_edit_dialog.dart::TaskEditDialog"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::CollectionPage" {
+  +State<CollectionPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::collection::collection_page.dart::CollectionPage"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::_CollectionPageState" {
+  +void initState()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::collection::collection_page.dart::_CollectionPageState"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::MobileCollection" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::collection::collection_page.dart::MobileCollection"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::CollectionCat" {
+  +Cat info
+  +CatOwnership? ownership
+  +bool isOwned
+  -int _value
+  +int compareTo()
+}
+
+"purriorities::src::view::pages::collection::collection_page.dart::CollectionCat" o-- "purriorities::src::data::models::cat.dart::Cat"
+"purriorities::src::view::pages::collection::collection_page.dart::CollectionCat" o-- "purriorities::src::data::models::cat_ownership.dart::CatOwnership"
+"dart::core::Comparable" <|-- "purriorities::src::view::pages::collection::collection_page.dart::CollectionCat"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::CatCard" {
+  +CollectionCat cat
+  +Widget build()
+}
+
+"purriorities::src::view::pages::collection::collection_page.dart::CatCard" o-- "purriorities::src::view::pages::collection::collection_page.dart::CollectionCat"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::collection::collection_page.dart::CatCard"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::_CatAvatar" {
+  +Cat cat
+  +bool isOwned
+  +Widget build()
+}
+
+"purriorities::src::view::pages::collection::collection_page.dart::_CatAvatar" o-- "purriorities::src::data::models::cat.dart::Cat"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::collection::collection_page.dart::_CatAvatar"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::_ShadedCatAvatar" {
+  +Cat cat
+  +bool isOwned
+  +Widget build()
+}
+
+"purriorities::src::view::pages::collection::collection_page.dart::_ShadedCatAvatar" o-- "purriorities::src::data::models::cat.dart::Cat"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::collection::collection_page.dart::_ShadedCatAvatar"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::_PurchaseButton" {
+  +int price
+  +dynamic Function() onPressed
+  +Widget build()
+}
+
+"purriorities::src::view::pages::collection::collection_page.dart::_PurchaseButton" o-- "purriorities::src::typedefs.dart::dynamic Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::collection::collection_page.dart::_PurchaseButton"
+
+class "purriorities::src::view::pages::collection::collection_page.dart::_LevelDiamond" {
+  +double width
+  +int level
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::collection::collection_page.dart::_LevelDiamond"
+
+class "purriorities::src::view::pages::dashboard.dart::Dashboard" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::dashboard.dart::Dashboard"
+
+class "purriorities::src::view::pages::dashboard.dart::_MobileDashboard" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::dashboard.dart::_MobileDashboard"
+
+class "purriorities::src::view::pages::dashboard.dart::_UserInfoSection" {
+  {static} +Sprite sprite
+  {static} +double radius
+  {static} +int maxTrust
+  +Widget build()
+}
+
+"purriorities::src::view::pages::dashboard.dart::_UserInfoSection" o-- "purriorities::src::common::enums::sprite.dart::Sprite"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::dashboard.dart::_UserInfoSection"
+
+class "purriorities::src::view::pages::dashboard.dart::_DesktopDashboard" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::dashboard.dart::_DesktopDashboard"
+
+class "purriorities::src::view::pages::init_page.dart::InitPage" {
+  +bool sessionRestored
+  +State<InitPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::init_page.dart::InitPage"
+
+class "purriorities::src::view::pages::init_page.dart::_InitPageState" {
+  -bool _isUserLoaded
+  -bool _isCatsInfoLoaded
+  -bool _areQuestsLoaded
+  -String _loadingLabel
+  -Synchronizer _synchronizer
+  +dynamic progressValues
+  +void initState()
+  -dynamic _initLoadingFlow()
+  -dynamic _loadUser()
+  -dynamic _loadCats()
+  -dynamic _loadQuests()
+  -void _requestLoginRedirect()
+  -void _requestAppRedirect()
+  -void _requestRedirect()
+  +dynamic ()
+  +Widget build()
+}
+
+"purriorities::src::view::pages::init_page.dart::_InitPageState" o-- "purriorities::src::services::synchronizer.dart::Synchronizer"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::init_page.dart::_InitPageState"
+
+class "purriorities::src::view::pages::login_page.dart::LoginPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::login_page.dart::LoginPage"
+
+class "purriorities::src::view::pages::login_page.dart::MobileLoginForm" {
+  +State<MobileLoginForm> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::login_page.dart::MobileLoginForm"
+
+class "purriorities::src::view::pages::login_page.dart::_MobileLoginFormState" {
+  -GlobalKey<FormState> _formKey
+  +Synchronizer synchronizer
+  +void initState()
+  -dynamic _restoreSession()
+  +Widget build()
+  -List<Widget> _buildLeading()
+  -Widget _buildCatHero()
+  -Widget _buildFormContent()
+  -List<Widget> _buildTrailing()
+  -dynamic _processLogin()
+  -void _redirectToApp()
+  -void _processRegisterRedirect()
+}
+
+"purriorities::src::view::pages::login_page.dart::_MobileLoginFormState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"purriorities::src::view::pages::login_page.dart::_MobileLoginFormState" o-- "purriorities::src::services::synchronizer.dart::Synchronizer"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::login_page.dart::_MobileLoginFormState"
+
+class "purriorities::src::view::pages::quests_page.dart::_QuestsPageData" {
+  +List<QuestCategory?> categories
+  +List<Skill?> skills
+  -bool _isFiltersLoaded
+  -QuestCategory? _filterCategory
+  -Skill? _filterSkill
+  -List<Quest> _quests
+  -bool _isLoaded
+  -DioError? _error
+  +QuestCategory? filterCategory
+  +bool isFiltersLoaded
+  +DioError? error
+  +Skill? filterSkill
+  +bool isLoaded
+  +List<Quest> quests
+}
+
+"purriorities::src::view::pages::quests_page.dart::_QuestsPageData" o-- "purriorities::src::data::models::quest_category.dart::QuestCategory"
+"purriorities::src::view::pages::quests_page.dart::_QuestsPageData" o-- "purriorities::src::data::models::skill.dart::Skill"
+"purriorities::src::view::pages::quests_page.dart::_QuestsPageData" o-- "dio::src::dio_error.dart::DioError"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "purriorities::src::view::pages::quests_page.dart::_QuestsPageData"
+
+class "purriorities::src::view::pages::quests_page.dart::QuestsPage" {
+  +State<QuestsPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::quests_page.dart::QuestsPage"
+
+class "purriorities::src::view::pages::quests_page.dart::_QuestsPageState" {
+  -_QuestsPageData _data
+  -QuestsFetchService _questsFetchService
+  +void initState()
+  -dynamic _loadFilters()
+  -dynamic _fetchFilteredQuests()
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quests_page.dart::_QuestsPageState" o-- "purriorities::src::view::pages::quests_page.dart::_QuestsPageData"
+"purriorities::src::view::pages::quests_page.dart::_QuestsPageState" o-- "purriorities::src::services::http::fetch::quests_fetch_service.dart::QuestsFetchService"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::quests_page.dart::_QuestsPageState"
+
+class "purriorities::src::view::pages::quests_page.dart::_MobileQuestsPage" {
+  -void Function() _filterUpdateCallback
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quests_page.dart::_MobileQuestsPage" o-- "dart::ui::void Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quests_page.dart::_MobileQuestsPage"
+
+class "purriorities::src::view::pages::quests_page.dart::_QuestsFilter" {
+  +String caption
+  +List<T> items
+  +T initialSelection
+  +void Function(T?) onChanged
+  +String Function(T) presenter
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quests_page.dart::_QuestsFilter" o-- "purriorities::src::typedefs.dart::void Function(T)"
+"purriorities::src::view::pages::quests_page.dart::_QuestsFilter" o-- "purriorities::src::view::pages::quests_page.dart::String Function(T)"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quests_page.dart::_QuestsFilter"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::QuestEditPage" {
+  +Quest? initialQuest
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::QuestEditPage" o-- "purriorities::src::data::models::quest.dart::Quest"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::QuestEditPage"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::MobileQuestEditPage" {
+  +bool isEditing
+  +State<MobileQuestEditPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::MobileQuestEditPage"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_MobileQuestEditPageState" {
+  {static} -EdgeInsets _inputRowPadding
+  {static} -SizedBox _separator
+  {static} -Divider _divider
+  -GlobalKey<FormState> _formKey
+  -DateTimeEditingController _deadlineDateController
+  -TimeEditingController _deadlineTimeController
+  -DateTimeEditingController _lastDateController
+  -bool _isPlanerUsed
+  -bool _isRepeating
+  +void dispose()
+  +Widget build()
+  -dynamic _processQuestSaving()
+  -bool _validateQuest()
+  -void Function(QuestPriority) _changePriorityFor()
+  -void Function(String) _changeNameFor()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_MobileQuestEditPageState" o-- "flutter::src::painting::edge_insets.dart::EdgeInsets"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_MobileQuestEditPageState" o-- "flutter::src::widgets::basic.dart::SizedBox"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_MobileQuestEditPageState" o-- "flutter::src::material::divider.dart::Divider"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_MobileQuestEditPageState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_MobileQuestEditPageState" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_MobileQuestEditPageState" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::TimeEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_MobileQuestEditPageState"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_PriorityCategoryRow" {
+  +QuestPriority selectedPriority
+  +void Function(QuestPriority) onPriorityChanged
+  +Widget separator
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_PriorityCategoryRow" o-- "purriorities::src::data::enums::quest_priority.dart::QuestPriority"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_PriorityCategoryRow" o-- "purriorities::src::typedefs.dart::void Function(QuestPriority)"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_PriorityCategoryRow" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_PriorityCategoryRow"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_ScheduleTile" {
+  +bool isPlanerUsed
+  +void Function(bool) onPlanerModeChanged
+  +bool isRepeating
+  +void Function(bool) onRepeatingModeChanged
+  +EdgeInsets childrenPadding
+  +Widget separator
+  +DateTimeEditingController deadlineDateController
+  +TimeEditingController deadlineTimeController
+  +DateTimeEditingController lastDateController
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_ScheduleTile" o-- "purriorities::src::typedefs.dart::void Function(bool)"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_ScheduleTile" o-- "flutter::src::painting::edge_insets.dart::EdgeInsets"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_ScheduleTile" o-- "flutter::src::widgets::framework.dart::Widget"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_ScheduleTile" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_ScheduleTile" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::TimeEditingController"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_ScheduleTile"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DeadlineRow" {
+  {static} -int _firstYear
+  {static} -int _lastYear
+  {static} -Duration _initialDurationToDeadline
+  +bool isRepeating
+  +Widget separator
+  +DateTimeEditingController deadlineDateController
+  +TimeEditingController deadlineTimeController
+  +DateTimeEditingController lastDateController
+  +Widget build()
+  -void Function(DateTime?) _processDateSelection()
+  -void Function(TimeOfDay?) _processTimeSelection()
+  -void _setQuestDeadline()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DeadlineRow" o-- "flutter::src::widgets::framework.dart::Widget"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DeadlineRow" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DeadlineRow" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::TimeEditingController"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DeadlineRow"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_RepeatControls" {
+  {static} -int _initialIntervalDays
+  +bool isRepeating
+  +void Function(bool) onRepeatModeChanged
+  +Widget separator
+  +DateTimeEditingController lastDateController
+  +Widget build()
+  -void Function(String?) _changeQuestIntervalFor()
+  -void Function(DateTime?) _changeQuestLastDateFor()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_RepeatControls" o-- "purriorities::src::typedefs.dart::void Function(bool)"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_RepeatControls" o-- "flutter::src::widgets::framework.dart::Widget"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_RepeatControls" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_RepeatControls"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestSkillsSelector" {
+  +State<_QuestSkillsSelector> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestSkillsSelector"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestSkillsSelectorState" {
+  -ScrollController _scrollController
+  -List<Skill> _skills
+  +void didChangeDependencies()
+  +void dispose()
+  +Widget build()
+  -void _processAddSkill()
+  -void _processSkillsReorder()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestSkillsSelectorState" o-- "flutter::src::widgets::scroll_controller.dart::ScrollController"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestSkillsSelectorState"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_AddSkillButton" {
+  {static} -double _dimension
+  +void Function() onPressed
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_AddSkillButton" o-- "dart::ui::void Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_AddSkillButton"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DraggableSkillTile" {
+  {static} -EdgeInsets _tilePadding
+  {static} -Offset _handleIconOffset
+  +int index
+  +Skill skill
+  +bool useDelayedListener
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DraggableSkillTile" o-- "flutter::src::painting::edge_insets.dart::EdgeInsets"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DraggableSkillTile" o-- "dart::ui::Offset"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DraggableSkillTile" o-- "purriorities::src::data::models::skill.dart::Skill"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_DraggableSkillTile"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStagesEditor" {
+  +State<_QuestStagesEditor> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStagesEditor"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStagesEditorState" {
+  -List<QuestStage> _stages
+  -int _stagesAdded
+  +void didChangeDependencies()
+  +Widget build()
+  -void _processStagesReorder()
+  -void _processAddStage()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStagesEditorState"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStageEntry" {
+  {static} -double _handlePaddingValue
+  {static} -EdgeInsets _handlePadding
+  {static} -double _wrapSpacing
+  +NotifierWrapper<Quest> wrapper
+  +QuestStage stage
+  +int index
+  +Widget build()
+  -dynamic _processDeleteStage()
+  -void _processStageNameChange()
+  -dynamic _processAddTask()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStageEntry" o-- "flutter::src::painting::edge_insets.dart::EdgeInsets"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStageEntry" o-- "purriorities::src::data::util::notifier_wrapper.dart::NotifierWrapper<Quest>"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStageEntry" o-- "purriorities::src::data::models::quest_stage.dart::QuestStage"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_QuestStageEntry"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskTile" {
+  {static} -BorderRadius _borderRadius
+  +Widget child
+  +EdgeInsetsGeometry padding
+  +void Function()? onTap
+  +Widget build()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskTile" o-- "flutter::src::painting::border_radius.dart::BorderRadius"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskTile" o-- "flutter::src::widgets::framework.dart::Widget"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskTile" o-- "flutter::src::painting::edge_insets.dart::EdgeInsetsGeometry"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskTile" o-- "dart::ui::void Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskTile"
+
+class "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskEntry" {
+  +NotifierWrapper<Quest> wrapper
+  +Task task
+  +Widget build()
+  -dynamic _showEditPopup()
+}
+
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskEntry" o-- "purriorities::src::data::util::notifier_wrapper.dart::NotifierWrapper<Quest>"
+"purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskEntry" o-- "purriorities::src::data::models::task.dart::Task"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::quest_edit_page::quest_edit_page.dart::_StageTaskEntry"
+
+class "purriorities::src::view::pages::register_page.dart::RegisterPage" {
+  -String? _cachedEmail
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::register_page.dart::RegisterPage"
+
+class "purriorities::src::view::pages::register_page.dart::MobileRegisterForm" {
+  -String? _cachedEmail
+  +State<MobileRegisterForm> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::register_page.dart::MobileRegisterForm"
+
+class "purriorities::src::view::pages::register_page.dart::_MobileRegisterFormState" {
+  -TextEditingController _usernameController
+  -TextEditingController _emailController
+  -TextEditingController _passwordController
+  -GlobalKey<FormState> _formKey
+  +Widget build()
+  -Widget _buildCatHero()
+  -Column _buildFormContent()
+  -String? _repeatPasswordValidator()
+  -dynamic _processRegister()
+}
+
+"purriorities::src::view::pages::register_page.dart::_MobileRegisterFormState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"purriorities::src::view::pages::register_page.dart::_MobileRegisterFormState" o-- "flutter::src::widgets::framework.dart::GlobalKey<FormState>"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::register_page.dart::_MobileRegisterFormState"
+
+class "purriorities::src::view::pages::skills_page.dart::_SkillsData" {
+  +List<Skill> skills
+  -bool _isLoaded
+  -DioError? _error
+  +bool isLoaded
+  +DioError? error
+  -dynamic _load()
+}
+
+"purriorities::src::view::pages::skills_page.dart::_SkillsData" o-- "dio::src::dio_error.dart::DioError"
+"flutter::src::foundation::change_notifier.dart::ChangeNotifier" <|-- "purriorities::src::view::pages::skills_page.dart::_SkillsData"
+
+class "purriorities::src::view::pages::skills_page.dart::SkillsPage" {
+  +State<SkillsPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::skills_page.dart::SkillsPage"
+
+class "purriorities::src::view::pages::skills_page.dart::_SkillsPageState" {
+  -_SkillsData _data
+  +void initState()
+  +Widget build()
+}
+
+"purriorities::src::view::pages::skills_page.dart::_SkillsPageState" o-- "purriorities::src::view::pages::skills_page.dart::_SkillsData"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::skills_page.dart::_SkillsPageState"
+
+class "purriorities::src::view::pages::skills_page.dart::_MobileSkillsPage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::skills_page.dart::_MobileSkillsPage"
+
+class "purriorities::src::view::pages::store_page.dart::StorePage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::store_page.dart::StorePage"
+
+class "purriorities::src::view::pages::store_page.dart::_MobileStorePage" {
+  +State<_MobileStorePage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::pages::store_page.dart::_MobileStorePage"
+
+class "purriorities::src::view::pages::store_page.dart::_MobileStorePageState" {
+  +void initState()
+  -dynamic _processLootBoxPurchase()
+  -dynamic _processCurrencyPurchase()
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::pages::store_page.dart::_MobileStorePageState"
+
+class "purriorities::src::view::pages::store_page.dart::_LootBoxPurchaseColumn" {
+  +LootBoxType type
+  +double radius
+  +dynamic Function(LootBoxType) onPurchaseIntent
+  +Widget build()
+}
+
+"purriorities::src::view::pages::store_page.dart::_LootBoxPurchaseColumn" o-- "purriorities::src::common::enums::loot_box.dart::LootBoxType"
+"purriorities::src::view::pages::store_page.dart::_LootBoxPurchaseColumn" o-- "purriorities::src::typedefs.dart::dynamic Function(LootBoxType)"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::pages::store_page.dart::_LootBoxPurchaseColumn"
+
+class "purriorities::src::view::widgets::active_quests_view.dart::ActiveQuestsView" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::active_quests_view.dart::ActiveQuestsView"
+
+class "purriorities::src::view::widgets::add_button.dart::AddButton" {
+  +void Function() onPressed
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::add_button.dart::AddButton" o-- "dart::ui::void Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::add_button.dart::AddButton"
+
+class "purriorities::src::view::widgets::authorizer.dart::Authorizer" {
+  {static} -Widget _unauthorizedPlaceholder
+  +Widget child
+  +Widget unauthorizedPlaceholder
+  +Widget build()
+  -void _requestLoginRedirect()
+}
+
+"purriorities::src::view::widgets::authorizer.dart::Authorizer" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::authorizer.dart::Authorizer"
+
+class "purriorities::src::view::widgets::chat_bubble.dart::ChatBubble" {
+  +String msg
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::chat_bubble.dart::ChatBubble"
+
+class "purriorities::src::view::widgets::chat_bubble.dart::_PositionedBubble" {
+  +double size
+  +double bottom
+  +double left
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::chat_bubble.dart::_PositionedBubble"
+
+class "purriorities::src::view::widgets::currency::currency_balance.dart::CurrencyBalance" {
+  +int commonCurrencyBalance
+  +int rareCurrencyBalance
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::currency::currency_balance.dart::CurrencyBalance"
+
+class "purriorities::src::view::widgets::currency::currency_info.dart::CurrencyInfo" {
+  +int quantity
+  +Currency currency
+  +double spriteSize
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::currency::currency_info.dart::CurrencyInfo" o-- "purriorities::src::common::enums::currency.dart::Currency"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::currency::currency_info.dart::CurrencyInfo"
+
+class "purriorities::src::view::widgets::currency::currency_info.dart::CurrencyImage" {
+  +Currency currency
+  +double spriteSize
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::currency::currency_info.dart::CurrencyImage" o-- "purriorities::src::common::enums::currency.dart::Currency"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::currency::currency_info.dart::CurrencyImage"
+
+class "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController" {
+  +String format
+  +String? notSelectedPlaceholder
+  -DateFormat _format
+  -DateTime? _dateTime
+  +DateTime? dateTime
+}
+
+"purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController" o-- "intl::src::intl::date_format.dart::DateFormat"
+"flutter::src::widgets::editable_text.dart::TextEditingController" <|-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController"
+
+class "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::TimeEditingController" {
+  +TimeOfDay? time
+}
+
+"purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::TimeEditingController" o-- "flutter::src::material::time.dart::TimeOfDay"
+"purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController" <|-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::TimeEditingController"
+
+class "purriorities::src::view::widgets::date_time_selector_fields::date_selector_form_field.dart::DateSelectorFormField" {
+  +DateTimeEditingController? controller
+  +DateTime? initialDate
+  +DateTime firstDate
+  +DateTime lastDate
+  +void Function(DateTime?) onSelected
+  +String dateFormat
+  +bool preserveWhenNotSelected
+  +String label
+  +State<DateSelectorFormField> createState()
+}
+
+"purriorities::src::view::widgets::date_time_selector_fields::date_selector_form_field.dart::DateSelectorFormField" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController"
+"purriorities::src::view::widgets::date_time_selector_fields::date_selector_form_field.dart::DateSelectorFormField" o-- "null::void Function(DateTime)"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::widgets::date_time_selector_fields::date_selector_form_field.dart::DateSelectorFormField"
+
+class "purriorities::src::view::widgets::date_time_selector_fields::date_selector_form_field.dart::_DateSelectorFormFieldState" {
+  -DateTimeEditingController _controller
+  -DateTime? _previousDate
+  +void initState()
+  +Widget build()
+  -void _showDatePicker()
+  -void _setDate()
+}
+
+"purriorities::src::view::widgets::date_time_selector_fields::date_selector_form_field.dart::_DateSelectorFormFieldState" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::DateTimeEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::widgets::date_time_selector_fields::date_selector_form_field.dart::_DateSelectorFormFieldState"
+
+class "purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::TimeSelectorFormField" {
+  +TimeEditingController? controller
+  +TimeOfDay? initialTime
+  +void Function(TimeOfDay?) onSelected
+  +bool preserveWhenNotSelected
+  +String timeFormat
+  +String label
+  +State<TimeSelectorFormField> createState()
+}
+
+"purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::TimeSelectorFormField" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::TimeEditingController"
+"purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::TimeSelectorFormField" o-- "flutter::src::material::time.dart::TimeOfDay"
+"purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::TimeSelectorFormField" o-- "null::void Function(TimeOfDay)"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::TimeSelectorFormField"
+
+class "purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::_TimeSelectorFormFieldState" {
+  -TimeEditingController _controller
+  -TimeOfDay? _previousTime
+  +void initState()
+  +Widget build()
+  -void _showDatePicker()
+  -void _setTime()
+}
+
+"purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::_TimeSelectorFormFieldState" o-- "purriorities::src::view::widgets::date_time_selector_fields::datetime_editing_controller.dart::TimeEditingController"
+"purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::_TimeSelectorFormFieldState" o-- "flutter::src::material::time.dart::TimeOfDay"
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::widgets::date_time_selector_fields::time_selector_form_field.dart::_TimeSelectorFormFieldState"
+
+class "purriorities::src::view::widgets::diamond_text.dart::DiamondText" {
+  +String caption
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::diamond_text.dart::DiamondText"
+
+class "purriorities::src::view::widgets::error_snack_bar.dart::ErrorSnackBarContent" {
+  +String titleText
+  +String? subtitleText
+  +Color? backgroundColor
+  +Color? textColor
+  +void Function()? onTap
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::error_snack_bar.dart::ErrorSnackBarContent" o-- "dart::ui::Color"
+"purriorities::src::view::widgets::error_snack_bar.dart::ErrorSnackBarContent" o-- "dart::ui::void Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::error_snack_bar.dart::ErrorSnackBarContent"
+
+class "purriorities::src::view::widgets::layouts::desktop.dart::DesktopLayout" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::layouts::desktop.dart::DesktopLayout"
+
+class "purriorities::src::view::widgets::layouts::form_layout.dart::FormLayout" {
+  +Widget form
+  +List<Widget> leading
+  +List<Widget> trailing
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::layouts::form_layout.dart::FormLayout" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::layouts::form_layout.dart::FormLayout"
+
+class "purriorities::src::view::widgets::layouts::layout_selector.dart::LayoutSelector" {
+  +Widget Function(BuildContext) mobileLayoutBuilder
+  +Widget Function(BuildContext) desktopLayoutBuilder
+  +bool Function(MediaQueryData) mobileSelectionPredicate
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::layouts::layout_selector.dart::LayoutSelector" o-- "flutter::src::widgets::framework.dart::Widget Function(BuildContext)"
+"purriorities::src::view::widgets::layouts::layout_selector.dart::LayoutSelector" o-- "purriorities::src::view::widgets::layouts::layout_selector.dart::bool Function(MediaQueryData)"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::layouts::layout_selector.dart::LayoutSelector"
+
+class "purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout" {
+  {static} +EdgeInsets defaultSafeArea
+  +List<Widget>? bodyChildren
+  +Widget? child
+  +MainAxisSize? mainAxisSize
+  +MainAxisAlignment? mainAxisAlignment
+  +CrossAxisAlignment? crossAxisAlignment
+  +EdgeInsets minimumSafeArea
+  +AppBar? appBar
+  +Widget? bottomNavigationBar
+  +Widget? floatingActionButton
+  +FloatingActionButtonLocation? floatingActionButtonLocation
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout" o-- "flutter::src::painting::edge_insets.dart::EdgeInsets"
+"purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout" o-- "flutter::src::widgets::framework.dart::Widget"
+"purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout" o-- "flutter::src::rendering::flex.dart::MainAxisSize"
+"purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout" o-- "flutter::src::rendering::flex.dart::MainAxisAlignment"
+"purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout" o-- "flutter::src::rendering::flex.dart::CrossAxisAlignment"
+"purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout" o-- "flutter::src::material::app_bar.dart::AppBar"
+"purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout" o-- "flutter::src::material::floating_action_button_location.dart::FloatingActionButtonLocation"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::layouts::mobile.dart::MobileLayout"
+
+class "purriorities::src::view::widgets::main_navigation.dart::MainNavigation" {
+  +Widget child
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::main_navigation.dart::MainNavigation" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::main_navigation.dart::MainNavigation"
+
+class "purriorities::src::view::widgets::main_navigation.dart::_MobileNavigation" {
+  +Widget child
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::main_navigation.dart::_MobileNavigation" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::main_navigation.dart::_MobileNavigation"
+
+class "purriorities::src::view::widgets::priority_selector.dart::PrioritySelector" {
+  +void Function(QuestPriority) onPriorityChanged
+  +List<QuestPriority> priorities
+  +QuestPriority? selected
+  +Widget build()
+  -void _processChange()
+}
+
+"purriorities::src::view::widgets::priority_selector.dart::PrioritySelector" o-- "purriorities::src::typedefs.dart::void Function(QuestPriority)"
+"purriorities::src::view::widgets::priority_selector.dart::PrioritySelector" o-- "purriorities::src::data::enums::quest_priority.dart::QuestPriority"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::priority_selector.dart::PrioritySelector"
+
+class "purriorities::src::view::widgets::priority_selector.dart::PrioritySelectItem" {
+  +QuestPriority priority
+  +void Function() onSelected
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::priority_selector.dart::PrioritySelectItem" o-- "purriorities::src::data::enums::quest_priority.dart::QuestPriority"
+"purriorities::src::view::widgets::priority_selector.dart::PrioritySelectItem" o-- "dart::ui::void Function()"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::priority_selector.dart::PrioritySelectItem"
+
+class "purriorities::src::view::widgets::progress_bars::labeled_progress_bar.dart::LabeledProgressBar" {
+  +String label
+  +num minValue
+  +num maxValue
+  +num value
+  +String? progressBarCaption
+  +double spacing
+  +TextAlign labelAlign
+  +double progressBarHeight
+  +int labelFlex
+  +int barFlex
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::progress_bars::labeled_progress_bar.dart::LabeledProgressBar" o-- "dart::ui::TextAlign"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::progress_bars::labeled_progress_bar.dart::LabeledProgressBar"
+
+class "purriorities::src::view::widgets::progress_bars::progress_bar.dart::ProgressBar" {
+  +num minValue
+  +num maxValue
+  +num value
+  +double height
+  +Widget? overlayingWidget
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::progress_bars::progress_bar.dart::ProgressBar" o-- "flutter::src::widgets::framework.dart::Widget"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::progress_bars::progress_bar.dart::ProgressBar"
+
+class "purriorities::src::view::widgets::progress_indicator_button.dart::ProgressIndicatorButton" {
+  +Widget child
+  +Widget Function({required Widget child, required void Function() onPressed, ButtonStyle? style}) buttonBuilder
+  +dynamic Function() onPressed
+  +ButtonStyle? style
+  +State<ProgressIndicatorButton> createState()
+}
+
+"purriorities::src::view::widgets::progress_indicator_button.dart::ProgressIndicatorButton" o-- "flutter::src::widgets::framework.dart::Widget"
+"purriorities::src::view::widgets::progress_indicator_button.dart::ProgressIndicatorButton" o-- "purriorities::src::view::widgets::progress_indicator_button.dart::Widget Function({required Widget child, required void Function() onPressed, ButtonStyle style})"
+"purriorities::src::view::widgets::progress_indicator_button.dart::ProgressIndicatorButton" o-- "null::dynamic Function()"
+"purriorities::src::view::widgets::progress_indicator_button.dart::ProgressIndicatorButton" o-- "flutter::src::material::button_style.dart::ButtonStyle"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "purriorities::src::view::widgets::progress_indicator_button.dart::ProgressIndicatorButton"
+
+class "purriorities::src::view::widgets::progress_indicator_button.dart::_ProgressIndicatorButtonState" {
+  +bool isProcessing
+  +Widget build()
+  -void _handlePress()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "purriorities::src::view::widgets::progress_indicator_button.dart::_ProgressIndicatorButtonState"
+
+class "purriorities::src::view::widgets::quests_list.dart::QuestsList" {
+  +List<Quest> items
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::quests_list.dart::QuestsList"
+
+class "purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillTile" {
+  +Skill skill
+  +QuestSkillPriority skillPriority
+  +double dimension
+  +Widget build()
+  -void _removeSkill()
+}
+
+"purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillTile" o-- "purriorities::src::data::models::skill.dart::Skill"
+"purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillTile" o-- "purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillPriority"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillTile"
+
+class "purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillPriority" {
+  +int index
+  {static} +List<QuestSkillPriority> values
+  {static} +QuestSkillPriority main
+}
+
+"purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillPriority" o-- "purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillPriority"
+"dart::core::Enum" <|-- "purriorities::src::view::widgets::quest_skill_tile::quest_skill_tile.dart::QuestSkillPriority"
+
+class "purriorities::src::view::widgets::quest_tile.dart::QuestTile" {
+  +String questName
+  +bool isRepeated
+  +DateTime? deadline
+  +Widget build()
+  -Widget _buildDeadlineSection()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::quest_tile.dart::QuestTile"
+
+class "purriorities::src::view::widgets::sprite_avatar.dart::SpriteAvatar" {
+  +Image? image
+  +String? assetName
+  +double? maxRadius
+  +double? minRadius
+  +double? scale
+  +Color? backgroundColor
+  +Color? foregroundColor
+  +Widget build()
+}
+
+"purriorities::src::view::widgets::sprite_avatar.dart::SpriteAvatar" o-- "flutter::src::widgets::image.dart::Image"
+"purriorities::src::view::widgets::sprite_avatar.dart::SpriteAvatar" o-- "dart::ui::Color"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "purriorities::src::view::widgets::sprite_avatar.dart::SpriteAvatar"
+
+
+@enduml
