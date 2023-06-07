@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -142,8 +141,6 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
     final user = User.register(
       nickname: nickname,
       email: email,
-      locale: Intl.systemLocale,
-      timezone: DateTime.now().timeZoneName,
     );
 
     final res = await authService.register(user, password);

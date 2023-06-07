@@ -7,9 +7,11 @@ import '../../common/enums/app_route.dart';
 import '../../data/models/quest.dart';
 import '../../data/models/quest_category.dart';
 import '../../data/models/skill.dart';
+import '../../data/user_data.dart';
 import '../../services/http/fetch/quests_fetch_service.dart';
 import '../../services/http/util/fetch_service_bundle.dart';
 import '../../typedefs.dart';
+import '../../util/extensions/context_synchronizer.dart';
 import '../widgets/add_button.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
@@ -78,7 +80,7 @@ class QuestsPage extends StatefulWidget {
 }
 
 class _QuestsPageState extends State<QuestsPage> {
-  final _QuestsPageData _data = _QuestsPageData();
+  late final _QuestsPageData _data = _QuestsPageData();
   late final QuestsFetchService _questsFetchService;
 
   @override
@@ -100,14 +102,21 @@ class _QuestsPageState extends State<QuestsPage> {
     if (!mounted) return;
 
     _data.categories.addAll(results.first as List<QuestCategory>);
-    _data.skills.addAll(results.last as List<Skill>); // todo temp fix
+    _data.skills.addAll(results.last as List<Skill>);
     _data.isFiltersLoaded = true;
   }
 
   Future<void> _fetchFilteredQuests() async {
-    final questsRes = await _questsFetchService.getMany().then(
-          (res) => res.transform((data) => data.data),
-        );
+    _data.isLoaded = false;
+
+    if (_data.filterCategory == null && _data.filterSkill == null) {
+      _data.quests = context.read<UserData>().quests;
+      _data.isLoaded = true;
+      return;
+    }
+
+    final questsRes =
+        await _questsFetchService.getMany().then((res) => res.transform((data) => data.data));
 
     if (!questsRes.isSuccessful) {
       _data.error = questsRes.error;
@@ -145,7 +154,9 @@ class _MobileQuestsPage extends StatelessWidget {
         return MobileLayout(
           appBar: AppBar(title: const Text('Квести')),
           floatingActionButton: AddButton(
-            onPressed: () => context.push(AppRoute.editQuest.route),
+            onPressed: () => context
+                .push(AppRoute.editQuest.route)
+                .whenComplete(context.synchronizer().syncQuests),
           ),
           children: [
             if (data.isFiltersLoaded)

@@ -3,9 +3,9 @@ import 'progress_bar.dart';
 
 class LabeledProgressBar extends StatelessWidget {
   final String label;
-  final int minValue;
-  final int maxValue;
-  final int value;
+  final num minValue;
+  final num maxValue;
+  final num value;
   final String? progressBarCaption;
   final double spacing;
   final TextAlign labelAlign;

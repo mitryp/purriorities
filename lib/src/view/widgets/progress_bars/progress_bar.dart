@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ProgressBar extends StatelessWidget {
-  final int minValue;
-  final int maxValue;
-  final int value;
+  final num minValue;
+  final num maxValue;
+  final num value;
   final double height;
   final Widget? overlayingWidget;
 

@@ -15,7 +15,7 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _skills = context.watch<NotifierWrapper<Quest>>().data.skills.toList();
+    _skills = context.watch<NotifierWrapper<Quest>>().data.questSkills.toList();
   }
 
   @override
@@ -96,7 +96,7 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
       newIndex -= 1;
     }
 
-    final skills = quest.skills;
+    final skills = quest.questSkills;
     final draggedSkill = skills[oldIndex];
     final reorderedSkills = skills.toList()
       ..removeAt(oldIndex)

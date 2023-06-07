@@ -18,9 +18,12 @@ class InitPage extends StatefulWidget {
 }
 
 class _InitPageState extends State<InitPage> {
-  bool _isUserLoaded = false;
+  late bool _isUserLoaded = widget.sessionRestored;
   bool _isCatsInfoLoaded = false;
+  bool _areQuestsLoaded = false;
   String _loadingLabel = 'Ініціалізація';
+
+  late final _synchronizer = context.synchronizer();
 
   @override
   void initState() {
@@ -31,6 +34,7 @@ class _InitPageState extends State<InitPage> {
   Future<void> _initLoadingFlow() async {
     await _loadCats();
     await _loadUser();
+    await _loadQuests();
 
     final progress = progressValues;
 
@@ -39,10 +43,10 @@ class _InitPageState extends State<InitPage> {
   }
 
   Future<void> _loadUser() async {
+    if (!mounted) return;
     setState(() => _loadingLabel = 'Завантаження користувача');
 
-    final sync = context.synchronizer();
-    final user = await sync.syncUser();
+    final user = await _synchronizer.syncUser();
 
     if (!mounted) return;
 
@@ -62,10 +66,10 @@ class _InitPageState extends State<InitPage> {
     }
 
     setState(() => _isUserLoaded = true);
-    return;
   }
 
   Future<void> _loadCats() async {
+    if (!mounted) return;
     setState(() => _loadingLabel = 'Завантаження котиків');
 
     final catsCache = context.read<CatsInfoCache>();
@@ -89,7 +93,28 @@ class _InitPageState extends State<InitPage> {
     }
 
     setState(() => _isCatsInfoLoaded = true);
-    return;
+  }
+
+  Future<void> _loadQuests() async {
+    if (!mounted) return;
+    setState(() => _loadingLabel = 'Завантаження квестів');
+
+    final quests = await _synchronizer.syncQuests();
+
+    if (!mounted) return;
+
+    if (quests == null) {
+      showErrorSnackBar(
+        context: context,
+        content: const ErrorSnackBarContent(titleText: 'Не вдалось завантажити квести'),
+      );
+
+      _requestLoginRedirect();
+
+      return;
+    }
+
+    setState(() => _areQuestsLoaded = true);
   }
 
   void _requestLoginRedirect() => _requestRedirect(AppRoute.login);
@@ -103,7 +128,7 @@ class _InitPageState extends State<InitPage> {
   }
 
   ({int total, int actual}) get progressValues {
-    final progresses = [_isUserLoaded, _isCatsInfoLoaded];
+    final progresses = [_isUserLoaded, _isCatsInfoLoaded, _areQuestsLoaded];
 
     return (total: progresses.length, actual: progresses.fold(0, (val, e) => val + (e ? 1 : 0)));
   }

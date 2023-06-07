@@ -18,12 +18,6 @@ class User extends Serializable with Prototype<User> {
   /// An email of this user.
   final String email;
 
-  /// A localization set for this user.
-  final String locale;
-
-  /// A timezone set for this user.
-  final String timezone;
-
   /// A current level of this user.
   /// Must be non-negative.
   @JsonKey(includeToJson: false)
@@ -51,7 +45,7 @@ class User extends Serializable with Prototype<User> {
   /// An amount of cats' trust that this user have.
   /// Must be non-negative.
   @JsonKey(includeToJson: false)
-  final int trust;
+  final double trust;
 
   @JsonKey(includeToJson: false, required: false)
   final List<CatOwnership> catOwnerships;
@@ -59,8 +53,6 @@ class User extends Serializable with Prototype<User> {
   const User({
     required this.nickname,
     required this.email,
-    required this.locale,
-    required this.timezone,
     required this.level,
     required this.levelExp,
     required this.levelCap,
@@ -73,8 +65,6 @@ class User extends Serializable with Prototype<User> {
   const User.register({
     required this.nickname,
     required this.email,
-    required this.locale,
-    required this.timezone,
   })  : level = 0,
         levelExp = 0,
         levelCap = 0,
@@ -95,8 +85,6 @@ class User extends Serializable with Prototype<User> {
           runtimeType == other.runtimeType &&
           nickname == other.nickname &&
           email == other.email &&
-          locale == other.locale &&
-          timezone == other.timezone &&
           level == other.level &&
           levelExp == other.levelExp &&
           levelCap == other.levelCap &&
@@ -109,8 +97,6 @@ class User extends Serializable with Prototype<User> {
   int get hashCode =>
       nickname.hashCode ^
       email.hashCode ^
-      locale.hashCode ^
-      timezone.hashCode ^
       level.hashCode ^
       levelExp.hashCode ^
       levelCap.hashCode ^
@@ -123,17 +109,13 @@ class User extends Serializable with Prototype<User> {
   User copyWith({
     String? nickname,
     String? email,
-    String? locale,
-    String? timezone,
     int? feed,
-    int? trust,
+    double? trust,
     List<CatOwnership>? cats,
   }) =>
       User(
         nickname: nickname ?? this.nickname,
         email: email ?? this.email,
-        locale: locale ?? this.locale,
-        timezone: timezone ?? this.timezone,
         level: level,
         levelExp: levelExp,
         levelCap: levelCap,

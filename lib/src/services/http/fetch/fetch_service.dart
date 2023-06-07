@@ -5,6 +5,7 @@ import '../../../data/util/paginated_data.dart';
 import '../../../data/util/serializable_difference.dart';
 import '../../../typedefs.dart';
 import '../../../util/extensions/serializable_difference_extension.dart';
+import '../../helpers/pagination_data.dart';
 import '../util/fetch_result.dart';
 
 typedef FromJsonConverter<T> = T Function(Map<String, dynamic> json);
@@ -33,8 +34,10 @@ abstract class FetchService<T> {
 mixin GetManyFetchMixin<T> on FetchService<T> {
   // todo pagination
   /// Fetches a [PaginatedData] of [T] based on the [queryData].
-  Future<FetchResult<PaginatedData<T>>> getMany([dynamic queryData]) {
-    final res = client.get<JsonMap>(path);
+  Future<FetchResult<PaginatedData<T>>> getMany([
+    PaginationData paginationData = emptyPaginationData,
+  ]) {
+    final res = client.get<JsonMap>(path, queryParameters: paginationData.toParams());
 
     return FetchResult.transformResponse(
       res,

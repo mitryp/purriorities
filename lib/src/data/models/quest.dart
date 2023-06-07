@@ -50,7 +50,7 @@ class Quest extends Serializable with Prototype<Quest> {
 
   /// A list of [Skill]s of connected to this quest;
   @JsonKey(toJson: _serializeQuestSkills)
-  final List<Skill> skills;
+  final List<Skill> questSkills;
 
   /// A list of [QuestStage]s of this quest.
   final List<QuestStage> stages;
@@ -63,7 +63,7 @@ class Quest extends Serializable with Prototype<Quest> {
     this.limit,
     this.interval,
     required this.category,
-    required this.skills,
+    required this.questSkills,
     required this.stages,
   });
 
@@ -75,7 +75,7 @@ class Quest extends Serializable with Prototype<Quest> {
         limit = null,
         interval = null,
         category = const QuestCategory.empty(),
-        skills = const [],
+        questSkills = const [],
         stages = const [QuestStage.empty()];
 
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
@@ -102,7 +102,7 @@ class Quest extends Serializable with Prototype<Quest> {
           limit == other.limit &&
           interval == other.interval &&
           category == other.category &&
-          skills == other.skills &&
+          questSkills == other.questSkills &&
           stages == other.stages;
 
   @override
@@ -114,7 +114,7 @@ class Quest extends Serializable with Prototype<Quest> {
       limit.hashCode ^
       interval.hashCode ^
       category.hashCode ^
-      skills.hashCode ^
+      questSkills.hashCode ^
       stages.hashCode;
 
   /// Preserves the schedule information. Use the [copyWithSchedule] method to change it.
@@ -132,7 +132,7 @@ class Quest extends Serializable with Prototype<Quest> {
         priority: priority ?? this.priority,
         category: category ?? this.category,
         stages: stages ?? this.stages,
-        skills: skills ?? this.skills,
+        questSkills: skills ?? this.questSkills,
         deadline: deadline,
         limit: limit,
         interval: interval,
@@ -153,7 +153,7 @@ class Quest extends Serializable with Prototype<Quest> {
         name: name ?? this.name,
         priority: priority ?? this.priority,
         category: category ?? this.category,
-        skills: skills ?? this.skills,
+        questSkills: skills ?? this.questSkills,
         stages: stages ?? this.stages,
         deadline: deadline,
         limit: limit,

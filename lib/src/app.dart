@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -119,15 +118,8 @@ class _AppTopProviders extends StatelessWidget {
           update: (_, bundle, prev) => prev ?? CatsInfoCache(bundle.catsFetchService),
         ),
 
-        // a Synchronizer provider. depends on the fetch services bundle
-        ProxyProvider<FetchServiceBundle, Synchronizer>(
-          update: (context, bundle, prev) =>
-              prev ??
-              Synchronizer(
-                context,
-                bundle.usersFetchService,
-              ),
-        ),
+        // a Synchronizer provider
+        Provider<Synchronizer>(create: Synchronizer.new),
       ],
       child: child,
     );

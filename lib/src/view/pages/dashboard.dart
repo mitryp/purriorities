@@ -6,6 +6,7 @@ import '../../common/enums/app_route.dart';
 import '../../common/enums/sprite.dart';
 import '../../data/models/user.dart';
 import '../../data/user_data.dart';
+import '../../util/extensions/context_synchronizer.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/active_quests_view.dart';
 import '../widgets/add_button.dart';
@@ -30,14 +31,6 @@ class Dashboard extends StatelessWidget {
     );
   }
 }
-
-//TODO add priority: it indicates a color of list item outline
-final List<(String name, bool isRepeated, DateTime? deadline)> questsData = [
-  ('Нявчитися писати бекенд...', false, DateTime(2023, 05, 24, 23, 59)),
-  ('Позайматися', true, DateTime(2023, 05, 24, 18, 0)),
-  ('Нявчитися нявати', false, DateTime(2023, 05, 30, 23, 59)),
-  ('Помуркотіти коханого :3', false, null),
-];
 
 class _MobileDashboard extends StatelessWidget {
   const _MobileDashboard();
@@ -70,7 +63,9 @@ class _MobileDashboard extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
-                      onPressed: () async => context.push(AppRoute.allQuests.route),
+                      onPressed: () async => context
+                          .push(AppRoute.allQuests.route)
+                          .whenComplete(context.synchronizer().syncQuests),
                       child: const Text('Всі квести'),
                     ),
                   ),
@@ -90,7 +85,7 @@ class _UserInfoSection extends StatelessWidget {
   static const double radius = 50.0;
   static const int maxTrust = 100;
 
-  const _UserInfoSection({super.key});
+  const _UserInfoSection();
 
   @override
   Widget build(BuildContext context) {

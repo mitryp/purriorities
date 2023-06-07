@@ -85,7 +85,7 @@ class FetchResult<T> {
 
   R mapAny<R>(AnyResultMapper<T, R> mapper) => mapper(_result, error);
 
-  String? get errorMessage => (error?.response?.data as Map<String, dynamic>?)?['message'];
+  String get errorMessage => '${(error?.response?.data as Map<String, dynamic>?)?['message']}';
 
   @override
   String toString() {
@@ -95,6 +95,6 @@ class FetchResult<T> {
       return '$str.success($_result)';
     }
 
-    return '$str.failure(${errorMessage ?? error?.message})';
+    return '$str.failure($errorMessage)';
   }
 }

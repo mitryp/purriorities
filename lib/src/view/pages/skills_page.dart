@@ -92,26 +92,37 @@ class _MobileSkillsPage extends StatelessWidget {
               child: CircularProgressIndicator(),
             )
           else if (data.error == null)
-            ...data.skills.map((skill) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: ProgressBar(
-                    height: 50,
-                    overlayingWidget: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text(skill.name), Text('Рівень ${skill.level}')],
+            if (data.skills.isNotEmpty)
+              ...data.skills.map((skill) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: ProgressBar(
+                      height: 50,
+                      overlayingWidget: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [Text(skill.name), Text('Рівень ${skill.level}')],
+                        ),
                       ),
+                      value: skill.levelExp,
+                      maxValue: skill.levelCap,
                     ),
-                    value: skill.levelExp,
-                    maxValue: skill.levelCap,
+                  ),
+                );
+              })
+            else
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                child: Center(
+                  child: Text(
+                    'Ви ще не додали жодної навички! Для цього скористайтеся кнопкою нижче',
+                    style: TextStyle(fontSize: 16),
                   ),
                 ),
-              );
-            })
+              )
           else
             Center(child: Text(data.error?.message ?? 'Сталася помилка'))
         ],

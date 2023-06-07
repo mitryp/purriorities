@@ -1,6 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
 
-
 part 'cat_ownership.g.dart';
 
 /// A class representing the cat ownership of the current user.

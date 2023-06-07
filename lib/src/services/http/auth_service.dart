@@ -14,7 +14,7 @@ class AuthService {
     required String password,
   }) async {
     final response = _client.post<Map<String, dynamic>>(
-      'auth/login',
+      'api/auth/login',
       data: {
         'email': email,
         'password': password,
@@ -34,7 +34,7 @@ class AuthService {
     final data = newUser.toCreateJson()..['password'] = password;
 
     final response = _client.post(
-      'users/signup',
+      'api/users/signup',
       data: data,
     );
 
