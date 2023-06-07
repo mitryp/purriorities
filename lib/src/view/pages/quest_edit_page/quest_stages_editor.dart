@@ -9,7 +9,7 @@ class _QuestStagesEditor extends StatefulWidget {
 
 class _QuestStagesEditorState extends State<_QuestStagesEditor> {
   List<QuestStage> _stages = [];
-  int _stagesAdded = 0;
+  int _stagesAdded = 1;
 
   @override
   void didChangeDependencies() {

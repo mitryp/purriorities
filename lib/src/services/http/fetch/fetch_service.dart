@@ -14,7 +14,7 @@ abstract class FetchService<T> {
   /// An http client to perform the operations.
   final Dio client;
 
-  /// A relative resource path on the server starting from the [baseUrl].
+  /// A relative resource path on the server starting from the [baseUrl]/api.
   final String path;
 
   /// A FromJsonConverter for the resource type.

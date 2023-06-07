@@ -74,6 +74,7 @@ class PurrioritiesApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return _AppTopProviders(
       child: MaterialApp.router(
+        title: 'Purriorities',
         debugShowCheckedModeBanner: false,
         theme: darkTheme,
         //
