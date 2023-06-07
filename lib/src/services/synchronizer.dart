@@ -43,10 +43,6 @@ class Synchronizer {
 
     log('got $quests', name: 'Synchronizer');
 
-    return _updateUserData((data) {
-      data.quests = quests ?? [];
-
-      return []; // todo temp
-    });
+    return _updateUserData((data) => data.quests = quests ?? []);
   }
 }
