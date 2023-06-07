@@ -7,7 +7,7 @@ import '../../common/enums/app_route.dart';
 import '../../data/models/quest.dart';
 import '../../data/models/quest_category.dart';
 import '../../data/models/skill.dart';
-import '../../data/user_data.dart';
+import '../../services/helpers/pagination_data.dart';
 import '../../services/http/fetch/quests_fetch_service.dart';
 import '../../services/http/util/fetch_service_bundle.dart';
 import '../../typedefs.dart';
@@ -29,9 +29,11 @@ class _QuestsPageData with ChangeNotifier {
   bool _isLoaded = false;
   DioError? _error;
 
+  bool get areFiltersApplied => _filterCategory != null || _filterSkill != null;
+
   QuestCategory? get filterCategory => _filterCategory;
 
-  bool get isFiltersLoaded => _isFiltersLoaded;
+  bool get areFiltersLoaded => _isFiltersLoaded;
 
   DioError? get error => _error;
 
@@ -40,7 +42,7 @@ class _QuestsPageData with ChangeNotifier {
     notifyListeners();
   }
 
-  set isFiltersLoaded(bool value) {
+  set areFiltersLoaded(bool value) {
     _isFiltersLoaded = value;
     notifyListeners();
   }
@@ -103,20 +105,39 @@ class _QuestsPageState extends State<QuestsPage> {
 
     _data.categories.addAll(results.first as List<QuestCategory>);
     _data.skills.addAll(results.last as List<Skill>);
-    _data.isFiltersLoaded = true;
+    _data.areFiltersLoaded = true;
   }
 
   Future<void> _fetchFilteredQuests() async {
     _data.isLoaded = false;
 
-    if (_data.filterCategory == null && _data.filterSkill == null) {
-      _data.quests = context.read<UserData>().quests;
+    final filterCategory = _data.filterCategory;
+    final filterSkill = _data.filterSkill;
+
+    if (!_data.areFiltersApplied) {
+      final quests = await context.synchronizer().syncQuests();
+
+      if (!mounted || quests == null) return;
+
+      _data.quests = quests;
       _data.isLoaded = true;
+
       return;
     }
 
-    final questsRes =
-        await _questsFetchService.getMany().then((res) => res.transform((data) => data.data));
+    final PaginationData paginationData = (
+      filter: {
+        if (filterCategory != null) 'categoryId': filterCategory.id,
+        if (filterSkill != null) 'skill': filterSkill.id,
+      },
+      sort: null,
+      page: null,
+      limit: null,
+    );
+
+    final questsRes = await _questsFetchService
+        .getMany(paginationData)
+        .then((res) => res.transform((data) => data.data));
 
     if (!questsRes.isSuccessful) {
       _data.error = questsRes.error;
@@ -159,7 +180,7 @@ class _MobileQuestsPage extends StatelessWidget {
                 .whenComplete(context.synchronizer().syncQuests),
           ),
           children: [
-            if (data.isFiltersLoaded)
+            if (data.areFiltersLoaded)
               Card(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(),
@@ -203,7 +224,7 @@ class _MobileQuestsPage extends StatelessWidget {
             if (data.error == null)
               Card(
                 child: data.isLoaded
-                    ? QuestsList(items: data.quests)
+                    ? QuestsList(items: data.quests, isFiltered: data.areFiltersApplied)
                     : const CircularProgressIndicator(),
               )
             else
@@ -228,6 +249,7 @@ class _QuestsFilter<T> extends StatelessWidget {
   final T initialSelection;
   final Callback<T?> onChanged;
   final StringTPresenter<T> presenter;
+  final EdgeInsetsGeometry? contentPadding;
 
   const _QuestsFilter({
     required this.items,
@@ -235,6 +257,7 @@ class _QuestsFilter<T> extends StatelessWidget {
     required this.initialSelection,
     required this.onChanged,
     required this.presenter,
+    this.contentPadding = const EdgeInsets.all(12),
   });
 
   @override
@@ -243,7 +266,7 @@ class _QuestsFilter<T> extends StatelessWidget {
       isExpanded: true,
       onChanged: onChanged,
       value: initialSelection,
-      decoration: InputDecoration(labelText: caption),
+      decoration: InputDecoration(labelText: caption, contentPadding: contentPadding),
       items: items.map((item) {
         return DropdownMenuItem<T>(
           value: item,
