@@ -240,7 +240,7 @@ class _QuestsFilter<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
-      isDense: true,
+      isExpanded: true,
       onChanged: onChanged,
       value: initialSelection,
       decoration: InputDecoration(labelText: caption),
