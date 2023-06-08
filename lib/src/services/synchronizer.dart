@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../data/models/quest.dart';
@@ -10,10 +10,16 @@ import 'http/fetch/quests_fetch_service.dart';
 import 'http/fetch/user_fetch_service.dart';
 import 'http/util/fetch_service_bundle.dart';
 
+/// A class providing the synchronization functionality.
+/// It depends on [FetchServiceBundle] and [UserData], so make sure that providers of those objects
+/// are present in the widget tree above the [BuildContext] given during a [Synchronizer]
+/// construction.
 class Synchronizer {
   final BuildContext _context;
 
-  const Synchronizer(this._context);
+  /// Creates a [Synchronizer] with a given [BuildContext].
+  /// The created object will use the [FetchServiceBundle] and [UserData] of the [BuildContext].
+  const Synchronizer(BuildContext context) : _context = context;
 
   UsersFetchService get _userFetchService => _context.read<FetchServiceBundle>().usersFetchService;
 
@@ -26,6 +32,8 @@ class Synchronizer {
     return upd(_context.read<UserData>());
   }
 
+  /// Synchronizes the current user from the server and updates the [UserData] of [_context]
+  /// accordingly.
   Future<User?> syncUser() async {
     log('synchronizing user', name: 'Synchronizer');
 
@@ -34,6 +42,8 @@ class Synchronizer {
     return _updateUserData<User>((data) => data.user = user);
   }
 
+  /// Currently, synchronizes all the quests of the current user from the server and updates the
+  /// [UserData] of [_context] with the obtained value.
   Future<List<Quest>?> syncQuests() async {
     log('synchronizing quests', name: 'Synchronizer');
 

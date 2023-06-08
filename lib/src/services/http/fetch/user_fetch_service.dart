@@ -14,10 +14,14 @@ class UsersFetchService extends FetchService<User> with ModifyFetchMixin<User> {
 
   @override
   Future<FetchResult<User>> getOne([String primaryKey = '']) {
-    assert(primaryKey.isEmpty);
+    assert(
+      primaryKey.isEmpty,
+      'UserFetchService must not fetch with a primary key, Users cannot get information about'
+      ' other users',
+    );
 
     return super.getOne(primaryKey);
   }
 
-  Future<FetchResult<User>> me() async => getOne();
+  Future<FetchResult<User>> me() => getOne();
 }
