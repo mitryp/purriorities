@@ -13,6 +13,7 @@ import '../../services/http/util/fetch_service_bundle.dart';
 import '../../typedefs.dart';
 import '../../util/extensions/context_synchronizer.dart';
 import '../widgets/add_button.dart';
+import '../widgets/authorizer.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/quests_list.dart';
@@ -151,13 +152,15 @@ class _QuestsPageState extends State<QuestsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<_QuestsPageData>.value(
-      value: _data,
-      builder: (_, __) => LayoutSelector(
-        mobileLayoutBuilder: (context) => _MobileQuestsPage(
-          filterUpdateCallback: _fetchFilteredQuests,
+    return Authorizer(
+      child: ChangeNotifierProvider<_QuestsPageData>.value(
+        value: _data,
+        builder: (_, __) => LayoutSelector(
+          mobileLayoutBuilder: (context) => _MobileQuestsPage(
+            filterUpdateCallback: _fetchFilteredQuests,
+          ),
+          desktopLayoutBuilder: (context) => const Placeholder(),
         ),
-        desktopLayoutBuilder: (context) => const Placeholder(),
       ),
     );
   }
