@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/enums/query_param.dart';
 import '../../common/enums/app_route.dart';
 import '../../common/enums/sprite.dart';
 import '../../data/login_data.dart';
@@ -90,7 +91,14 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     const avatarPadding = 16;
 
     return [
-      _buildCatHero(avatarMaxRadius, avatarPadding),
+      Hero(
+        tag: 'login-cat-hero',
+        child: SpriteAvatar.asset(
+          Sprite.grayCat.asset,
+          maxRadius: avatarMaxRadius,
+          scale: scaleTo((avatarMaxRadius - avatarPadding) * 2),
+        ),
+      ),
       const Padding(
         padding: EdgeInsets.symmetric(vertical: 16),
         child: Align(
@@ -99,17 +107,6 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
         ),
       ),
     ];
-  }
-
-  Widget _buildCatHero(double avatarMaxRadius, int avatarPadding) {
-    return Hero(
-      tag: 'login-cat-hero',
-      child: SpriteAvatar.asset(
-        Sprite.grayCat.asset,
-        maxRadius: avatarMaxRadius,
-        scale: scaleTo((avatarMaxRadius - avatarPadding) * 2),
-      ),
-    );
   }
 
   Widget _buildFormContent(BuildContext context) {
@@ -193,8 +190,15 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
 
   void _redirectToApp({bool sessionRestored = false}) {
     if (!mounted) return;
+
+    final redirectPath = sessionRestored
+        ? GoRouterState.of(context).queryParameters[QueryParam.redirectTo.key]
+        : null;
+
+    log('redirectPath: $redirectPath', name: 'LoginPage');
+
     context.go(
-      AppRoute.init.route,
+      AppRoute.init.params([if (redirectPath != null) QueryParam.redirectTo(redirectPath)]),
       extra: (sessionRestored: sessionRestored),
     );
   }

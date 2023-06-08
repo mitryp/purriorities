@@ -1,3 +1,5 @@
+import 'query_param.dart';
+
 enum AppRoute {
   init('/init'),
   login('/login'),
@@ -12,4 +14,6 @@ enum AppRoute {
   final String route;
 
   const AppRoute(this.route);
+
+  String params(List<String> params) => QueryParam.compose(route, params);
 }

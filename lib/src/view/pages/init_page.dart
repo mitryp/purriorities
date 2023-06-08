@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/enums/app_route.dart';
+import '../../common/enums/query_param.dart';
 import '../../services/cats_info_cache.dart';
 import '../../util/extensions/context_synchronizer.dart';
 import '../widgets/error_snack_bar.dart';
@@ -117,13 +118,21 @@ class _InitPageState extends State<InitPage> {
     setState(() => _areQuestsLoaded = true);
   }
 
-  void _requestLoginRedirect() => _requestRedirect(AppRoute.login);
+  void _requestLoginRedirect() => _requestRedirect(AppRoute.login.route);
 
-  void _requestAppRedirect() => _requestRedirect(AppRoute.dashboard);
+  void _requestAppRedirect() {
+    final redirectPath = QueryParam.redirectTo.valueOf(context);
 
-  void _requestRedirect(AppRoute route) {
+    _requestRedirect(
+      AppRoute.dashboard.params([
+        if (redirectPath != null) QueryParam.redirectTo(redirectPath),
+      ]),
+    );
+  }
+
+  void _requestRedirect(String route) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.go(route.route);
+      if (mounted) context.go(route);
     });
   }
 

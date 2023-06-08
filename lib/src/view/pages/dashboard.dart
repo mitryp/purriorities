@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../../common/enums/query_param.dart';
 import '../../common/enums/app_route.dart';
 import '../../common/enums/sprite.dart';
 import '../../data/models/user.dart';
@@ -18,8 +21,33 @@ import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_bars/labeled_progress_bar.dart';
 import '../widgets/sprite_avatar.dart';
 
-class Dashboard extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
+
+  @override
+  State<Dashboard> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _processPossibleRedirect());
+  }
+
+  void _processPossibleRedirect() {
+    final redirectPath = QueryParam.redirectTo.valueOf(context);
+
+    if (redirectPath == null || redirectPath == GoRouter.of(context).location) return;
+
+    log('should redirect to $redirectPath', name: 'Dashboard');
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      context.push(redirectPath);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
