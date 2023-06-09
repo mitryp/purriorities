@@ -46,20 +46,46 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    final List<(String, TextEditingController?, FormFieldValidator<String>?)> formFields = [
+      ('Нікнейм', _usernameController, usernameValidator),
+      ('Email', _emailController, isEmail),
+      ('Пароль', _passwordController, isLongerOrEqual(8)),
+      ('Повторіть пароль', null, _repeatPasswordValidator),
+    ];
+
     return MobileLayout.child(
       appBar: AppBar(),
       minimumSafeArea: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
       child: FormLayout(
         form: Form(
           key: _formKey,
-          child: _buildFormContent(),
+          child: Column(
+            children: [
+              for (var i = 0; i < formFields.length; i++)
+                TextFormField(
+                  autofocus: i == 0,
+                  controller: formFields[i].$2,
+                  decoration: InputDecoration(labelText: formFields[i].$1),
+                  obscureText: i >= 2,
+                  validator: formFields[i].$3,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                ),
+            ],
+          ),
         ),
         leading: [
           Align(
             alignment: Alignment.centerLeft,
             child: Column(
               children: [
-                _buildCatHero(),
+                Hero(
+                  tag: 'login-cat-hero',
+                  child: SpriteAvatar.asset(
+                    Sprite.grayCat.animatedAsset,
+                    maxRadius: 48,
+                    scale: scaleTo(64),
+                  ),
+                ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 16.0),
                   child: Text('Реєстрація', style: TextStyle(fontSize: 24)),
@@ -83,40 +109,6 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildCatHero() {
-    return Hero(
-      tag: 'login-cat-hero',
-      child: SpriteAvatar.asset(
-        Sprite.grayCat.asset,
-        maxRadius: 48,
-        scale: scaleTo(64),
-      ),
-    );
-  }
-
-  Column _buildFormContent() {
-    final List<(String, TextEditingController?, FormFieldValidator<String>?)> formFields = [
-      ('Нікнейм', _usernameController, usernameValidator),
-      ('Email', _emailController, isEmail),
-      ('Пароль', _passwordController, isLongerOrEqual(8)),
-      ('Повторіть пароль', null, _repeatPasswordValidator),
-    ];
-
-    return Column(
-      children: [
-        for (var i = 0; i < formFields.length; i++)
-          TextFormField(
-            autofocus: i == 0,
-            controller: formFields[i].$2,
-            decoration: InputDecoration(labelText: formFields[i].$1),
-            obscureText: i >= 2,
-            validator: formFields[i].$3,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-          ),
-      ],
     );
   }
 

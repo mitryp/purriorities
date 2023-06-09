@@ -94,7 +94,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
       Hero(
         tag: 'login-cat-hero',
         child: SpriteAvatar.asset(
-          Sprite.grayCat.asset,
+          Sprite.grayCat.animatedAsset,
           maxRadius: avatarMaxRadius,
           scale: scaleTo((avatarMaxRadius - avatarPadding) * 2),
         ),

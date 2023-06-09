@@ -124,11 +124,10 @@ class _UserInfoSection extends StatelessWidget {
           child: Row(
             children: [
               SpriteAvatar.asset(
-                sprite.asset,
+                sprite.animatedAsset,
                 minRadius: radius,
                 scale: scaleToFitCircle(radius),
               ),
-              const SizedBox(width: 8),
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
@@ -140,14 +139,17 @@ class _UserInfoSection extends StatelessWidget {
                       maxValue: maxTrust,
                     ),
                     LabeledProgressBar(
-                      label: 'XP',
+                      label: 'Досвід',
                       value: user.levelExp,
                       maxValue: user.levelCap,
                       progressBarCaption: 'Рівень ${user.level}',
                     ),
-                    CurrencyBalance(
-                      commonCurrencyBalance: user.feed,
-                      rareCurrencyBalance: user.catnip,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: CurrencyBalance(
+                        commonCurrencyBalance: user.feed,
+                        rareCurrencyBalance: user.catnip,
+                      ),
                     ),
                   ],
                 ),

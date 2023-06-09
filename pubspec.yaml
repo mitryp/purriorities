@@ -29,5 +29,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/gray-cat.webp
-    - assets/foods_fish.webp
+    - assets/gray-cat-animated.webp
+    - assets/foods-fish.webp
+    - assets/foods-fish-animated.webp
     - assets/valerian.webp
+    - assets/valerian-animated.webp

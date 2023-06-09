@@ -15,13 +15,16 @@ class CurrencyBalance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        CurrencyInfo(quantity: commonCurrencyBalance, currency: Currency.feed),
-        const SizedBox(width: 20),
-        CurrencyInfo(quantity: rareCurrencyBalance, currency: Currency.catnip),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          CurrencyInfo(quantity: commonCurrencyBalance, currency: Currency.feed),
+          const SizedBox(width: 20),
+          CurrencyInfo(quantity: rareCurrencyBalance, currency: Currency.catnip),
+        ],
+      ),
     );
   }
 }
