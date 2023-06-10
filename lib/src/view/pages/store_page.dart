@@ -62,11 +62,16 @@ class _MobileStorePageState extends State<_MobileStorePage> {
 
     return MobileLayout(
       children: [
-        Selector<UserData, User>(
-          selector: (_, data) => data.user!,
-          builder: (context, user, _) => CurrencyBalance(
-            commonCurrencyBalance: user.feed,
-            rareCurrencyBalance: user.catnip,
+        LayoutBuilder(
+          builder: (context, constraints) => ConstrainedBox(
+            constraints: constraints.widthConstraints() / 2.5,
+            child: Selector<UserData, User>(
+              selector: (_, data) => data.user!,
+              builder: (context, user, _) => CurrencyBalance(
+                commonCurrencyBalance: user.feed,
+                rareCurrencyBalance: user.catnip,
+              ),
+            ),
           ),
         ),
         Expanded(

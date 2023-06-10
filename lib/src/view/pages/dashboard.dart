@@ -117,6 +117,9 @@ class _UserInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const labelFlex = 2;
+    const progressBarFlex = 5;
+
     return Selector<UserData, User>(
       selector: (context, data) => data.user!,
       builder: (context, user, child) {
@@ -137,18 +140,33 @@ class _UserInfoSection extends StatelessWidget {
                       label: 'Довіра',
                       value: user.trust,
                       maxValue: maxTrust,
+                      labelFlex: labelFlex,
+                      progressBarFlex: progressBarFlex,
                     ),
                     LabeledProgressBar(
                       label: 'Досвід',
                       value: user.levelExp,
                       maxValue: user.levelCap,
                       progressBarCaption: 'Рівень ${user.level}',
+                      labelFlex: labelFlex,
+                      progressBarFlex: progressBarFlex,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
-                      child: CurrencyBalance(
-                        commonCurrencyBalance: user.feed,
-                        rareCurrencyBalance: user.catnip,
+                      child: Row(
+                        children: [
+                          const Expanded(
+                            flex: labelFlex,
+                            child: SizedBox(),
+                          ),
+                          Expanded(
+                            flex: progressBarFlex,
+                            child: CurrencyBalance(
+                              commonCurrencyBalance: user.feed,
+                              rareCurrencyBalance: user.catnip,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

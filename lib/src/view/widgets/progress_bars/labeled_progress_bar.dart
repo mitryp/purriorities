@@ -12,7 +12,7 @@ class LabeledProgressBar extends StatelessWidget {
   final TextAlign labelAlign;
   final double progressBarHeight;
   final int labelFlex;
-  final int barFlex;
+  final int progressBarFlex;
 
   const LabeledProgressBar({
     required this.label,
@@ -24,7 +24,7 @@ class LabeledProgressBar extends StatelessWidget {
     this.labelAlign = TextAlign.end,
     this.progressBarHeight = 25.0,
     this.labelFlex = 2,
-    this.barFlex = 5,
+    this.progressBarFlex = 5,
     super.key,
   });
 
@@ -41,7 +41,7 @@ class LabeledProgressBar extends StatelessWidget {
         ),
         SizedBox(width: spacing),
         Expanded(
-          flex: barFlex,
+          flex: progressBarFlex,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: ProgressBar(
