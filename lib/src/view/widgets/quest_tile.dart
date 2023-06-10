@@ -27,6 +27,7 @@ class QuestTile extends StatelessWidget {
         spacing: trailingSpacing,
         runSpacing: trailingSpacing,
         children: [
+          if (isRepeated) const Icon(Icons.restart_alt_rounded),
           if (deadline != null)
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -38,7 +39,6 @@ class QuestTile extends StatelessWidget {
             )
           else
             const Text('В зручний час'),
-          if (isRepeated) const Icon(Icons.restart_alt_rounded),
         ],
       ),
       onTap: () => showDialog<void>(
