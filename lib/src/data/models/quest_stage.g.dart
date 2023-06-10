@@ -12,6 +12,7 @@ QuestStage _$QuestStageFromJson(Map<String, dynamic> json) => QuestStage(
       tasks: (json['tasks'] as List<dynamic>)
           .map((e) => Task.fromJson(e as Map<String, dynamic>))
           .toList(),
+      index: json['index'] as int? ?? -1,
     );
 
 Map<String, dynamic> _$QuestStageToJson(QuestStage instance) => <String, dynamic>{

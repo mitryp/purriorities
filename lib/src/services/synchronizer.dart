@@ -4,8 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../data/models/quest.dart';
+import '../data/models/quest_category.dart';
 import '../data/models/user.dart';
 import '../data/user_data.dart';
+import 'http/fetch/categories_fetch_service.dart';
 import 'http/fetch/quests_fetch_service.dart';
 import 'http/fetch/user_fetch_service.dart';
 import 'http/util/fetch_service_bundle.dart';
@@ -21,10 +23,13 @@ class Synchronizer {
   /// The created object will use the [FetchServiceBundle] and [UserData] of the [BuildContext].
   const Synchronizer(BuildContext context) : _context = context;
 
-  UsersFetchService get _userFetchService => _context.read<FetchServiceBundle>().usersFetchService;
+  FetchServiceBundle _bundle() => _context.read<FetchServiceBundle>();
 
-  QuestsFetchService get _questFetchService =>
-      _context.read<FetchServiceBundle>().questsFetchService;
+  CategoriesFetchService _categoryFetchService() => _bundle().categoriesFetchService;
+
+  UsersFetchService _userFetchService() => _bundle().usersFetchService;
+
+  QuestsFetchService _questFetchService() => _bundle().questsFetchService;
 
   T? _updateUserData<T>(T? Function(UserData data) upd) {
     if (!_context.mounted) return null;
@@ -37,7 +42,8 @@ class Synchronizer {
   Future<User?> syncUser() async {
     log('synchronizing user', name: 'Synchronizer');
 
-    final user = await _userFetchService.me().then((res) => res.isSuccessful ? res.result() : null);
+    final user =
+        await _userFetchService().me().then((res) => res.isSuccessful ? res.result() : null);
 
     return _updateUserData<User>((data) => data.user = user);
   }
@@ -47,12 +53,22 @@ class Synchronizer {
   Future<List<Quest>?> syncQuests() async {
     log('synchronizing quests', name: 'Synchronizer');
 
-    final quests = await _questFetchService
+    final quests = await _questFetchService()
         .getMany()
         .then((res) => res.isSuccessful ? res.map((p) => p.data) : null);
 
-    log('got $quests', name: 'Synchronizer');
-
     return _updateUserData((data) => data.quests = quests ?? []);
+  }
+
+  /// Synchronises the inbox category of the current user and updates the [UserData] of [_context]
+  /// with the received value.
+  Future<QuestCategory?> syncDefaultCategory() async {
+    log('synchronizing inbox category', name: 'Synchronizer');
+
+    final category = await _categoryFetchService()
+        .getDefault()
+        .then((res) => res.isSuccessful ? res.result() : null);
+
+    return _updateUserData((data) => data.defaultCategory = category);
   }
 }

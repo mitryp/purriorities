@@ -20,10 +20,16 @@ class QuestStage extends Serializable with Prototype<QuestStage> {
   /// A list of task on this stage.
   final List<Task> tasks;
 
+  /// An index of this stage in its quest. It is needed for the client to sort the stages on
+  /// receiving.
+  @JsonKey(includeToJson: false, required: false)
+  final int index;
+
   const QuestStage({
     required this.id,
     required this.name,
     required this.tasks,
+    this.index = -1,
   });
 
   factory QuestStage.fromJson(Map<String, dynamic> json) => _$QuestStageFromJson(json);
@@ -31,7 +37,8 @@ class QuestStage extends Serializable with Prototype<QuestStage> {
   const QuestStage.empty([int ordinal = 1, int? displayOrdinal])
       : id = 'new-$ordinal',
         name = 'Етап ${displayOrdinal ?? ordinal}',
-        tasks = const [];
+        tasks = const [],
+        index = ordinal;
 
   @override
   Map<String, dynamic> toJson() => _$QuestStageToJson(this);

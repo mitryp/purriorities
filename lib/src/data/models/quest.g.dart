@@ -14,7 +14,7 @@ Quest _$QuestFromJson(Map<String, dynamic> json) => Quest(
       limit: json['limit'] == null ? null : DateTime.parse(json['limit'] as String),
       interval: json['interval'] as int?,
       category: QuestCategory.fromJson(json['category'] as Map<String, dynamic>),
-      questSkills: (json['questSkills'] as List<dynamic>)
+      skills: (json['skills'] as List<dynamic>)
           .map((e) => Skill.fromJson(e as Map<String, dynamic>))
           .toList(),
       stages: (json['stages'] as List<dynamic>)
@@ -30,7 +30,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'limit': instance.limit?.toIso8601String(),
       'interval': instance.interval,
       'category': _serializeQuestCategory(instance.category),
-      'questSkills': _serializeQuestSkills(instance.questSkills),
+      'questSkills': _serializeQuestSkills(instance.skills),
       'stages': instance.stages,
     };
 

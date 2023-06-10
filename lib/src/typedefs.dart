@@ -3,6 +3,9 @@ import 'common/enums/communication_data_status.dart';
 /// A void function from the [value] of type [T].
 typedef Callback<T> = void Function(T value);
 
+/// A function that takes the [value] of type [T] and returns a value of type [R].
+typedef Converter<T, R> = R Function(T value);
+
 typedef FutureVoidCallback<TFuture> = Future<TFuture> Function();
 typedef FutureCallback<TFuture, TArg> = Future<TFuture> Function(TArg);
 

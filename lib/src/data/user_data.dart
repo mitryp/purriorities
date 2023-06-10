@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'models/punishments.dart';
 import 'models/quest.dart';
+import 'models/quest_category.dart';
 import 'models/user.dart';
 
 class UserData with ChangeNotifier {
   User? _user;
+  QuestCategory? _defaultCategory;
   List<Quest> _quests = [];
   List<PendingPunishment> _punishments = [];
 
@@ -13,6 +15,13 @@ class UserData with ChangeNotifier {
 
   set user(User? user) {
     _user = user;
+    notifyListeners();
+  }
+
+  QuestCategory? get defaultCategory => _defaultCategory;
+
+  set defaultCategory(QuestCategory? category) {
+    _defaultCategory = category;
     notifyListeners();
   }
 

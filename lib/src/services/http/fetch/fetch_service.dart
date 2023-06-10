@@ -32,8 +32,7 @@ abstract class FetchService<T> {
 }
 
 mixin GetManyFetchMixin<T> on FetchService<T> {
-  // todo pagination
-  /// Fetches a [PaginatedData] of [T] based on the [queryData].
+  /// Fetches a [PaginatedData] of [T] based on the [paginationData].
   Future<FetchResult<PaginatedData<T>>> getMany([
     PaginationData paginationData = emptyPaginationData,
   ]) {
