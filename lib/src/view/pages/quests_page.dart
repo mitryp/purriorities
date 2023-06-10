@@ -129,8 +129,7 @@ class _QuestsPageState extends State<QuestsPage> {
     final PaginationData paginationData = (
       filter: {
         if (filterCategory != null) 'categoryId': filterCategory.id,
-        // todo server does not respond
-        if (filterSkill != null) 'questSkills.skillId': filterSkill.id,
+        if (filterSkill != null) 'questSkills.(skillId)': filterSkill.id,
       },
       sort: null,
       page: null,
