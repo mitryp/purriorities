@@ -65,10 +65,18 @@ mixin ModifyFetchMixin<S extends Serializable> on FetchService<S> {
   ///
   /// The request is sent to [path]/[primaryKey] path.
   /// Returns an updated resource.
-  Future<FetchResult<S>> update(Object primaryKey, S serializable, {S? oldSerializable}) async {
+  Future<FetchResult<S>> update(String primaryKey, S serializable, {S? oldSerializable}) async {
     final patchJson = oldSerializable?.diff(serializable) ?? serializable.toJson();
     final res = client.patch<JsonMap>('$path/$primaryKey', data: patchJson);
 
     return _defaultResponseTransform(res);
+  }
+
+  /// Deletes a network resource with the given [primaryKey].
+  /// Normally, users can delete only their own resources.
+  Future<bool> delete(String primaryKey) {
+    final res = client.delete('$path/$primaryKey');
+
+    return FetchResult.fromResponse(res).then((r) => r.mapAny((res, error) => error != null));
   }
 }
