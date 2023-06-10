@@ -17,3 +17,12 @@ final darkTheme = ThemeData.dark(useMaterial3: true).copyWith(
     shape: RoundedRectangleBorder(borderRadius: defaultBorderRadius),
   ),
 );
+
+const progressBarCaptionTextStyle = TextStyle(
+  shadows: [
+    Shadow(color: Colors.black, blurRadius: 4),
+    Shadow(color: Colors.black, blurRadius: 4),
+    Shadow(color: Colors.black, blurRadius: 4),
+    Shadow(color: Colors.black, blurRadius: 2),
+  ],
+);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../theme.dart';
 import 'progress_bar.dart';
 
 class LabeledProgressBar extends StatelessWidget {
@@ -48,7 +49,8 @@ class LabeledProgressBar extends StatelessWidget {
               maxValue: maxValue,
               value: value,
               height: progressBarHeight,
-              overlayingWidget: caption != null ? Text(caption) : null,
+              overlayingWidget:
+                  caption != null ? Text(caption, style: progressBarCaptionTextStyle) : null,
             ),
           ),
         ),

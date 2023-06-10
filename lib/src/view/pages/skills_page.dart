@@ -10,6 +10,7 @@ import '../../common/enums/communication_data_status.dart';
 import '../../data/models/skill.dart';
 import '../../services/http/util/fetch_service_bundle.dart';
 import '../../typedefs.dart';
+import '../theme.dart';
 import '../widgets/add_button.dart';
 import '../widgets/authorizer.dart';
 import '../widgets/layouts/layout_selector.dart';
@@ -122,8 +123,8 @@ class SkillTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(skill.name),
-                  Text('Рівень ${skill.level}'),
+                  Text(skill.name, style: progressBarCaptionTextStyle),
+                  Text('Рівень ${skill.level}', style: progressBarCaptionTextStyle),
                 ],
               ),
             ),
@@ -141,8 +142,6 @@ class SkillTile extends StatelessWidget {
       extra: skill,
     );
     final status = commData?.status;
-
-    log('status $status', name: 'SkillTile.redirectToEdit');
 
     // ignore: use_build_context_synchronously
     if (!context.mounted || status == null) return;

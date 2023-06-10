@@ -27,13 +27,15 @@ class ProgressBar extends StatelessWidget {
       child: LinearProgressIndicator(value: currentValue),
     );
 
+    final overlayingWidget = this.overlayingWidget;
+
     if (overlayingWidget == null) return progressBar;
 
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
         progressBar,
-        overlayingWidget!,
+        overlayingWidget,
       ],
     );
   }
