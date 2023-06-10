@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:json_annotation/json_annotation.dart';
 
 import '../enums/quest_priority.dart';
@@ -78,7 +80,8 @@ class Quest extends Serializable with Prototype<Quest> {
         skills = const [],
         stages = const [QuestStage.empty()];
 
-  factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
+  factory Quest.fromJson(Map<String, dynamic> json) =>
+      _$QuestFromJson(json)..stages.sort((a, b) => a.index - b.index);
 
   @override
   Map<String, dynamic> toJson() => _$QuestToJson(this);
