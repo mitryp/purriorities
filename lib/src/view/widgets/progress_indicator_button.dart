@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 typedef ButtonBuilder = Widget Function({
@@ -9,7 +11,7 @@ typedef ButtonBuilder = Widget Function({
 class ProgressIndicatorButton extends StatefulWidget {
   final Widget child;
   final ButtonBuilder buttonBuilder;
-  final Future Function() onPressed;
+  final FutureOr Function() onPressed;
   final ButtonStyle? style;
 
   const ProgressIndicatorButton({
@@ -66,7 +68,7 @@ class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
 
     setState(() => isProcessing = true);
 
-    widget.onPressed().whenComplete(() {
+    Future.value(widget.onPressed()).whenComplete(() {
       if (!mounted) return;
       setState(() => isProcessing = false);
     });

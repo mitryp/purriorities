@@ -7,9 +7,11 @@ enum AppRoute {
   cats('/cats'),
   store('/store'),
   skills('/skills'),
+  editSkill('/edit_skill'),
   register('/register'),
+  allQuests('/quests'),
   editQuest('/edit_quest'),
-  allQuests('/all_quests');
+  ;
 
   final String route;
 

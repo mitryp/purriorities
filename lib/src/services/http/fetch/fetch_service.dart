@@ -74,9 +74,9 @@ mixin ModifyFetchMixin<S extends Serializable> on FetchService<S> {
 
   /// Deletes a network resource with the given [primaryKey].
   /// Normally, users can delete only their own resources.
-  Future<bool> delete(String primaryKey) {
+  Future<FetchResult<bool>> delete(String primaryKey) {
     final res = client.delete('$path/$primaryKey');
 
-    return FetchResult.fromResponse(res).then((r) => r.mapAny((res, error) => error != null));
+    return FetchResult.transformResponse(res, (res) => true, orElseIfNotFailed: true);
   }
 }

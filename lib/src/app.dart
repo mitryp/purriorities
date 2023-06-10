@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'common/enums/app_route.dart';
 import 'data/main_navigation_data.dart';
 import 'data/models/quest.dart';
+import 'data/models/skill.dart';
 import 'data/user_data.dart';
 import 'services/cats_info_cache.dart';
 import 'services/http/auth_service.dart';
@@ -18,6 +19,7 @@ import 'view/pages/login_page.dart';
 import 'view/pages/quest_edit_page/quest_edit_page.dart';
 import 'view/pages/quests_page.dart';
 import 'view/pages/register_page.dart';
+import 'view/pages/skills_edit_page.dart';
 import 'view/theme.dart';
 import 'view/widgets/main_navigation.dart';
 
@@ -55,15 +57,21 @@ final _router = GoRouter(
       ),
     ),
     GoRoute(
+      path: AppRoute.allQuests.route,
+      builder: (context, state) => const QuestsPage(),
+    ),
+    GoRoute(
       path: AppRoute.editQuest.route,
       builder: (context, state) => QuestEditPage(
         initialQuest: state.extra is Quest ? state.extra as Quest : null,
       ),
     ),
     GoRoute(
-      path: AppRoute.allQuests.route,
-      builder: (context, state) => const QuestsPage(),
-    ),
+      path: AppRoute.editSkill.route,
+      builder: (context, state) => SkillsEditPage(
+        skill: state.extra is Skill ? state.extra as Skill : null,
+      ),
+    )
   ],
 );
 

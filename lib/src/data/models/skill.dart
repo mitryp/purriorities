@@ -34,6 +34,12 @@ class Skill extends Serializable with Prototype<Skill> {
     required this.id,
   });
 
+  const Skill.create({required this.name})
+      : id = '',
+        level = 0,
+        levelCap = 0,
+        levelExp = 0;
+
   const Skill.empty()
       : name = '',
         id = '',
