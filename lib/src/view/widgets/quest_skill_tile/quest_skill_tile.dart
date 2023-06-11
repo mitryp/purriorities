@@ -70,7 +70,7 @@ class QuestSkillTile extends StatelessWidget {
     final quest = wrapper.data;
 
     final skills = quest.skills.toList()..remove(skill);
-    wrapper.data = quest.copyWith(questSkills: skills);
+    wrapper.data = quest.copyWith(skills: skills);
   }
 }
 
