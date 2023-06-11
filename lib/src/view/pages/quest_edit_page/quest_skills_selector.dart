@@ -10,18 +10,49 @@ class _QuestSkillsSelector extends StatefulWidget {
 class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
   final _scrollController = ScrollController();
 
-  List<Skill> _skills = [];
+  final List<Skill> _allSkills = [];
+  bool _allSkillsFetched = false;
+
+  List<Skill> _questSkills = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _skills = context.watch<NotifierWrapper<Quest>>().data.skills.toList();
+    _questSkills = context.watch<NotifierWrapper<Quest>>().data.skills.toList();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchAllSkills() async {
+    final fetchService = context.read<FetchServiceBundle>().skillsFetchService;
+
+    final skillsRes = await fetchService.getMany();
+
+    if (!mounted) return;
+
+    if (!skillsRes.isSuccessful) {
+      showErrorSnackBar(
+        context: context,
+        content: ErrorSnackBarContent(
+          titleText: 'Не вдалось отримати список навичок',
+          subtitleText: 'Повідомлення від сервера: ${skillsRes.errorMessage}',
+        ),
+      );
+
+      return;
+    }
+
+    _allSkills.addAll(skillsRes.result().data);
+    _allSkillsFetched = true;
   }
 
   @override
@@ -43,7 +74,7 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
         ),
         ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: _skills.isNotEmpty ? skillsBoxHeight : emptySkillsBoxHeight,
+            maxHeight: _questSkills.isNotEmpty ? skillsBoxHeight : emptySkillsBoxHeight,
           ),
           child: Scrollbar(
             interactive: false,
@@ -53,22 +84,22 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
               buildDefaultDragHandles: false,
               // todo add skill to the quest
               header: _AddSkillButton(onPressed: () => _processAddSkill(atStart: true)),
-              footer: _skills.isNotEmpty
+              footer: _questSkills.isNotEmpty
                   ? _AddSkillButton(onPressed: () => _processAddSkill(atStart: false))
                   : null,
               scrollController: _scrollController,
               scrollDirection: Axis.horizontal,
               onReorder: _processSkillsReorder,
-              itemCount: _skills.isNotEmpty ? _skills.length : 1,
+              itemCount: _questSkills.isNotEmpty ? _questSkills.length : 1,
               itemBuilder: (context, index) {
-                if (_skills.isEmpty) {
+                if (_questSkills.isEmpty) {
                   return const Center(
                     key: ValueKey('no-skills-text'),
                     child: Text('Ви можете додати навички до квесту'),
                   );
                 }
 
-                final skill = _skills[index];
+                final skill = _questSkills[index];
 
                 return _DraggableSkillTile(
                   index: index,
@@ -84,8 +115,28 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
     );
   }
 
-  void _processAddSkill({required bool atStart}) {
-    // todo
+  Future<void> _processAddSkill({required bool atStart}) async {
+    if (!_allSkillsFetched) {
+      await _fetchAllSkills();
+    }
+
+    if (!mounted || !_allSkillsFetched) return;
+
+    final searchOptions = _allSkills.toList()..removeWhere(_questSkills.contains);
+
+    await showSearch(
+      context: context,
+      delegate: _SkillsSearchDelegate(
+        options: searchOptions,
+        skillSelectedCallback: (skill) {
+          if (!mounted) return;
+
+          setState(() => _questSkills.insert(atStart ? 0 : _questSkills.length, skill));
+          final wrapper = context.read<NotifierWrapper<Quest>>();
+          wrapper.data = wrapper.data.copyWith(skills: _questSkills);
+        },
+      ),
+    );
   }
 
   void _processSkillsReorder(int oldIndex, int newIndex) {
@@ -104,7 +155,7 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
 
     wrapper.data = quest.copyWith(skills: reorderedSkills);
 
-    setState(() => _skills = reorderedSkills);
+    setState(() => _questSkills = reorderedSkills);
   }
 }
 
@@ -176,4 +227,51 @@ class _DraggableSkillTile extends StatelessWidget {
       child: child,
     );
   }
+}
+
+class _SkillsSearchDelegate extends SearchDelegate<Skill> {
+  final List<Skill> _options;
+  final Callback<Skill> _skillSelectedCallback;
+
+  _SkillsSearchDelegate({
+    required List<Skill> options,
+    required Callback<Skill> skillSelectedCallback,
+  })  : _options = options,
+        _skillSelectedCallback = skillSelectedCallback;
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final normalizedQuery = query.toLowerCase();
+    final searchResults = _options
+        .where((skill) => skill.name.toLowerCase().contains(normalizedQuery))
+        .toList(growable: false);
+
+    return ListView.builder(
+      itemCount: _options.length,
+      itemBuilder: (context, index) {
+        final skill = searchResults[index];
+
+        return SkillTile(
+          skill,
+          onPressed: () {
+            context.pop();
+            _skillSelectedCallback(skill);
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return const [];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return const SizedBox();
+  }
+
+  @override
+  Widget buildResults(BuildContext context) => buildSuggestions(context);
 }

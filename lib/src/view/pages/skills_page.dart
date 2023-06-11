@@ -8,12 +8,11 @@ import '../../common/enums/communication_data_status.dart';
 import '../../data/models/skill.dart';
 import '../../services/http/util/fetch_service_bundle.dart';
 import '../../typedefs.dart';
-import '../theme.dart';
 import '../widgets/add_button.dart';
 import '../widgets/authorizer.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
-import '../widgets/progress_bars/progress_bar.dart';
+import '../widgets/skill_tile.dart';
 
 class SkillsPage extends StatefulWidget {
   const SkillsPage({super.key});
@@ -62,7 +61,12 @@ class _MobileSkillsPage extends StatelessWidget {
             const Center(child: CircularProgressIndicator())
           else if (data.error == null)
             if (data.skills.isNotEmpty)
-              ...data.skills.map(SkillTile.new)
+              ...data.skills.map(
+                (skill) => SkillTile(
+                  skill,
+                  onPressed: () => _redirectToSkillEdit(context, skill),
+                ),
+              )
             else
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
@@ -80,7 +84,7 @@ class _MobileSkillsPage extends StatelessWidget {
     );
   }
 
-  _redirectToEditPage(BuildContext context, {required _SkillsData skillsData}) async {
+  Future<void> _redirectToEditPage(BuildContext context, {required _SkillsData skillsData}) async {
     final commData = await context.push<CommunicationData<Skill>>(AppRoute.editSkill.route);
     final skill = commData?.data;
 
@@ -93,48 +97,8 @@ class _MobileSkillsPage extends StatelessWidget {
       ..add(skill)
       ..sort((a, b) => a.level - b.level);
   }
-}
 
-class SkillTile extends StatelessWidget {
-  final Skill skill;
-  final double height;
-
-  const SkillTile(
-    this.skill, {
-    this.height = 50.0,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => _redirectToEdit(context),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: ProgressBar(
-            height: height,
-            overlayingWidget: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(skill.name, style: progressBarCaptionTextStyle),
-                  Text('Рівень ${skill.level}', style: progressBarCaptionTextStyle),
-                ],
-              ),
-            ),
-            value: skill.levelExp,
-            maxValue: skill.levelCap,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<void> _redirectToEdit(BuildContext context) async {
+  Future<void> _redirectToSkillEdit(BuildContext context, Skill skill) async {
     final commData = await context.push<CommunicationData<Skill>>(
       AppRoute.editSkill.route,
       extra: skill,
@@ -147,7 +111,7 @@ class SkillTile extends StatelessWidget {
     final skillsData = context.read<_SkillsData>();
     final skills = skillsData.skills;
 
-    final index = skills.indexWhere((skill) => skill.id == this.skill.id);
+    final index = skills.indexWhere((s) => s.id == skill.id);
     skills.removeAt(index);
 
     if (status == CommunicationDataStatus.updated) {

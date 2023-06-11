@@ -1,11 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../common/enums/query_param.dart';
 import '../../common/enums/app_route.dart';
+import '../../common/enums/query_param.dart';
 import '../../common/enums/sprite.dart';
 import '../../data/models/user.dart';
 import '../../data/user_data.dart';
@@ -39,8 +37,6 @@ class _DashboardState extends State<Dashboard> {
     final redirectPath = QueryParam.redirectTo.valueOf(context);
 
     if (redirectPath == null || redirectPath == GoRouter.of(context).location) return;
-
-    log('should redirect to $redirectPath', name: 'Dashboard');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;

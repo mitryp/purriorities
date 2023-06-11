@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../enums/quest_priority.dart';
-import 'abs/serializable.dart';
 import 'abs/prototype.dart';
+import 'abs/serializable.dart';
 import 'quest_category.dart';
 import 'quest_stage.dart';
 import 'skill.dart';
