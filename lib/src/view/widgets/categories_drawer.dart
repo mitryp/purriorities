@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +10,6 @@ import '../../services/http/util/fetch_service_bundle.dart';
 import '../../typedefs.dart';
 import '../dialogs/confirmation_dialog.dart';
 import '../pages/categories_edit_page.dart';
-import '../pages/quests_page.dart';
 import '../theme.dart';
 import 'add_button.dart';
 import 'error_snack_bar.dart';

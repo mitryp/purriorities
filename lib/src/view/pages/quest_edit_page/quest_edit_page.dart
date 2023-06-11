@@ -21,6 +21,8 @@ import '../../../util/minutes_format.dart';
 import '../../dialogs/confirmation_dialog.dart';
 import '../../dialogs/task_edit_dialog.dart';
 import '../../theme.dart';
+import '../../widgets/authorizer.dart';
+import '../../widgets/categories_drawer.dart';
 import '../../widgets/date_time_selector_fields/date_selector_form_field.dart';
 import '../../widgets/date_time_selector_fields/datetime_editing_controller.dart';
 import '../../widgets/date_time_selector_fields/time_selector_form_field.dart';
@@ -31,7 +33,9 @@ import '../../widgets/priority_selector.dart';
 import '../../widgets/quest_skill_tile/quest_skill_tile.dart';
 
 part 'quest_schedule_tile.dart';
+
 part 'quest_skills_selector.dart';
+
 part 'quest_stages_editor.dart';
 
 class QuestEditPage extends StatelessWidget {
@@ -41,24 +45,27 @@ class QuestEditPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) {
-        late final deadline = DateTime.now().add(const Duration(days: 1));
+    return Authorizer(
+      child: ChangeNotifierProvider(
+        create: (context) {
+          late final deadline = DateTime.now().add(const Duration(days: 1));
+          late final defaultCategory = context.read<UserData>().defaultCategory!;
 
-        return NotifierWrapper<Quest>(
-          initialQuest ??
-              const Quest.empty().copyWithSchedule(
-                deadline: deadline,
-                limit: deadline,
-                interval: 1,
-              ),
-        );
-      },
-      child: LayoutSelector(
-        mobileLayoutBuilder: (context) => MobileQuestEditPage(
-          isEditing: initialQuest != null,
+          return NotifierWrapper<Quest>(
+            initialQuest ??
+                Quest.empty(category: defaultCategory).copyWithSchedule(
+                  deadline: deadline,
+                  limit: deadline,
+                  interval: 1,
+                ),
+          );
+        },
+        child: LayoutSelector(
+          mobileLayoutBuilder: (context) => MobileQuestEditPage(
+            isEditing: initialQuest != null,
+          ),
+          desktopLayoutBuilder: (context) => const Placeholder(),
         ),
-        desktopLayoutBuilder: (context) => const Placeholder(),
       ),
     );
   }
@@ -104,10 +111,15 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
       minimumSafeArea: MobileLayout.defaultSafeArea.copyWith(left: 16, right: 16),
       appBar: AppBar(
         title: Text('${widget.isEditing ? 'Редагувати' : 'Створити'} квест'),
+        actions: const [SizedBox()],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _processQuestSaving,
         child: const Icon(Icons.save),
+      ),
+      endDrawerEnableOpenDragGesture: false,
+      endDrawer: CategoriesDrawer(
+        onCategorySelected: (category) => data.data = quest.copyWith(category: category),
       ),
       child: CustomScrollView(
         slivers: [
@@ -263,11 +275,16 @@ class _PriorityCategoryRow extends StatelessWidget {
         Expanded(
           child: Card(
             margin: EdgeInsets.zero,
-            child: InkWell(
-              onTap: () {}, //todo
-              borderRadius: defaultBorderRadius,
-              child: const ListTile(
-                title: FittedBox(child: Text('Обрати категорію', textAlign: TextAlign.center)),
+            child: Consumer<NotifierWrapper<Quest>>(
+              builder: (context, wrapper, _) => InkWell(
+                onTap: Scaffold.of(context).openEndDrawer,
+                borderRadius: defaultBorderRadius,
+                child: ListTile(
+                  title: Text(
+                    wrapper.data.category.name,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
           ),

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/enums/communication_data_status.dart';
-import '../../data/models/quest.dart';
 import '../../data/models/quest_category.dart';
 import '../../data/util/notifier_wrapper.dart';
 import '../../data/util/validators.dart';

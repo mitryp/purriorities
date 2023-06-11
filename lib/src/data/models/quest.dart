@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:json_annotation/json_annotation.dart';
 
 import '../enums/quest_priority.dart';
@@ -69,14 +67,13 @@ class Quest extends Serializable with Prototype<Quest> {
     required this.stages,
   });
 
-  const Quest.empty()
+  const Quest.empty({required this.category})
       : id = '',
         name = '',
         priority = QuestPriority.regular,
         deadline = null,
         limit = null,
         interval = null,
-        category = const QuestCategory.empty(),
         skills = const [],
         stages = const [QuestStage.empty()];
 
