@@ -30,7 +30,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'limit': instance.limit?.toIso8601String(),
       'interval': instance.interval,
       'category': _serializeQuestCategory(instance.category),
-      'questSkills': _serializeQuestSkills(instance.skills),
+      'skills': _serializeQuestSkills(instance.skills),
       'stages': instance.stages,
     };
 

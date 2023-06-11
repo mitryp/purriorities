@@ -15,5 +15,4 @@ QuestCategory _$QuestCategoryFromJson(Map<String, dynamic> json) => QuestCategor
 Map<String, dynamic> _$QuestCategoryToJson(QuestCategory instance) => <String, dynamic>{
       'name': instance.name,
       'id': instance.id,
-      'inbox': instance.inbox,
     };

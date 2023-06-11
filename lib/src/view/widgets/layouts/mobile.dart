@@ -16,6 +16,11 @@ class MobileLayout extends StatelessWidget {
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
 
+  final bool drawerEnableOpenDragGesture;
+  final Widget? drawer;
+  final bool endDrawerEnableOpenDragGesture;
+  final Widget? endDrawer;
+
   const MobileLayout({
     required List<Widget> children,
     this.mainAxisSize = MainAxisSize.max,
@@ -26,6 +31,10 @@ class MobileLayout extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
+    this.drawer,
+    this.drawerEnableOpenDragGesture = true,
+    this.endDrawer,
+    this.endDrawerEnableOpenDragGesture = true,
     super.key,
   })  : child = null,
         bodyChildren = children;
@@ -37,6 +46,10 @@ class MobileLayout extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
+    this.drawer,
+    this.drawerEnableOpenDragGesture = true,
+    this.endDrawer,
+    this.endDrawerEnableOpenDragGesture = true,
     super.key,
   })  : bodyChildren = null,
         mainAxisSize = null,
@@ -55,6 +68,10 @@ class MobileLayout extends StatelessWidget {
 
     return Scaffold(
       appBar: appBar,
+      drawer: drawer,
+      drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
+      endDrawer: endDrawer,
+      endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,

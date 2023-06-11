@@ -17,6 +17,7 @@ dependencies:
   dio_cookie_manager: ^3.0.0
   cookie_jar: ^4.0.3
   flutter_secure_storage: ^8.0.0
+  flutter_slidable: ^3.0.0
 
 dev_dependencies:
   flutter_test:

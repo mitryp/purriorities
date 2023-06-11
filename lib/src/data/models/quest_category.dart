@@ -16,6 +16,7 @@ class QuestCategory extends Serializable with Prototype<QuestCategory> {
   final String id;
 
   /// If this category is a default one.
+  @JsonKey(includeToJson: false)
   final bool inbox;
 
   const QuestCategory({
