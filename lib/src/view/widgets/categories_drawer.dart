@@ -183,11 +183,14 @@ class _CategoriesDrawerState extends State<CategoriesDrawer> with AutomaticKeepA
 
     if (!mounted || commData == null) return;
 
-    log('Got $commData', name: 'CategoriesDrawer');
-
     final newCategory = commData.data!;
 
-    setState(() => _categories.add(newCategory));
+    setState(() {
+      if (commData.status == CommunicationDataStatus.updated) {
+        _categories.removeWhere((c) => c.id == category!.id);
+      }
+      _categories.add(newCategory);
+    });
 
     (commData.status == CommunicationDataStatus.created
             ? widget.onCategoryCreated
