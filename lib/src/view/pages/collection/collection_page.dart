@@ -5,7 +5,6 @@ import '../../../common/enums/currency.dart';
 import '../../../config.dart';
 import '../../../constants.dart';
 import '../../../data/models/cat.dart';
-import '../../../data/models/cat_ownership.dart';
 import '../../../data/models/user.dart';
 import '../../../data/user_data.dart';
 import '../../../services/cats_info_cache.dart';
@@ -20,6 +19,7 @@ import '../../widgets/layouts/mobile.dart';
 import '../../widgets/progress_bars/labeled_progress_bar.dart';
 import '../../widgets/progress_indicator_button.dart';
 import '../../widgets/sprite_avatar.dart';
+import 'collection_cat.dart';
 
 part 'cat_card.dart';
 
@@ -34,7 +34,6 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   void initState() {
     super.initState();
-
     context.synchronizer().syncUser();
   }
 
@@ -78,12 +77,17 @@ class MobileCollection extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: Selector2<UserData, CatsInfoCache, (User?, List<CollectionCat>)>(
-                selector: (context, data, catsInfo) {
-                  assert(catsInfo.isLoaded);
-                  final ownerships = data.user?.catOwnerships ?? [];
+                selector: (context, userData, catsInfo) {
+                  assert(
+                    catsInfo.isLoaded,
+                    'Cats info is supposed to be loaded at this point. '
+                    'Something must be wrong, if it is not',
+                  );
+
+                  final ownerships = userData.user?.catOwnerships ?? [];
 
                   return (
-                    data.user,
+                    userData.user,
                     catsInfo.cats.map(
                       (info) {
                         final hasOwnership = ownerships.any((o) => o.catNameId == info.nameId);
@@ -121,18 +125,4 @@ class MobileCollection extends StatelessWidget {
       ],
     );
   }
-}
-
-class CollectionCat implements Comparable<CollectionCat> {
-  final Cat info;
-  final CatOwnership? ownership;
-
-  const CollectionCat(this.info, this.ownership);
-
-  bool get isOwned => ownership != null;
-
-  int get _value => (isOwned ? 100 : 0) + (ownership?.xpBoost ?? 0).toInt();
-
-  @override
-  int compareTo(CollectionCat other) => other._value - _value;
 }
