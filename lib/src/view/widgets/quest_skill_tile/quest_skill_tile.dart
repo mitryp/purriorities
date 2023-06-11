@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/enums/quest_skill_prority.dart';
 import '../../../data/models/quest.dart';
 import '../../../data/models/skill.dart';
 import '../../../data/util/notifier_wrapper.dart';
@@ -74,40 +75,39 @@ class QuestSkillTile extends StatelessWidget {
   }
 }
 
-const _mainSkillTileBorderSide = BorderSide(color: legendaryColor, width: 3);
-const _additionalSkillTileBorderSide = BorderSide(color: Color(0xff424242), width: 3);
+class DraggableQuestSkillTile extends StatelessWidget {
+  static const EdgeInsets _tilePadding = EdgeInsets.all(8);
+  static const Offset _handleIconOffset = Offset(-8, -6);
 
-enum QuestSkillPriority {
-  main(
-    BoxDecoration(
-      border: Border(
-        top: _mainSkillTileBorderSide,
-        right: _mainSkillTileBorderSide,
-        bottom: _mainSkillTileBorderSide,
-        left: _mainSkillTileBorderSide,
+  final int index;
+  final Skill skill;
+  final bool useDelayedListener;
+
+  const DraggableQuestSkillTile({
+    required this.index,
+    required this.skill,
+    this.useDelayedListener = true,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final child = Padding(
+      padding: _tilePadding,
+      child: Badge(
+        offset: _handleIconOffset,
+        backgroundColor: Colors.transparent,
+        alignment: Alignment.bottomCenter,
+        label: const Icon(Icons.drag_handle),
+        child: QuestSkillTile(
+          skill,
+          skillPriority: QuestSkillPriority.fromIndex(index),
+        ),
       ),
-    ),
-  ),
-  secondary,
-  additional(
-    BoxDecoration(
-      border: Border(
-        top: _additionalSkillTileBorderSide,
-        right: _additionalSkillTileBorderSide,
-        bottom: _additionalSkillTileBorderSide,
-        left: _additionalSkillTileBorderSide,
-      ),
-    ),
-  );
+    );
 
-  final BoxDecoration decoration;
-
-  const QuestSkillPriority([this.decoration = const BoxDecoration()]);
-
-  factory QuestSkillPriority.fromIndex(int index) {
-    if (index == 0) return QuestSkillPriority.main;
-    if (index <= 2) return QuestSkillPriority.secondary;
-
-    return QuestSkillPriority.additional;
+    return useDelayedListener
+        ? ReorderableDelayedDragStartListener(index: index, child: child)
+        : ReorderableDragStartListener(index: index, child: child);
   }
 }

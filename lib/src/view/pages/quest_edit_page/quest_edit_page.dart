@@ -31,12 +31,10 @@ import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
 import '../../widgets/priority_selector.dart';
 import '../../widgets/quest_skill_tile/quest_skill_tile.dart';
-import '../../widgets/skill_tile.dart';
+import 'quest_skills_selector_delegate.dart';
 
 part 'quest_schedule_tile.dart';
-
 part 'quest_skills_selector.dart';
-
 part 'quest_stages_editor.dart';
 
 class QuestEditPage extends StatelessWidget {

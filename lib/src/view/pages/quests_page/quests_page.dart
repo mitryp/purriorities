@@ -31,8 +31,7 @@ class _QuestsPageState extends State<QuestsPage> {
   @override
   void initState() {
     super.initState();
-    _loadFilters();
-    _fetchFilteredQuests();
+    _loadFilters().whenComplete(_fetchFilteredQuests);
   }
 
   Future<void> _loadFilters() async {

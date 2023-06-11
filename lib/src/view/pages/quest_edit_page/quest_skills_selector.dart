@@ -101,7 +101,7 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
 
                 final skill = _questSkills[index];
 
-                return _DraggableSkillTile(
+                return DraggableQuestSkillTile(
                   index: index,
                   skill: skill,
                   useDelayedListener: true,
@@ -126,7 +126,7 @@ class _QuestSkillsSelectorState extends State<_QuestSkillsSelector> {
 
     await showSearch(
       context: context,
-      delegate: _SkillsSearchDelegate(
+      delegate: SkillsSearchDelegate(
         options: searchOptions,
         skillSelectedCallback: (skill) {
           if (!mounted) return;
@@ -178,100 +178,4 @@ class _AddSkillButton extends StatelessWidget {
       ),
     );
   }
-}
-
-class _DraggableSkillTile extends StatelessWidget {
-  static const EdgeInsets _tilePadding = EdgeInsets.all(8);
-  static const Offset _handleIconOffset = Offset(-8, -6);
-
-  final int index;
-  final Skill skill;
-  final bool useDelayedListener;
-
-  const _DraggableSkillTile({
-    required this.index,
-    required this.skill,
-    this.useDelayedListener = true,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // final listenerConstructor = useDelayedListener
-    //     ? ReorderableDelayedDragStartListener.new
-    //     : ReorderableDragStartListener.new;
-
-    final child = Padding(
-      padding: _tilePadding,
-      child: Badge(
-        offset: _handleIconOffset,
-        backgroundColor: Colors.transparent,
-        alignment: Alignment.bottomCenter,
-        label: const Icon(Icons.drag_handle),
-        child: QuestSkillTile(
-          skill,
-          skillPriority: QuestSkillPriority.fromIndex(index),
-        ),
-      ),
-    );
-
-    if (useDelayedListener) {
-      return ReorderableDelayedDragStartListener(
-        index: index,
-        child: child,
-      );
-    }
-
-    return ReorderableDragStartListener(
-      index: index,
-      child: child,
-    );
-  }
-}
-
-class _SkillsSearchDelegate extends SearchDelegate<Skill> {
-  final List<Skill> _options;
-  final Callback<Skill> _skillSelectedCallback;
-
-  _SkillsSearchDelegate({
-    required List<Skill> options,
-    required Callback<Skill> skillSelectedCallback,
-  })  : _options = options,
-        _skillSelectedCallback = skillSelectedCallback;
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    final normalizedQuery = query.toLowerCase();
-    final searchResults = _options
-        .where((skill) => skill.name.toLowerCase().contains(normalizedQuery))
-        .toList(growable: false);
-
-    return ListView.builder(
-      itemCount: _options.length,
-      itemBuilder: (context, index) {
-        final skill = searchResults[index];
-
-        return SkillTile(
-          skill,
-          onPressed: () {
-            context.pop();
-            _skillSelectedCallback(skill);
-          },
-        );
-      },
-    );
-  }
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return const [];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return const SizedBox();
-  }
-
-  @override
-  Widget buildResults(BuildContext context) => buildSuggestions(context);
 }

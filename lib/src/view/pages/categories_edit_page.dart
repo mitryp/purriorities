@@ -36,7 +36,7 @@ class CategoriesEditPage extends StatelessWidget {
 class _MobileCategoriesEditPage extends StatefulWidget {
   final bool isEditing;
 
-  const _MobileCategoriesEditPage({required this.isEditing, super.key});
+  const _MobileCategoriesEditPage({required this.isEditing});
 
   @override
   State<_MobileCategoriesEditPage> createState() => _MobileCategoriesEditPageState();
