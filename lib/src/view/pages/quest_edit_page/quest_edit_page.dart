@@ -177,8 +177,15 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
 
   Future<void> _processQuestSaving() async {
     if (!_validateQuest()) return;
+
     final service = context.read<FetchServiceBundle>().questsFetchService;
-    final quest = context.read<NotifierWrapper<Quest>>().data;
+    final rawQuest = context.read<NotifierWrapper<Quest>>().data;
+
+    final quest = context.read<NotifierWrapper<Quest>>().data.copyWithSchedule(
+          deadline: _isPlanerUsed ? rawQuest.deadline : null,
+          limit: _isPlanerUsed && _isRepeating ? rawQuest.limit : null,
+          interval: _isPlanerUsed && _isRepeating ? rawQuest.interval : null,
+        );
 
     final res = await service.create(quest);
     if (!mounted) return;

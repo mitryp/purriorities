@@ -21,7 +21,10 @@ class PrioritySelector extends StatelessWidget {
     return DropdownButtonFormField<QuestPriority>(
       value: selected,
       onChanged: _processChange,
-      decoration: const InputDecoration(labelText: 'Рідкісність', contentPadding: EdgeInsets.zero),
+      decoration: const InputDecoration(
+        labelText: 'Пріоритетність',
+        contentPadding: EdgeInsets.zero,
+      ),
       items: priorities
           .map(
             (e) => DropdownMenuItem<QuestPriority>(
