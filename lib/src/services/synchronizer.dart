@@ -7,6 +7,7 @@ import '../data/models/quest.dart';
 import '../data/models/quest_category.dart';
 import '../data/models/user.dart';
 import '../data/user_data.dart';
+import 'helpers/pagination_data.dart';
 import 'http/fetch/categories_fetch_service.dart';
 import 'http/fetch/quests_fetch_service.dart';
 import 'http/fetch/user_fetch_service.dart';
@@ -51,10 +52,12 @@ class Synchronizer {
   /// Currently, synchronizes all the quests of the current user from the server and updates the
   /// [UserData] of [_context] with the obtained value.
   Future<List<Quest>?> syncQuests() async {
+    const activeQuestsPaginationData = PaginationData(filter: {'finishDate': '\$null'});
+
     log('synchronizing quests', name: 'Synchronizer');
 
     final quests = await _questFetchService()
-        .getMany()
+        .getMany(activeQuestsPaginationData)
         .then((res) => res.isSuccessful ? res.map((p) => p.data) : null);
 
     return _updateUserData((data) => data.quests = quests ?? []);
