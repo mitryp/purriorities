@@ -53,7 +53,7 @@ class _QuestsPageState extends State<QuestsPage> {
     final filterCategory = _data.filterCategory;
     final filterSkill = _data.filterSkill;
 
-    final PaginationData paginationData = (
+    final PaginationData paginationData = PaginationData(
       filter: {
         if (filterCategory != null) 'categoryId': filterCategory.id,
         if (filterSkill != null) 'questSkills.(skillId)': filterSkill.id,

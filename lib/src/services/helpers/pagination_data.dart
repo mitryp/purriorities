@@ -1,11 +1,13 @@
-typedef PaginationData = ({
-  int? limit,
-  int? page,
-  SortEntry? sort,
-  Map<String, String>? filter,
-});
+typedef SortEntry = (String field, SortOrder order);
 
-extension PaginationDataToParams on PaginationData {
+class PaginationData {
+  final int? limit;
+  final int? page;
+  final SortEntry? sort;
+  final Map<String, String>? filter;
+
+  const PaginationData({this.limit, this.page, this.sort, this.filter});
+
   Map<String, String> toParams() {
     final filter = this.filter;
     final sort = this.sort;
@@ -21,11 +23,7 @@ extension PaginationDataToParams on PaginationData {
   }
 }
 
-typedef SortEntry = (String field, SortOrder order);
-
 enum SortOrder {
   asc,
   desc;
 }
-
-const PaginationData emptyPaginationData = (limit: null, page: null, sort: null, filter: null);

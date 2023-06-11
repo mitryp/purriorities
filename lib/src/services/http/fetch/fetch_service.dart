@@ -34,7 +34,7 @@ abstract class FetchService<T> {
 mixin GetManyFetchMixin<T> on FetchService<T> {
   /// Fetches a [PaginatedData] of [T] based on the [paginationData].
   Future<FetchResult<PaginatedData<T>>> getMany([
-    PaginationData paginationData = emptyPaginationData,
+    PaginationData paginationData = const PaginationData(),
   ]) {
     final res = client.get<JsonMap>(path, queryParameters: paginationData.toParams());
 
