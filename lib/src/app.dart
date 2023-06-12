@@ -108,7 +108,7 @@ class PurrioritiesApp extends StatelessWidget {
 class _AppTopProviders extends StatelessWidget {
   final Widget child;
 
-  const _AppTopProviders({required this.child, super.key});
+  const _AppTopProviders({required this.child});
 
   @override
   Widget build(BuildContext context) {

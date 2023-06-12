@@ -87,7 +87,7 @@ class _MobileDashboard extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
-                      onPressed: () async => context
+                      onPressed: () => context
                           .push(AppRoute.allQuests.route)
                           .whenComplete(context.synchronizer().syncQuests),
                       child: const Text('Всі квести'),

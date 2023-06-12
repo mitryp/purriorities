@@ -43,6 +43,10 @@ class _LootBoxDialogContentState extends State<LootBoxDialogContent> {
 
   @override
   Widget build(BuildContext context) {
+    const defaultPadding = EdgeInsets.all(16);
+    const contentBottomPadding = 8.0;
+    const actionsTopPadding = 0.0;
+
     const spritesDimension = 64.0;
     const fadeCurve = Curves.easeOut;
     const sizeCurve = Curves.fastEaseInToSlowEaseOut;
@@ -53,6 +57,8 @@ class _LootBoxDialogContentState extends State<LootBoxDialogContent> {
     final crossFadeState = _isCatShown ? CrossFadeState.showSecond : CrossFadeState.showFirst;
 
     return AlertDialog(
+      contentPadding: defaultPadding.copyWith(bottom: contentBottomPadding),
+      actionsPadding: defaultPadding.copyWith(top: actionsTopPadding),
       content: SingleChildScrollView(
         child: Column(
           children: [
@@ -94,7 +100,8 @@ class _LootBoxDialogContentState extends State<LootBoxDialogContent> {
                         children: [
                           TextSpan(text: '${info.description}\n'),
                           TextSpan(
-                            text: 'рівень ${ownership.level}, бонус ${ownership.xpBoost}%',
+                            text:
+                                'рівень ${ownership.level}, бонус ${ownership.xpBoost.toStringAsFixed(2)}%',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           )
                         ],

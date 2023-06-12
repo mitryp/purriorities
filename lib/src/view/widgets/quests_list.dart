@@ -28,7 +28,7 @@ class QuestsList extends StatelessWidget {
         }
 
         return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Center(
             child: Text(
               isFiltered
