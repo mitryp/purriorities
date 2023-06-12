@@ -40,6 +40,8 @@ class QuestStage extends Serializable with Prototype<QuestStage> {
         tasks = const [],
         index = ordinal;
 
+  bool get isFinished => tasks.every((task) => task.isNotActive);
+
   @override
   Map<String, dynamic> toJson() => _$QuestStageToJson(this);
 

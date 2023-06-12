@@ -55,6 +55,10 @@ class Quest extends Serializable with Prototype<Quest> {
   /// A list of [QuestStage]s of this quest.
   final List<QuestStage> stages;
 
+  /// Whether this quest is finished and inactive.
+  @JsonKey(name: 'finished', includeToJson: false)
+  final bool isFinished;
+
   const Quest({
     required this.id,
     required this.name,
@@ -65,6 +69,7 @@ class Quest extends Serializable with Prototype<Quest> {
     required this.category,
     required this.skills,
     required this.stages,
+    this.isFinished = false,
   });
 
   const Quest.empty({required this.category})
@@ -75,7 +80,8 @@ class Quest extends Serializable with Prototype<Quest> {
         limit = null,
         interval = null,
         skills = const [],
-        stages = const [QuestStage.empty()];
+        stages = const [QuestStage.empty()],
+        isFinished = false;
 
   factory Quest.fromJson(Map<String, dynamic> json) =>
       _$QuestFromJson(json)..stages.sort((a, b) => a.index - b.index);
@@ -103,7 +109,8 @@ class Quest extends Serializable with Prototype<Quest> {
           interval == other.interval &&
           category == other.category &&
           skills == other.skills &&
-          stages == other.stages;
+          stages == other.stages &&
+          isFinished == other.isFinished;
 
   @override
   int get hashCode =>
@@ -115,7 +122,8 @@ class Quest extends Serializable with Prototype<Quest> {
       interval.hashCode ^
       category.hashCode ^
       skills.hashCode ^
-      stages.hashCode;
+      stages.hashCode ^
+      isFinished.hashCode;
 
   /// Preserves the schedule information. Use the [copyWithSchedule] method to change it.
   @override
@@ -125,6 +133,7 @@ class Quest extends Serializable with Prototype<Quest> {
     QuestCategory? category,
     List<Skill>? skills,
     List<QuestStage>? stages,
+    bool? isFinished,
   }) =>
       Quest(
         id: id,
@@ -136,6 +145,7 @@ class Quest extends Serializable with Prototype<Quest> {
         deadline: deadline,
         limit: limit,
         interval: interval,
+        isFinished: isFinished ?? this.isFinished,
       );
 
   Quest copyWithSchedule({
@@ -147,6 +157,7 @@ class Quest extends Serializable with Prototype<Quest> {
     QuestCategory? category,
     List<Skill>? skills,
     List<QuestStage>? stages,
+    bool? isFinished,
   }) =>
       Quest(
         id: id,
@@ -158,7 +169,35 @@ class Quest extends Serializable with Prototype<Quest> {
         deadline: deadline,
         limit: limit,
         interval: interval,
+        isFinished: isFinished ?? this.isFinished,
       );
+
+  /// Returns a copy of this quest with a task with the given [taskId] finished.
+  ///
+  /// If this quest does not contain such a task, returns this object instead.
+  Quest setTaskStatus(String taskId, {required bool? completed}) {
+    final stages = this.stages.toList();
+
+    final stageIndex = stages.indexWhere((s) => s.tasks.any((task) => task.id == taskId));
+
+    if (stageIndex == -1) return this;
+
+    final stage = stages[stageIndex];
+    final tasks = stage.tasks.toList();
+    final taskIndex = tasks.indexWhere((task) => task.id == taskId);
+
+    final task = stage.tasks[taskIndex].copyWithCompletedStatus(isCompleted: completed);
+
+    tasks
+      ..removeAt(taskIndex)
+      ..insert(taskIndex, task);
+
+    stages
+      ..removeAt(stageIndex)
+      ..insert(stageIndex, stage.copyWith(tasks: tasks.toList(growable: false)));
+
+    return copyWith(stages: stages);
+  }
 }
 
 String _serializeQuestCategory(QuestCategory category) => category.id;

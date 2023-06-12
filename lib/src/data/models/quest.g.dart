@@ -20,6 +20,7 @@ Quest _$QuestFromJson(Map<String, dynamic> json) => Quest(
       stages: (json['stages'] as List<dynamic>)
           .map((e) => QuestStage.fromJson(e as Map<String, dynamic>))
           .toList(),
+      isFinished: json['finished'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{

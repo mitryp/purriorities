@@ -21,18 +21,32 @@ class Task extends Serializable with Prototype<Task> {
   /// A quantity of minutes which user set for this task.
   final int minutes;
 
+  /// Whether this task is finished.
+  @JsonKey(name: 'completed', includeToJson: false, required: false)
+  final bool? isCompleted;
+
   const Task({
     required this.stageId,
     required this.id,
     required this.name,
     required this.minutes,
+    this.isCompleted,
   });
 
   const Task.empty({required this.stageId, required this.id})
       : name = '',
-        minutes = 10;
+        minutes = 10,
+        isCompleted = false;
 
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
+
+  bool get isFinished => isCompleted == true;
+
+  bool get isRefused => isCompleted == false;
+
+  bool get isActive => isCompleted == null;
+
+  bool get isNotActive => isCompleted != null;
 
   @override
   Map<String, dynamic> toJson() => _$TaskToJson(this);
@@ -48,10 +62,12 @@ class Task extends Serializable with Prototype<Task> {
           stageId == other.stageId &&
           id == other.id &&
           name == other.name &&
-          minutes == other.minutes;
+          minutes == other.minutes &&
+          isCompleted == other.isCompleted;
 
   @override
-  int get hashCode => stageId.hashCode ^ id.hashCode ^ name.hashCode ^ minutes.hashCode;
+  int get hashCode =>
+      stageId.hashCode ^ id.hashCode ^ name.hashCode ^ minutes.hashCode ^ isCompleted.hashCode;
 
   @override
   Task copyWith({String? name, int? minutes}) => Task(
@@ -59,5 +75,13 @@ class Task extends Serializable with Prototype<Task> {
         id: id,
         name: name ?? this.name,
         minutes: minutes ?? this.minutes,
+      );
+
+  Task copyWithCompletedStatus({required bool? isCompleted, String? name, int? minutes}) => Task(
+        stageId: stageId,
+        id: id,
+        name: name ?? this.name,
+        minutes: minutes ?? this.minutes,
+        isCompleted: isCompleted,
       );
 }
