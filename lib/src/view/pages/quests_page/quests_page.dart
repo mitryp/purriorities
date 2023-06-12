@@ -101,8 +101,8 @@ class _MobileQuestsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<QuestsPageData>(
-      builder: (context, data, _) {
-        final filterCategory = data.filterCategory;
+      builder: (context, questsPageData, _) {
+        final filterCategory = questsPageData.filterCategory;
 
         return MobileLayout.child(
           appBar: AppBar(
@@ -112,7 +112,7 @@ class _MobileQuestsPage extends StatelessWidget {
                 Chip(
                   label: FittedBox(child: Text(filterCategory.name)),
                   onDeleted: () {
-                    data.filterCategory = null;
+                    questsPageData.filterCategory = null;
                     _filterUpdateCallback();
                   },
                 ),
@@ -130,7 +130,7 @@ class _MobileQuestsPage extends StatelessWidget {
           endDrawerEnableOpenDragGesture: false,
           endDrawer: CategoriesDrawer(
             onCategorySelected: (category) {
-              data.filterCategory = category;
+              questsPageData.filterCategory = category;
               _filterUpdateCallback();
             },
           ),
@@ -139,48 +139,56 @@ class _MobileQuestsPage extends StatelessWidget {
                 .push(AppRoute.editQuest.route)
                 .whenComplete(context.synchronizer().syncQuests),
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                if (!data.areFiltersLoaded && !data.isLoaded)
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                else ...[
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(),
-                      child: Row(
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: !questsPageData.areFiltersLoaded && !questsPageData.isLoaded
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Column(
                         children: [
-                          Expanded(
-                            child: QuestsFilter<Skill?>(
-                              caption: 'Навичка',
-                              items: data.skills,
-                              initialSelection: null,
-                              onChanged: (skill) {
-                                if (data.filterSkill == skill) return;
-                                data.filterSkill = skill;
-                                _filterUpdateCallback();
-                              },
-                              presenter: (skill) => skill?.name ?? 'Всі',
+                          Card(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: QuestsFilter<Skill?>(
+                                      caption: 'Навичка',
+                                      items: questsPageData.skills,
+                                      initialSelection: null,
+                                      onChanged: (skill) {
+                                        if (questsPageData.filterSkill == skill) return;
+                                        questsPageData.filterSkill = skill;
+                                        _filterUpdateCallback();
+                                      },
+                                      presenter: (skill) => skill?.name ?? 'Всі',
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
+              ),
+              if (questsPageData.error == null)
+                QuestsList(
+                  items: questsPageData.quests,
+                  isFiltered: questsPageData.areFiltersApplied,
+                  useSliverList: true,
+                )
+              else
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Center(
+                      child: Text(questsPageData.error?.message ?? 'Сталась помилка'),
                     ),
                   ),
-                  if (data.error == null)
-                    Card(child: QuestsList(items: data.quests, isFiltered: data.areFiltersApplied))
-                  else
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Center(
-                        child: Text(data.error?.message ?? 'Сталась помилка'),
-                      ),
-                    )
-                ]
-              ],
-            ),
+                )
+            ],
           ),
         );
       },

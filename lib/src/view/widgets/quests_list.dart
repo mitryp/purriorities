@@ -6,13 +6,20 @@ import 'quest_tile.dart';
 class QuestsList extends StatelessWidget {
   final List<Quest> items;
   final bool isFiltered;
+  final bool useSliverList;
 
-  const QuestsList({required this.items, this.isFiltered = false, super.key});
+  const QuestsList({
+    required this.items,
+    this.isFiltered = false,
+    this.useSliverList = false,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      shrinkWrap: true,
+    final listBuilder = useSliverList ? SliverList.separated : ListView.separated;
+
+    return listBuilder(
       itemCount: items.isNotEmpty ? items.length : 1,
       separatorBuilder: (_, __) => const Divider(),
       itemBuilder: (_, index) {
