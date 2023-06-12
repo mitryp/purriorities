@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/models/quest.dart';
-import '../dialogs/task_completion_dialog.dart';
+import '../../typedefs.dart';
+import '../pages/single_quest_page/single_quest_page.dart';
 
 class QuestTile extends StatelessWidget {
   final Quest quest;
@@ -20,7 +21,7 @@ class QuestTile extends StatelessWidget {
     final isRepeated = quest.interval != null;
 
     return ListTile(
-      title: Text(quest.name),
+      title: Text(quest.name, style: quest.priority.textStyleWithColor),
       trailing: Wrap(
         alignment: WrapAlignment.end,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -41,10 +42,13 @@ class QuestTile extends StatelessWidget {
             const Text('В зручний час'),
         ],
       ),
-      onTap: () => showDialog<void>(
-        context: context,
-        builder: (BuildContext context) => const TaskCompletionDialog(),
-      ),
+      onTap: () => _redirectToSingleQuestPage(context),
+    );
+  }
+
+  Future<void> _redirectToSingleQuestPage(BuildContext context) async {
+    final commData = await Navigator.of(context).push<CommunicationData>(
+      MaterialPageRoute(builder: (context) => SingleQuestPage(quest)),
     );
   }
 }

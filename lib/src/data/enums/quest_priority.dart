@@ -23,4 +23,7 @@ enum QuestPriority {
   final TextStyle textStyle;
 
   const QuestPriority(this.label, {required this.color, this.textStyle = const TextStyle()});
+
+  /// A [textStyle] with the [color] included.
+  TextStyle get textStyleWithColor => textStyle.copyWith(color: color);
 }
