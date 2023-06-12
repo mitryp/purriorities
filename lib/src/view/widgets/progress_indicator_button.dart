@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 typedef ButtonBuilder = Widget Function({
-  required VoidCallback onPressed,
+  required VoidCallback? onPressed,
   required Widget child,
   ButtonStyle? style,
 });
@@ -11,7 +11,7 @@ typedef ButtonBuilder = Widget Function({
 class ProgressIndicatorButton extends StatefulWidget {
   final Widget child;
   final ButtonBuilder buttonBuilder;
-  final FutureOr Function() onPressed;
+  final FutureOr Function()? onPressed;
   final ButtonStyle? style;
 
   const ProgressIndicatorButton({
@@ -55,7 +55,7 @@ class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
   @override
   Widget build(BuildContext context) {
     return widget.buttonBuilder(
-      onPressed: _handlePress,
+      onPressed: widget.onPressed != null ? _handlePress : null,
       child: isProcessing
           ? Transform.scale(scale: 0.5, child: const CircularProgressIndicator())
           : widget.child,
@@ -68,7 +68,7 @@ class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
 
     setState(() => isProcessing = true);
 
-    Future.value(widget.onPressed()).whenComplete(() {
+    Future.value(widget.onPressed!()).whenComplete(() {
       if (!mounted) return;
       setState(() => isProcessing = false);
     });

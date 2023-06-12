@@ -8,7 +8,7 @@ const String baseUrl = String.fromEnvironment(
 const double maxUserTrust = 100.0;
 
 /// A price of a Golden loot box (in catnip).
-const int goldenLootBoxPrice = 20;
+const int goldenLootBoxPrice = int.fromEnvironment('LEGENDARY_LOOT_BOX_PRICE', defaultValue: 20);
 
 /// A price of a regular loot box (in feed).
-const int commonLootBoxPrice = 100;
+const int commonLootBoxPrice = int.fromEnvironment('COMMON_LOOT_BOX_PRICE', defaultValue: 100);

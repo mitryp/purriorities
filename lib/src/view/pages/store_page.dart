@@ -1,23 +1,30 @@
 import 'dart:developer';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/enums/currency.dart';
 import '../../common/enums/loot_box.dart';
 import '../../constants.dart';
+import '../../data/models/cat_ownership.dart';
 import '../../data/models/user.dart';
 import '../../data/user_data.dart';
+import '../../services/cats_info_cache.dart';
+import '../../services/store_service.dart';
 import '../../typedefs.dart';
 import '../../util/extensions/context_synchronizer.dart';
 import '../../util/sprite_scaling.dart';
+import '../dialogs/loot_box_dialog.dart';
 import '../widgets/authorizer.dart';
 import '../widgets/currency/currency_balance.dart';
 import '../widgets/currency/currency_info.dart';
+import '../widgets/error_snack_bar.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_indicator_button.dart';
 import '../widgets/sprite_avatar.dart';
+import 'collection/collection_cat.dart';
 
 class StorePage extends StatelessWidget {
   const StorePage({super.key});
@@ -25,9 +32,12 @@ class StorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Authorizer(
-      child: LayoutSelector(
-        mobileLayoutBuilder: (context) => const _MobileStorePage(),
-        desktopLayoutBuilder: (context) => const Placeholder(),
+      child: ProxyProvider<Dio, StoreService>(
+        update: (context, client, prev) => prev ?? StoreService(context: context, client: client),
+        child: LayoutSelector(
+          mobileLayoutBuilder: (context) => const _MobileStorePage(),
+          desktopLayoutBuilder: (context) => const Placeholder(),
+        ),
       ),
     );
   }
@@ -41,6 +51,8 @@ class _MobileStorePage extends StatefulWidget {
 }
 
 class _MobileStorePageState extends State<_MobileStorePage> {
+  late final StoreService _storeService = context.read<StoreService>();
+
   @override
   void initState() {
     super.initState();
@@ -48,12 +60,53 @@ class _MobileStorePageState extends State<_MobileStorePage> {
     context.synchronizer().syncUser();
   }
 
-  Future<void> _processLootBoxPurchase(LootBoxType type) async {
-    log('Intending to purchase a box of type ${type.name}', name: 'StorePage');
+  Future<void> _processLootBoxPurchase(LootBoxType lootBoxType) async {
+    log('Intending to purchase a box of type ${lootBoxType.name}', name: 'StorePage');
+
+    final res = await _storeService.openCase(lootBoxType);
+
+    if (!mounted) return;
+
+    if (res == null) {
+      showErrorSnackBar(
+        context: context,
+        content: const ErrorSnackBarContent(
+          titleText: 'У вас недостатньо валюти, щоб виконати цю операцію',
+        ),
+      );
+
+      return;
+    }
+
+    if (!res.isSuccessful) {
+      showErrorSnackBar(
+        context: context,
+        content: ErrorSnackBarContent(
+          titleText: 'Сталась помилка при купівлі',
+          subtitleText: 'Повідомлення від сервера: ${res.errorMessage}',
+        ),
+      );
+
+      return;
+    }
+
+    _displayLootBoxOpening(lootBoxType, res.result());
   }
 
   Future<void> _processCurrencyPurchase() async {
     log('Intending to purchase some currency', name: 'StorePage');
+  }
+
+  void _displayLootBoxOpening(LootBoxType lootBoxType, CatOwnership ownership) {
+    final catInfo = catInfoById(context, ownership.catNameId);
+    final collectionCat = CollectionCat(catInfo, ownership);
+
+    log('Received a cat ${catInfo.name} of level ${ownership.level}');
+
+    showDialog(
+      context: context,
+      builder: (context) => LootBoxDialogContent(lootBoxType: lootBoxType, reward: collectionCat),
+    );
   }
 
   @override
@@ -62,14 +115,22 @@ class _MobileStorePageState extends State<_MobileStorePage> {
 
     return MobileLayout(
       children: [
-        LayoutBuilder(
-          builder: (context, constraints) => ConstrainedBox(
-            constraints: constraints.widthConstraints() / 2.5,
-            child: Selector<UserData, User>(
-              selector: (_, data) => data.user!,
-              builder: (context, user, _) => CurrencyBalance(
-                commonCurrencyBalance: user.feed,
-                rareCurrencyBalance: user.catnip,
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: LayoutBuilder(
+            builder: (context, constraints) => ConstrainedBox(
+              constraints: constraints.widthConstraints() / 2.5,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Selector<UserData, User>(
+                    selector: (_, data) => data.user!,
+                    builder: (context, user, _) => CurrencyBalance(
+                      commonCurrencyBalance: user.feed,
+                      rareCurrencyBalance: user.catnip,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -86,28 +147,31 @@ class _MobileStorePageState extends State<_MobileStorePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Wrap(
-                        runSpacing: 10.0,
-                        spacing: 30.0,
+                        runSpacing: 16,
+                        spacing: 32,
                         children: LootBoxType.values.map((type) {
                           return _LootBoxPurchaseColumn(
                             type: type,
-                            radius: 50,
+                            radius: 56,
                             onPurchaseIntent: _processLootBoxPurchase,
                           );
                         }).toList(growable: false),
                       ),
-                      const SizedBox(height: 20.0),
-                      ProgressIndicatorButton.elevated(
-                        onPressed: _processCurrencyPurchase, //TODO
-                        style: accentButtonStyle,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('+ ${rate.value} '),
-                            const CurrencyImage(currency: Currency.feed),
-                            const Text(' за 1 '),
-                            const CurrencyImage(currency: Currency.catnip),
-                          ],
+                      const SizedBox(height: 24),
+                      Selector<UserData, int>(
+                        selector: (context, userData) => userData.user!.catnip,
+                        builder: (context, catnipAmount, _) => ProgressIndicatorButton.elevated(
+                          onPressed: catnipAmount >= rate.value ? _processCurrencyPurchase : null,
+                          style: accentButtonStyle,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('+ ${rate.value} '),
+                              const CurrencyImage(currency: Currency.feed),
+                              const Text(' за 1 '),
+                              const CurrencyImage(currency: Currency.catnip),
+                            ],
+                          ),
                         ),
                       )
                     ],
@@ -123,10 +187,6 @@ class _MobileStorePageState extends State<_MobileStorePage> {
 }
 
 class _LootBoxPurchaseColumn extends StatelessWidget {
-  // final String lootBoxAsset;
-  // final Currency currency;
-  // final Color? backgroundColor;
-  // final int price;
   final LootBoxType type;
   final double radius;
   final FutureCallback<void, LootBoxType> onPurchaseIntent;
@@ -135,7 +195,6 @@ class _LootBoxPurchaseColumn extends StatelessWidget {
     required this.type,
     required this.onPurchaseIntent,
     this.radius = 32,
-    // this.backgroundColor,
   });
 
   @override
@@ -150,15 +209,18 @@ class _LootBoxPurchaseColumn extends StatelessWidget {
             scale: scaleToFitCircle(radius),
             backgroundColor: type.catRarity.color,
           ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          ProgressIndicatorButton(
-            buttonBuilder: OutlinedButton.new,
-            onPressed: () => onPurchaseIntent(type),
-            child: CurrencyInfo(
-              currency: type.currency,
-              quantity: type.price,
+          const SizedBox(height: 10),
+          Selector<UserData, User>(
+            selector: (context, userData) => userData.user!,
+            builder: (context, user, _) => ProgressIndicatorButton(
+              buttonBuilder: OutlinedButton.new,
+              onPressed: user.amountOfCurrency(type.currency) >= type.price
+                  ? () => onPurchaseIntent(type)
+                  : null,
+              child: CurrencyInfo(
+                currency: type.currency,
+                quantity: type.price,
+              ),
             ),
           ),
         ],

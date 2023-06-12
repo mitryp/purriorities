@@ -1,7 +1,9 @@
 import 'dart:collection';
+import 'dart:math';
 
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../common/enums/currency.dart';
 import 'abs/prototype.dart';
 import 'abs/serializable.dart';
 import 'cat_ownership.dart';
@@ -109,20 +111,24 @@ class User extends Serializable with Prototype<User> {
   User copyWith({
     String? nickname,
     String? email,
+    int? level,
+    int? levelExp,
+    int? levelCap,
     int? feed,
+    int? catnip,
     double? trust,
-    List<CatOwnership>? cats,
+    List<CatOwnership>? catOwnerships,
   }) =>
       User(
         nickname: nickname ?? this.nickname,
         email: email ?? this.email,
-        level: level,
-        levelExp: levelExp,
-        levelCap: levelCap,
+        level: level ?? this.level,
+        levelExp: levelExp ?? this.levelExp,
+        levelCap: levelCap ?? this.levelCap,
         feed: feed ?? this.feed,
-        catnip: catnip,
+        catnip: catnip ?? this.catnip,
         trust: trust ?? this.trust,
-        catOwnerships: cats ?? catOwnerships,
+        catOwnerships: catOwnerships ?? this.catOwnerships,
       );
 
   /// Returns a copy of this user object after the given [punishment] applied.
@@ -135,6 +141,32 @@ class User extends Serializable with Prototype<User> {
     final cats = catOwnerships.toList()
       ..removeWhere((cat) => runawayCatIds.contains(cat.catNameId));
 
-    return copyWith(trust: trust, feed: feed, cats: cats.toList(growable: false));
+    return copyWith(trust: trust, feed: feed, catOwnerships: cats.toList(growable: false));
+  }
+
+  /// Returns the amount of the given [currency] this user has.
+  int amountOfCurrency(Currency currency) {
+    return switch (currency) {
+      Currency.feed => feed,
+      Currency.catnip => catnip,
+    };
+  }
+
+  /// Returns a copy of this user with the [amount] of [currency] removed from its balance.
+  User removeCurrency(int amount, Currency currency) {
+    return switch (currency) {
+      Currency.feed => copyWith(feed: max(0, feed - amount)),
+      Currency.catnip => copyWith(catnip: max(0, catnip - amount)),
+    };
+  }
+
+  /// Returns a copy of this user with added or replaced [cat].
+  User updateCatOwnership(CatOwnership cat) {
+    final cats = catOwnerships.toList();
+    cats
+      ..removeWhere((c) => c.catNameId == cat.catNameId)
+      ..add(cat);
+
+    return copyWith(catOwnerships: cats.toList(growable: false));
   }
 }

@@ -8,7 +8,8 @@ const Size _defaultSize = Size.square(catSpriteDimension);
 enum Sprite {
   grayCat('assets/gray-cat.webp', animatedAsset: 'assets/gray-cat-animated.webp'),
   valerian('assets/valerian.webp', animatedAsset: 'assets/valerian-animated.webp'),
-  fishFood('assets/foods-fish.webp', animatedAsset: 'assets/foods-fish-animated.webp');
+  fishFood('assets/foods-fish.webp', animatedAsset: 'assets/foods-fish-animated.webp'),
+  catCarrier('assets/cat-carrier.webp');
 
   /// A path to the asset of this [Sprite].
   final String asset;
@@ -20,13 +21,9 @@ enum Sprite {
   /// A size of this [Sprite].
   final Size size;
 
-  /// Whether this [Sprite] has animation.
-  final bool isAnimated;
-
   const Sprite(
     this.asset, {
     String? animatedAsset,
     this.size = _defaultSize,
-    this.isAnimated = true,
   }) : animatedAsset = animatedAsset ?? asset;
 }

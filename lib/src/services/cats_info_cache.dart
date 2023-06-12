@@ -1,5 +1,8 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+
 import '../data/models/cat.dart';
 import 'http/fetch/cat_fetch_service.dart';
 
@@ -38,4 +41,12 @@ class CatsInfoCache {
 
   @override
   int get hashCode => _isLoaded.hashCode;
+}
+
+/// Searchers for a [CatsInfoCache] provider in the given [context] ancestors and returns a [Cat]
+/// info object for the give cat [nameId].
+Cat catInfoById(BuildContext context, String nameId) {
+  final cache = context.read<CatsInfoCache>();
+
+  return cache.cats.firstWhere((cat) => cat.nameId == nameId);
 }
