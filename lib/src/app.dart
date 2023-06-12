@@ -23,20 +23,27 @@ import 'view/pages/skills_edit_page.dart';
 import 'view/theme.dart';
 import 'view/widgets/main_navigation.dart';
 
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
+final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey();
+
 final _router = GoRouter(
   initialLocation: AppRoute.init.route,
+  navigatorKey: _rootNavigatorKey,
   routes: [
     ShellRoute(
+      navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) => MainNavigation(child: child),
       routes: [
         for (final action in MainNavAction.values)
           GoRoute(
+            parentNavigatorKey: _shellNavigatorKey,
             path: action.route.route,
             builder: action.goRouterWidgetBuilder,
           )
       ],
     ),
     GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: AppRoute.init.route,
       builder: (context, state) {
         final extra = state.extra;
@@ -47,26 +54,31 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: AppRoute.login.route,
       builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: AppRoute.register.route,
       builder: (context, state) => RegisterPage(
         email: state.extra is String ? state.extra as String : null,
       ),
     ),
     GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: AppRoute.allQuests.route,
       builder: (context, state) => const QuestsPage(),
     ),
     GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: AppRoute.editQuest.route,
       builder: (context, state) => QuestEditPage(
         initialQuest: state.extra is Quest ? state.extra as Quest : null,
       ),
     ),
     GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: AppRoute.editSkill.route,
       builder: (context, state) => SkillsEditPage(
         skill: state.extra is Skill ? state.extra as Skill : null,
