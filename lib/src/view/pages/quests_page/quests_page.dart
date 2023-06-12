@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +10,7 @@ import '../../../services/helpers/pagination_data.dart';
 import '../../../services/http/fetch/quests_fetch_service.dart';
 import '../../../services/http/util/fetch_service_bundle.dart';
 import '../../../util/extensions/context_synchronizer.dart';
+import '../../../util/extensions/string_ellipsis.dart';
 import '../../widgets/add_button.dart';
 import '../../widgets/authorizer.dart';
 import '../../widgets/categories_drawer.dart';
@@ -102,6 +105,7 @@ class _MobileQuestsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<QuestsPageData>(
       builder: (context, questsPageData, _) {
+        const categoryNameLength = 15;
         final filterCategory = questsPageData.filterCategory;
 
         return MobileLayout.child(
@@ -110,7 +114,11 @@ class _MobileQuestsPage extends StatelessWidget {
             actions: [
               if (filterCategory != null) ...[
                 Chip(
-                  label: FittedBox(child: Text(filterCategory.name)),
+                  label: Text(
+                    filterCategory.name.ellipsis(categoryNameLength),
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                  ),
                   onDeleted: () {
                     questsPageData.filterCategory = null;
                     _filterUpdateCallback();
