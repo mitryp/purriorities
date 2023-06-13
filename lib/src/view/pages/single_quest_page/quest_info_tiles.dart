@@ -36,13 +36,17 @@ class _QuestInfoTiles extends StatelessWidget {
           formatDuration(deadline.difference(DateTime.now())),
           isDeadlineMissed ? TextStyle(color: errorColor) : defaultTrailingStyle,
         ),
-      ('Кінцевий термін', deadline != null ? _deadlineFormat.format(deadline) : 'Не вказано', defaultTrailingStyle),
+      (
+        'Кінцевий термін',
+        deadline != null ? _deadlineFormat.format(deadline) : 'Не вказано',
+        defaultTrailingStyle
+      ),
       ('Категорія', quest.category.name, defaultTrailingStyle),
       ('Пріоритетність', quest.priority.label.capitalize(), priorityTextStyle),
       (
         'Інтервал',
         interval != null ? 'Раз на $interval ${formatDays(interval)}' : 'Не повторюється',
-      defaultTrailingStyle,
+        defaultTrailingStyle,
       ),
     ];
 

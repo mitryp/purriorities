@@ -74,6 +74,7 @@ class _QuestTaskSelectionChip extends StatelessWidget {
       ),
     );
 
+    final isQuestFinished = questWrapper.data.stages.every((stage) => stage.isFinished);
     await sync.syncUser();
 
     // ignore: use_build_context_synchronously
@@ -81,10 +82,18 @@ class _QuestTaskSelectionChip extends StatelessWidget {
 
     if (res is Reward) {
       questWrapper.data = questWrapper.data.setTaskStatus(task.id, isCompleted: true);
-      await showRewardPunishmentDialog(context: context, reward: res);
+      await showRewardPunishmentDialog(
+        context: context,
+        reward: res,
+        isQuestFinished: isQuestFinished,
+      );
     } else if (res is TaskRefuseResponse) {
       questWrapper.data = questWrapper.data.setTaskStatus(task.id, isCompleted: false);
-      await showRewardPunishmentDialog(context: context, refuseResponse: res);
+      await showRewardPunishmentDialog(
+        context: context,
+        refuseResponse: res,
+        isQuestFinished: isQuestFinished,
+      );
     }
 
     if (questWrapper.data.isFinished) await sync.syncQuests();

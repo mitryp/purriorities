@@ -25,6 +25,7 @@ class RewardPunishmentDialog extends StatelessWidget {
   final List<CollectionCat> ownedCats;
   final PendingPunishment punishment;
   final Reward reward;
+  final bool isQuestFinished;
 
   const RewardPunishmentDialog({
     required this.user,
@@ -32,6 +33,7 @@ class RewardPunishmentDialog extends StatelessWidget {
     required this.ownedCats,
     this.punishment = const PendingPunishment.absent(),
     this.reward = const Reward.absent(),
+    this.isQuestFinished = false,
     super.key,
   });
 
@@ -57,7 +59,11 @@ class RewardPunishmentDialog extends StatelessWidget {
                 child: const Text('Втрати', style: RewardPunishmentDialog._labelStyle),
               ),
               _PunishmentsColumn(punishment, cats: ownedCats),
-            ]
+            ],
+            if (isQuestFinished)
+              const _RewardPunishmentEntry(
+                title: Text('Новий періодичний квест створено'),
+              ),
           ],
         ),
       ),
@@ -91,72 +97,75 @@ class _PunishmentsColumn extends StatelessWidget {
 
     return Column(
       children: [
-        if (punishment.runawayCats.isNotEmpty) _RewardPunishmentEntry(
-          title: Text.rich(
-            textAlign: TextAlign.center,
-            TextSpan(
-              children: [
-                const TextSpan(text: 'Від вас пішли ці котики та забрали з собою '),
-                WidgetSpan(
-                  alignment: PlaceholderAlignment.middle,
-                  child: CurrencyInfo(
-                    currency: Currency.feed,
-                    quantity: feedLostFromCats,
-                    reversed: true,
-                  ),
-                )
-              ],
+        if (punishment.runawayCats.isNotEmpty)
+          _RewardPunishmentEntry(
+            title: Text.rich(
+              textAlign: TextAlign.center,
+              TextSpan(
+                children: [
+                  const TextSpan(text: 'Від вас пішли ці котики та забрали з собою '),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: CurrencyInfo(
+                      currency: Currency.feed,
+                      quantity: feedLostFromCats,
+                      reversed: true,
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          child: SizedBox(
-            height: catSpriteRadius * 1.5,
-            child: ListView.separated(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              separatorBuilder: (_, __) => const SizedBox.square(dimension: cardPadding),
-              itemCount: punishment.runawayCats.length,
-              itemBuilder: (_, index) {
-                final cat = punishment.runawayCats[index];
-                final collectionCat = cats.firstWhere((c) => c.info.nameId == cat.nameId);
+            child: SizedBox(
+              height: catSpriteRadius * 1.5,
+              child: ListView.separated(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                separatorBuilder: (_, __) => const SizedBox.square(dimension: cardPadding),
+                itemCount: punishment.runawayCats.length,
+                itemBuilder: (_, index) {
+                  final cat = punishment.runawayCats[index];
+                  final collectionCat = cats.firstWhere((c) => c.info.nameId == cat.nameId);
 
-                return Tooltip(
-                  message: '${collectionCat.info.name} ${collectionCat.ownership!.level} рівня',
-                  child: SpriteAvatar.network(
-                    networkPath: collectionCat.info.spritePath,
-                    scale: scaleToFitCircle(catSpriteRadius),
-                    minRadius: catSpriteRadius / 1.5,
-                    backgroundColor: collectionCat.info.rarity.color,
+                  return Tooltip(
+                    message: '${collectionCat.info.name} ${collectionCat.ownership!.level} рівня',
+                    child: SpriteAvatar.network(
+                      networkPath: collectionCat.info.spritePath,
+                      scale: scaleToFitCircle(catSpriteRadius),
+                      minRadius: catSpriteRadius / 1.5,
+                      backgroundColor: collectionCat.info.rarity.color,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        if (trustLostFromQuests > 0)
+          _RewardPunishmentEntry(
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(text: 'Пропущені реченці призвели до втрати '),
+                  TextSpan(
+                    text: '$trustLostFromQuests',
+                    style: _trustTextStyle,
                   ),
-                );
-              },
+                  const TextSpan(text: ' одиниць довіри'),
+                ],
+              ),
             ),
           ),
-        ),
-        if (trustLostFromQuests > 0) _RewardPunishmentEntry(
-          title: Text.rich(
-            TextSpan(
-              children: [
-                const TextSpan(text: 'Пропущені реченці призвели до втрати '),
-                TextSpan(
-                  text: '$trustLostFromQuests',
-                  style: _trustTextStyle,
-                ),
-                const TextSpan(text: ' одиниць довіри'),
-              ],
+        if (punishment.extraTrustLost > 0)
+          _RewardPunishmentEntry(
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(text: 'Ви втратили '),
+                  TextSpan(text: '${punishment.extraTrustLost}', style: _trustTextStyle),
+                  const TextSpan(text: ' довіри'),
+                ],
+              ),
             ),
-          ),
-        ),
-        if (punishment.extraTrustLost > 0) _RewardPunishmentEntry(
-          title: Text.rich(
-            TextSpan(
-              children: [
-                const TextSpan(text: 'Ви втратили '),
-                TextSpan(text: '${punishment.extraTrustLost}', style: _trustTextStyle),
-                const TextSpan(text: ' довіри'),
-              ],
-            ),
-          ),
-        )
+          )
       ],
     );
   }
@@ -294,6 +303,7 @@ Future<void> showRewardPunishmentDialog({
   required BuildContext context,
   Reward? reward,
   TaskRefuseResponse? refuseResponse,
+  bool isQuestFinished = false,
 }) async {
   assert(reward != null || refuseResponse != null);
 
@@ -324,6 +334,7 @@ Future<void> showRewardPunishmentDialog({
       ownedCats: collectionCats,
       punishment: punishment ?? const PendingPunishment.absent(),
       reward: rew,
+      isQuestFinished: isQuestFinished,
     ),
   );
 }
