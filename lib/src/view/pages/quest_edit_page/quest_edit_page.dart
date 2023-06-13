@@ -17,7 +17,7 @@ import '../../../services/http/util/fetch_service_bundle.dart';
 import '../../../typedefs.dart';
 import '../../../util/datetime_comparison.dart';
 import '../../../util/extensions/datetime_extensions.dart';
-import '../../../util/minutes_format.dart';
+import '../../../util/time_format.dart';
 import '../../dialogs/confirmation_dialog.dart';
 import '../../dialogs/task_edit_dialog.dart';
 import '../../theme.dart';

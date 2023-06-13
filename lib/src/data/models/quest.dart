@@ -83,8 +83,15 @@ class Quest extends Serializable with Prototype<Quest> {
         stages = const [QuestStage.empty()],
         isFinished = false;
 
-  factory Quest.fromJson(Map<String, dynamic> json) =>
-      _$QuestFromJson(json)..stages.sort((a, b) => a.index - b.index);
+  factory Quest.fromJson(Map<String, dynamic> json) {
+    final extracted = _$QuestFromJson(json)..stages.sort((a, b) => a.index - b.index);
+
+    return extracted.copyWithSchedule(
+      deadline: extracted.deadline?.toLocal(),
+      limit: extracted.limit?.toLocal(),
+      interval: extracted.interval,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() => _$QuestToJson(this);

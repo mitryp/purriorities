@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../../common/enums/sprite.dart';
+import '../../data/models/quest.dart';
+import '../../data/models/task.dart';
+import '../../data/util/notifier_wrapper.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/chat_bubble.dart';
 
-class TaskCompletionDialog extends StatelessWidget {
-  const TaskCompletionDialog({super.key});
+class TaskManagementDialog extends StatelessWidget {
+  final Task task;
+  final NotifierWrapper<Quest> questWrapper;
+
+  const TaskManagementDialog(this.task, {required this.questWrapper, super.key});
 
   @override
   Widget build(BuildContext context) {

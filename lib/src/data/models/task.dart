@@ -44,9 +44,9 @@ class Task extends Serializable with Prototype<Task> {
 
   bool get isRefused => isCompleted == false;
 
-  bool get isActive => isCompleted == null;
+  bool get isPending => isCompleted == null;
 
-  bool get isNotActive => isCompleted != null;
+  bool get isNotPending => isCompleted != null;
 
   @override
   Map<String, dynamic> toJson() => _$TaskToJson(this);
