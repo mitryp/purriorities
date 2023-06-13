@@ -46,7 +46,7 @@ class RewardPunishmentDialog extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 margin: const EdgeInsets.only(bottom: 8),
-                child: const Text('Ви отримали', style: RewardPunishmentDialog._labelStyle),
+                child: const Text('Досягнення', style: RewardPunishmentDialog._labelStyle),
               ),
               _RewardsColumn(reward, user: user, skills: skills),
             ],
@@ -54,7 +54,7 @@ class RewardPunishmentDialog extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 margin: EdgeInsets.only(bottom: 8, top: reward.isAbsent ? 0 : 8),
-                child: const Text('Ви втратили', style: RewardPunishmentDialog._labelStyle),
+                child: const Text('Втрати', style: RewardPunishmentDialog._labelStyle),
               ),
               _PunishmentsColumn(punishment, cats: ownedCats),
             ]
@@ -91,7 +91,7 @@ class _PunishmentsColumn extends StatelessWidget {
 
     return Column(
       children: [
-        _RewardPunishmentEntry(
+        if (punishment.runawayCats.isNotEmpty) _RewardPunishmentEntry(
           title: Text.rich(
             textAlign: TextAlign.center,
             TextSpan(
@@ -132,7 +132,7 @@ class _PunishmentsColumn extends StatelessWidget {
             ),
           ),
         ),
-        _RewardPunishmentEntry(
+        if (trustLostFromQuests > 0) _RewardPunishmentEntry(
           title: Text.rich(
             TextSpan(
               children: [
@@ -146,7 +146,7 @@ class _PunishmentsColumn extends StatelessWidget {
             ),
           ),
         ),
-        _RewardPunishmentEntry(
+        if (punishment.extraTrustLost > 0) _RewardPunishmentEntry(
           title: Text.rich(
             TextSpan(
               children: [
