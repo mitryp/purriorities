@@ -26,7 +26,7 @@ class QuestTile extends StatelessWidget {
 
     final deadlineTextStyle = TextStyle(
       color:
-          deadlineMissed(quest) ? Theme.of(context).colorScheme.error : QuestPriority.regular.color,
+          deadlineMissed(quest) ? Theme.of(context).colorScheme.error : QuestPriority.optional.color,
     );
 
     return ListTile(
