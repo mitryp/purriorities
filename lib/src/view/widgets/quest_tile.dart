@@ -25,8 +25,7 @@ class QuestTile extends StatelessWidget {
     final isRepeated = quest.interval != null;
 
     final deadlineTextStyle = TextStyle(
-      color:
-          deadlineMissed(quest) ? Theme.of(context).colorScheme.error : QuestPriority.optional.color,
+      color: deadlineMissed(quest) ? Theme.of(context).colorScheme.error : null,
     );
 
     return ListTile(
