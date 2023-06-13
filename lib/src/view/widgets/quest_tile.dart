@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../app.dart';
+import '../../common/util/helping_functions.dart';
+import '../../data/enums/quest_priority.dart';
 import '../../data/models/quest.dart';
 import '../pages/single_quest_page/single_quest_page.dart';
 
@@ -10,7 +12,8 @@ class QuestTile extends StatelessWidget {
   final double trailingSpacing;
   final VoidCallback? filtersUpdateCallback;
 
-  const QuestTile(this.quest, {
+  const QuestTile(
+    this.quest, {
     this.trailingSpacing = 8.0,
     this.filtersUpdateCallback,
     super.key,
@@ -20,6 +23,11 @@ class QuestTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final deadline = quest.deadline;
     final isRepeated = quest.interval != null;
+
+    final deadlineTextStyle = TextStyle(
+      color:
+          deadlineMissed(quest) ? Theme.of(context).colorScheme.error : QuestPriority.optional.color,
+    );
 
     return ListTile(
       title: Text(quest.name, style: quest.priority.textStyleWithColor),
@@ -35,8 +43,14 @@ class QuestTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(DateFormat('HH:mm').format(deadline)),
-                Text(DateFormat('dd.MM.yyyy').format(deadline)),
+                Text(
+                  DateFormat('HH:mm').format(deadline),
+                  style: deadlineTextStyle,
+                ),
+                Text(
+                  DateFormat('dd.MM.yyyy').format(deadline),
+                  style: deadlineTextStyle,
+                ),
               ],
             )
           else
