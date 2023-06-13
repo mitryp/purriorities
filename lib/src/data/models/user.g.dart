@@ -10,7 +10,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       nickname: json['nickname'] as String,
       email: json['email'] as String,
       level: json['level'] as int,
-      levelExp: json['levelExp'] as int,
+      levelExp:
+          json['levelExp'] is int ? json['levelExp'] as int : (json['levelExp'] as double).round(),
       levelCap: json['levelCap'] as int,
       feed: json['feed'] as int,
       catnip: json['catnip'] as int,

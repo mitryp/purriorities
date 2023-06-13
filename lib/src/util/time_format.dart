@@ -17,7 +17,7 @@ String formatDuration(Duration d) {
   return formatted.isNotEmpty ? formatted : '0 хв.';
 }
 
-String formatMinutes(int minutes) => formatDuration(Duration(minutes: minutes));
+String formatMinutes(int minutes) => formatDuration(Duration(minutes: minutes - 1));
 
 String formatDays(int days) {
   final mod = days % 10;

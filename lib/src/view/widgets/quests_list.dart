@@ -9,12 +9,14 @@ class QuestsList extends StatelessWidget {
   final bool isFiltered;
   final bool useSliverList;
   final bool shrinkWrap;
+  final VoidCallback? filtersUpdateCallback;
 
   const QuestsList({
     required this.items,
     this.isFiltered = false,
     this.useSliverList = false,
     this.shrinkWrap = false,
+    this.filtersUpdateCallback,
     super.key,
   });
 
@@ -48,7 +50,10 @@ class QuestsList extends StatelessWidget {
       separatorBuilder: (_, __) => const Divider(),
       itemBuilder: (_, index) {
         if (items.isNotEmpty) {
-          return QuestTile(items[index]);
+          return QuestTile(
+            items[index],
+            filtersUpdateCallback: filtersUpdateCallback,
+          );
         }
 
         return Padding(

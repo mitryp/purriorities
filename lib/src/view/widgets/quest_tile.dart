@@ -9,10 +9,11 @@ import '../pages/single_quest_page/single_quest_page.dart';
 class QuestTile extends StatelessWidget {
   final Quest quest;
   final double trailingSpacing;
+  final VoidCallback? filtersUpdateCallback;
 
-  const QuestTile(
-    this.quest, {
+  const QuestTile(this.quest, {
     this.trailingSpacing = 8.0,
+    this.filtersUpdateCallback,
     super.key,
   });
 
@@ -48,8 +49,8 @@ class QuestTile extends StatelessWidget {
   }
 
   Future<void> _redirectToSingleQuestPage(BuildContext context) async {
-    final commData = await rootNavigatorKey.currentState!.push<CommunicationData>(
+    return rootNavigatorKey.currentState!.push<void>(
       MaterialPageRoute(builder: (context) => SingleQuestPage(quest)),
-    );
+    ).whenComplete(() => filtersUpdateCallback?.call());
   }
 }

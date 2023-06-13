@@ -141,9 +141,10 @@ class _MobileQuestsPage extends StatelessWidget {
             },
           ),
           floatingActionButton: AddButton(
-            onPressed: () => context
-                .push(AppRoute.editQuest.route)
-                .whenComplete(context.synchronizer().syncQuests),
+            onPressed: () => context.push(AppRoute.editQuest.route).whenComplete(() {
+              _filterUpdateCallback();
+              context.synchronizer().syncQuests();
+            }),
           ),
           child: CustomScrollView(
             slivers: [
@@ -184,6 +185,7 @@ class _MobileQuestsPage extends StatelessWidget {
                   items: questsPageData.quests,
                   isFiltered: questsPageData.areFiltersApplied,
                   useSliverList: true,
+                  filtersUpdateCallback: () => _filterUpdateCallback(),
                 )
               else
                 SliverToBoxAdapter(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -20,9 +21,11 @@ import '../../../services/tasks_service.dart';
 import '../../../util/extensions/context_synchronizer.dart';
 import '../../../util/extensions/string_capitalize.dart';
 import '../../../util/time_format.dart';
+import '../../dialogs/confirmation_dialog.dart';
 import '../../dialogs/reward_punishment_dialog.dart';
 import '../../dialogs/task_completion_dialog.dart';
 import '../../widgets/authorizer.dart';
+import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
 import '../collection/collection_cat.dart';
@@ -67,6 +70,13 @@ class _MobileQuestsPage extends StatelessWidget {
         final priorityTextStyle = quest.priority.textStyleWithColor;
 
         return MobileLayout.child(
+          floatingActionButton: quest.isFinished
+              ? null
+              : FloatingActionButton(
+                  onPressed: () {},
+                  backgroundColor: Colors.red[600],
+                  child: const Icon(Icons.delete),
+                ),
           appBar: AppBar(
             title: Text.rich(
               TextSpan(
@@ -95,6 +105,40 @@ class _MobileQuestsPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Future<void> _processDeleteTask(BuildContext context, Quest quest) async {
+    final fetchService = context.read<FetchServiceBundle>().questsFetchService;
+
+    final isConfirmed = await showConfirmationDialog(
+      context: context,
+      prompt: 'Ви справді хочете видалити цей квест?',
+      confirmLabelText: 'Так',
+      denyLabelText: 'Ні',
+    );
+
+    // ignore: use_build_context_synchronously
+    if (!context.mounted || !isConfirmed) return;
+
+    final res = await fetchService.delete(quest.id);
+
+    // ignore: use_build_context_synchronously
+    if (!context.mounted) return;
+
+    if (res.isSuccessful && res.result()) {
+      context.synchronizer().syncQuests();
+      context.pop();
+
+      return;
+    }
+
+    showErrorSnackBar(
+      context: context,
+      content: ErrorSnackBarContent(
+        titleText: 'Сталася помилка під час видалення квесту',
+        subtitleText: 'Повідомлення від сервера: ${res.errorMessage}',
+      ),
     );
   }
 }
