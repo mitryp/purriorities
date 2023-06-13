@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import 'common/enums/communication_data_status.dart';
 
 /// A void function from the [value] of type [T].
@@ -19,4 +21,16 @@ typedef SessionRestorationExtra = ({bool sessionRestored});
 typedef CommunicationData<T> = ({
   T? data,
   CommunicationDataStatus status,
+});
+
+/// A function matching the [ListView.separated] and [SliverList.separated] constructors.
+typedef ListBuilder = Widget Function({
+  bool addAutomaticKeepAlives,
+  bool addRepaintBoundaries,
+  bool addSemanticIndexes,
+  int? Function(Key key)? findChildIndexCallback,
+  required Widget? Function(BuildContext context, int index) itemBuilder,
+  required int itemCount,
+  Key? key,
+  required Widget Function(BuildContext context, int index) separatorBuilder,
 });

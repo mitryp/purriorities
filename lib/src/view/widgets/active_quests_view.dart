@@ -12,7 +12,7 @@ class ActiveQuestsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<UserData, List<Quest>>(
       selector: (context, data) => data.quests,
-      builder: (_, items, __) => QuestsList(items: items),
+      builder: (_, items, __) => QuestsList(items: items, shrinkWrap: true),
     );
   }
 }
