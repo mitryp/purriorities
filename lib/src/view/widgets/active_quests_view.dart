@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,10 @@ class ActiveQuestsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<UserData, List<Quest>>(
       selector: (context, data) => data.quests,
-      builder: (_, items, __) => QuestsList(items: items, shrinkWrap: true),
+      builder: (_, items, __) => QuestsList(
+        items: items,
+        shrinkWrap: kIsWeb, // chrome does not render this list correctly without shrinkWrap
+      ),
     );
   }
 }
