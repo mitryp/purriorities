@@ -23,12 +23,12 @@ import 'view/pages/skills_edit_page.dart';
 import 'view/theme.dart';
 import 'view/widgets/main_navigation.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey();
 final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey();
 
 final _router = GoRouter(
   initialLocation: AppRoute.init.route,
-  navigatorKey: _rootNavigatorKey,
+  navigatorKey: rootNavigatorKey,
   routes: [
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
@@ -43,7 +43,7 @@ final _router = GoRouter(
       ],
     ),
     GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
+      parentNavigatorKey: rootNavigatorKey,
       path: AppRoute.init.route,
       builder: (context, state) {
         final extra = state.extra;
@@ -54,31 +54,31 @@ final _router = GoRouter(
       },
     ),
     GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
+      parentNavigatorKey: rootNavigatorKey,
       path: AppRoute.login.route,
       builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
+      parentNavigatorKey: rootNavigatorKey,
       path: AppRoute.register.route,
       builder: (context, state) => RegisterPage(
         email: state.extra is String ? state.extra as String : null,
       ),
     ),
     GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
+      parentNavigatorKey: rootNavigatorKey,
       path: AppRoute.allQuests.route,
       builder: (context, state) => const QuestsPage(),
     ),
     GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
+      parentNavigatorKey: rootNavigatorKey,
       path: AppRoute.editQuest.route,
       builder: (context, state) => QuestEditPage(
         initialQuest: state.extra is Quest ? state.extra as Quest : null,
       ),
     ),
     GoRoute(
-      parentNavigatorKey: _rootNavigatorKey,
+      parentNavigatorKey: rootNavigatorKey,
       path: AppRoute.editSkill.route,
       builder: (context, state) => SkillsEditPage(
         skill: state.extra is Skill ? state.extra as Skill : null,

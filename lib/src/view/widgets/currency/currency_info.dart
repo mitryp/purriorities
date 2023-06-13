@@ -9,23 +9,30 @@ class CurrencyInfo extends StatelessWidget {
   final int quantity;
   final Currency currency;
   final double spriteSize;
+  final bool reversed;
+  final double gap;
 
   const CurrencyInfo({
     required this.quantity,
     required this.currency,
     this.spriteSize = _defaultCurrencyImageSize,
+    this.reversed = false,
+    this.gap = 4.0,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final children = [
+      CurrencyImage(currency: currency, spriteSize: spriteSize),
+      SizedBox(width: gap),
+      Text('$quantity'),
+    ].toList(growable: false);
+
+
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        CurrencyImage(currency: currency, spriteSize: spriteSize),
-        const SizedBox(width: 4.0),
-        Text('$quantity'),
-      ],
+      children: reversed ? children.reversed.toList(growable: false) : children,
     );
   }
 }

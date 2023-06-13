@@ -98,7 +98,7 @@ class _MobileDashboard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 40.0),
+        // const SizedBox(height: 40.0),
       ],
     );
   }

@@ -182,7 +182,7 @@ class Quest extends Serializable with Prototype<Quest> {
   /// Returns a copy of this quest with a task with the given [taskId] finished.
   ///
   /// If this quest does not contain such a task, returns this object instead.
-  Quest setTaskStatus(String taskId, {required bool? completed}) {
+  Quest setTaskStatus(String taskId, {required bool? isCompleted}) {
     final stages = this.stages.toList();
 
     final stageIndex = stages.indexWhere((s) => s.tasks.any((task) => task.id == taskId));
@@ -193,7 +193,7 @@ class Quest extends Serializable with Prototype<Quest> {
     final tasks = stage.tasks.toList();
     final taskIndex = tasks.indexWhere((task) => task.id == taskId);
 
-    final task = stage.tasks[taskIndex].copyWithCompletedStatus(isCompleted: completed);
+    final task = stage.tasks[taskIndex].copyWithCompletedStatus(isCompleted: isCompleted);
 
     tasks
       ..removeAt(taskIndex)

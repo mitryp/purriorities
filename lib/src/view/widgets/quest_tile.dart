@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../app.dart';
 import '../../data/models/quest.dart';
 import '../../typedefs.dart';
 import '../pages/single_quest_page/single_quest_page.dart';
@@ -47,7 +48,7 @@ class QuestTile extends StatelessWidget {
   }
 
   Future<void> _redirectToSingleQuestPage(BuildContext context) async {
-    final commData = await Navigator.of(context).push<CommunicationData>(
+    final commData = await rootNavigatorKey.currentState!.push<CommunicationData>(
       MaterialPageRoute(builder: (context) => SingleQuestPage(quest)),
     );
   }

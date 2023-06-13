@@ -68,7 +68,7 @@ class ChatBubble extends StatelessWidget {
                   vertical: 8.0,
                 ),
                 child: Text(
-                  'Няв!',
+                  'Няв?',
                   style: TextStyle(fontSize: 12),
                 ),
               ),

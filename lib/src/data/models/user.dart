@@ -8,6 +8,7 @@ import 'abs/prototype.dart';
 import 'abs/serializable.dart';
 import 'cat_ownership.dart';
 import 'punishments.dart';
+import 'rewards.dart';
 
 part 'user.g.dart';
 

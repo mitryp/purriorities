@@ -19,8 +19,15 @@ class PendingPunishment {
     this.extraTrustLost = 0,
   });
 
+  const PendingPunishment.absent()
+      : overdueQuests = const [],
+        runawayCats = const [],
+        extraTrustLost = 0;
+
   factory PendingPunishment.fromJson(Map<String, dynamic> json) =>
       _$PendingPunishmentFromJson(json);
+
+  bool get isAbsent => overdueQuests.isEmpty && runawayCats.isEmpty && extraTrustLost == 0;
 
   @override
   bool operator ==(Object other) =>

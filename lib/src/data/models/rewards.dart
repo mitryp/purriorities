@@ -51,7 +51,21 @@ class Reward {
     required this.trustGained,
   });
 
+  const Reward.absent()
+      : mainLevelExpGained = 0,
+        skillRewards = const [],
+        feedGained = 0,
+        catnipGained = 0,
+        trustGained = 0;
+
   factory Reward.fromJson(Map<String, dynamic> json) => _$RewardFromJson(json);
+
+  bool get isAbsent =>
+      mainLevelExpGained == 0 &&
+      skillRewards.isEmpty &&
+      feedGained == 0 &&
+      catnipGained == 0 &&
+      trustGained == 0;
 
   @override
   bool operator ==(Object other) =>
