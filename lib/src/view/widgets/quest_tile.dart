@@ -5,7 +5,6 @@ import '../../app.dart';
 import '../../common/util/helping_functions.dart';
 import '../../data/enums/quest_priority.dart';
 import '../../data/models/quest.dart';
-import '../../typedefs.dart';
 import '../pages/single_quest_page/single_quest_page.dart';
 
 class QuestTile extends StatelessWidget {
@@ -63,10 +62,10 @@ class QuestTile extends StatelessWidget {
   }
 
   Future<void> _redirectToSingleQuestPage(BuildContext context) async {
-    return rootNavigatorKey.currentState!
-        .push<void>(
-          MaterialPageRoute(builder: (context) => SingleQuestPage(quest)),
-        )
-        .whenComplete(() => filtersUpdateCallback?.call());
+    await rootNavigatorKey.currentState!.push<void>(
+      MaterialPageRoute(builder: (context) => SingleQuestPage(quest)),
+    );
+
+    filtersUpdateCallback?.call();
   }
 }
