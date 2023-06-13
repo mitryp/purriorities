@@ -13,6 +13,7 @@ PendingPunishment _$PendingPunishmentFromJson(Map<String, dynamic> json) => Pend
       runawayCats: (json['runawayCats'] as List<dynamic>)
           .map((e) => RunawayCat.fromJson(e as Map<String, dynamic>))
           .toList(),
+      extraTrustLost: json['extraTrustLost'] as int? ?? 0,
     );
 
 OverdueQuest _$OverdueQuestFromJson(Map<String, dynamic> json) => OverdueQuest(

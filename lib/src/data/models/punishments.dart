@@ -10,9 +10,13 @@ class PendingPunishment {
   /// A list of cats who ran away since the user hasn't been online.
   final List<RunawayCat> runawayCats;
 
+  /// An amount of trust lost for reasons other than missing quest deadlines.
+  final int extraTrustLost;
+
   const PendingPunishment({
     required this.overdueQuests,
     required this.runawayCats,
+    this.extraTrustLost = 0,
   });
 
   factory PendingPunishment.fromJson(Map<String, dynamic> json) =>
