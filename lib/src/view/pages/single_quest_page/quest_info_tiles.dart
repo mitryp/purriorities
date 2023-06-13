@@ -11,8 +11,7 @@ class _QuestInfoTiles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deadline = quest.deadline;
-    final isDeadlineMissed =
-        !quest.isFinished && (quest.deadline?.isBefore(DateTime.now()) ?? false);
+    final isDeadlineMissed = deadlineMissed(quest);
     final interval = quest.interval;
 
     late final errorColor = Theme.of(context).colorScheme.error;
