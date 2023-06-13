@@ -203,7 +203,7 @@ class Quest extends Serializable with Prototype<Quest> {
       ..removeAt(stageIndex)
       ..insert(stageIndex, stage.copyWith(tasks: tasks.toList(growable: false)));
 
-    return copyWith(stages: stages);
+    return copyWith(stages: stages, isFinished: stages.every((stage) => stage.isFinished));
   }
 }
 

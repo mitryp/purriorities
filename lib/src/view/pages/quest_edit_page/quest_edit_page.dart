@@ -16,6 +16,7 @@ import '../../../data/util/validators.dart';
 import '../../../services/http/util/fetch_service_bundle.dart';
 import '../../../typedefs.dart';
 import '../../../util/datetime_comparison.dart';
+import '../../../util/extensions/context_synchronizer.dart';
 import '../../../util/extensions/datetime_extensions.dart';
 import '../../../util/time_format.dart';
 import '../../dialogs/confirmation_dialog.dart';
@@ -190,8 +191,7 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
     if (!mounted) return;
 
     if (res.isSuccessful) {
-      final data = context.read<UserData>();
-      data.addQuest(res.result());
+      context.synchronizer().syncQuests();
       context.pop();
 
       return;

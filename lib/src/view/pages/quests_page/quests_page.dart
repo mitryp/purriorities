@@ -91,7 +91,15 @@ class _QuestsPageState extends State<QuestsPage> {
 
     _data.quests = questsRes.result()
       ..sort(
-        (a, b) => (b.deadline ?? date).compareTo(a.deadline ?? date) + (a.isFinished ? 10000 : 0),
+        (a, b) {
+          if (a.isFinished) return 100000;
+
+          if (a.isFinished && b.isFinished) {
+            return 10 * (a.deadline ?? date).compareTo(b.deadline ?? date);
+          }
+
+          return (b.deadline ?? date).compareTo(a.deadline ?? date);
+        },
       );
     _data.isLoaded = true;
   }

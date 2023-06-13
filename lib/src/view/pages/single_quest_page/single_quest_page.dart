@@ -7,15 +7,12 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/enums/quest_priority.dart';
-import '../../../data/models/punishments.dart';
 import '../../../data/models/quest.dart';
 import '../../../data/models/quest_stage.dart';
 import '../../../data/models/rewards.dart';
 import '../../../data/models/task.dart';
 import '../../../data/models/task_refuse_response.dart';
-import '../../../data/user_data.dart';
 import '../../../data/util/notifier_wrapper.dart';
-import '../../../services/cats_info_cache.dart';
 import '../../../services/http/util/fetch_service_bundle.dart';
 import '../../../services/tasks_service.dart';
 import '../../../util/extensions/context_synchronizer.dart';
@@ -28,10 +25,8 @@ import '../../widgets/authorizer.dart';
 import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
-import '../collection/collection_cat.dart';
 
 part 'quest_info_tiles.dart';
-
 part 'quest_stage_display.dart';
 
 class SingleQuestPage extends StatelessWidget {
@@ -43,9 +38,9 @@ class SingleQuestPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Authorizer(
       child: ChangeNotifierProvider<NotifierWrapper<Quest>>(
-        create: (context) => NotifierWrapper(quest),
+        create: (context) => NotifierWrapper(quest, checkEquality: false),
         child: LayoutSelector(
-          mobileLayoutBuilder: (_) => const _MobileQuestsPage(),
+          mobileLayoutBuilder: (_) => const _MobileQuestPage(),
           desktopLayoutBuilder: (_) => const Placeholder(),
         ),
       ),
@@ -53,27 +48,27 @@ class SingleQuestPage extends StatelessWidget {
   }
 }
 
-class _MobileQuestsPage extends StatelessWidget {
+class _MobileQuestPage extends StatelessWidget {
   static const TextStyle questTitleStyle = TextStyle(fontSize: 20);
   static const ListTileThemeData _listTileThemeData = ListTileThemeData(
     contentPadding: EdgeInsets.symmetric(horizontal: 24),
     leadingAndTrailingTextStyle: TextStyle(fontSize: 14),
   );
 
-  const _MobileQuestsPage();
+  const _MobileQuestPage();
 
   @override
   Widget build(BuildContext context) {
-    return Selector<NotifierWrapper<Quest>, Quest>(
-      selector: (context, wrapper) => wrapper.data,
-      builder: (context, quest, _) {
+    return Consumer<NotifierWrapper<Quest>>(
+      builder: (context, questWrapper, _) {
+        final quest = questWrapper.data;
         final priorityTextStyle = quest.priority.textStyleWithColor;
 
         return MobileLayout.child(
           floatingActionButton: quest.isFinished
               ? null
               : FloatingActionButton(
-                  onPressed: () {},
+                  onPressed: () => _processDeleteTask(context, quest),
                   backgroundColor: Colors.red[600],
                   child: const Icon(Icons.delete),
                 ),
