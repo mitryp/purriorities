@@ -22,6 +22,8 @@ class _QuestInfoTiles extends StatelessWidget {
           : (quest.isFinished ? QuestPriority.optional : QuestPriority.regular).color,
     );
 
+    final defaultTrailingStyle = TextStyle(color: Colors.grey[200]);
+
     final List<(String, String, TextStyle?)> tileEntries = [
       (
         'Статус',
@@ -32,15 +34,15 @@ class _QuestInfoTiles extends StatelessWidget {
         (
           isDeadlineMissed ? 'Протерміновано на' : 'Часу залишилось',
           formatDuration(deadline.difference(DateTime.now())),
-          isDeadlineMissed ? TextStyle(color: errorColor) : null,
+          isDeadlineMissed ? TextStyle(color: errorColor) : defaultTrailingStyle,
         ),
-      ('Кінцевий термін', deadline != null ? _deadlineFormat.format(deadline) : 'Не вказано', null),
-      ('Категорія', quest.category.name, null),
+      ('Кінцевий термін', deadline != null ? _deadlineFormat.format(deadline) : 'Не вказано', defaultTrailingStyle),
+      ('Категорія', quest.category.name, defaultTrailingStyle),
       ('Пріоритетність', quest.priority.label.capitalize(), priorityTextStyle),
       (
         'Інтервал',
         interval != null ? 'Раз на $interval ${formatDays(interval)}' : 'Не повторюється',
-        null,
+      defaultTrailingStyle,
       ),
     ];
 
