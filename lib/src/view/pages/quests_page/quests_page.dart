@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,7 @@ import '../../../util/extensions/string_ellipsis.dart';
 import '../../widgets/add_button.dart';
 import '../../widgets/authorizer.dart';
 import '../../widgets/categories_drawer.dart';
+import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
 import '../../widgets/quests_list.dart';
@@ -68,12 +71,28 @@ class _QuestsPageState extends State<QuestsPage> {
         .getMany(paginationData)
         .then((res) => res.transform((data) => data.data));
 
+    if (!mounted) return;
+
     if (!questsRes.isSuccessful) {
       _data.error = questsRes.error;
+
+      showErrorSnackBar(
+        context: context,
+        content: ErrorSnackBarContent(
+          titleText: 'Під час завантаження квестів сталася помилка',
+          subtitleText: 'Повідомлення від сервера: ${questsRes.errorMessage}',
+        ),
+      );
+
       return;
     }
 
-    _data.quests = questsRes.result();
+    final date = DateTime(2023);
+
+    _data.quests = questsRes.result()
+      ..sort(
+        (a, b) => (b.deadline ?? date).compareTo(a.deadline ?? date) + (a.isFinished ? 10000 : 0),
+      );
     _data.isLoaded = true;
   }
 
@@ -185,7 +204,7 @@ class _MobileQuestsPage extends StatelessWidget {
                   items: questsPageData.quests,
                   isFiltered: questsPageData.areFiltersApplied,
                   useSliverList: true,
-                  filtersUpdateCallback: () => _filterUpdateCallback(),
+                  filtersUpdateCallback: _filterUpdateCallback,
                 )
               else
                 SliverToBoxAdapter(
