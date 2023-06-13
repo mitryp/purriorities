@@ -28,8 +28,17 @@ class QuestTile extends StatelessWidget {
       color: deadlineMissed(quest) ? Theme.of(context).colorScheme.error : null,
     );
 
+    final priorityColor = quest.priority.color;
+    final titleColor = !quest.isFinished ? priorityColor : priorityColor.withOpacity(0.8);
+
     return ListTile(
-      title: Text(quest.name, style: quest.priority.textStyleWithColor),
+      title: Text(
+        quest.name,
+        style: quest.priority.textStyle.copyWith(
+            color: titleColor,
+            decoration: quest.isFinished ? TextDecoration.lineThrough : null,
+            decorationColor: priorityColor),
+      ),
       trailing: Wrap(
         alignment: WrapAlignment.end,
         crossAxisAlignment: WrapCrossAlignment.center,
@@ -37,7 +46,9 @@ class QuestTile extends StatelessWidget {
         runSpacing: trailingSpacing,
         children: [
           if (isRepeated) const Icon(Icons.restart_alt_rounded),
-          if (deadline != null)
+          if (quest.isFinished)
+            const Text('Завершено')
+          else if (deadline != null)
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisAlignment: MainAxisAlignment.center,

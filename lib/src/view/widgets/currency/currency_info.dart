@@ -29,7 +29,6 @@ class CurrencyInfo extends StatelessWidget {
       Text('$quantity'),
     ].toList(growable: false);
 
-
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: reversed ? children.reversed.toList(growable: false) : children,
