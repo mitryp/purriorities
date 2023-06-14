@@ -10,5 +10,5 @@ CatOwnership _$CatOwnershipFromJson(Map<String, dynamic> json) => CatOwnership(
       level: json['level'] as int,
       catNameId: json['catNameId'] as String,
       xpBoost: (json['xpBoost'] as num).toDouble(),
-      price: json['price'] as int?,
+      price: (json['price'] as num?)?.ceil(), // temporary fix until server fixes float prices
     );
