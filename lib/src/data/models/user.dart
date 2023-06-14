@@ -8,7 +8,6 @@ import 'abs/prototype.dart';
 import 'abs/serializable.dart';
 import 'cat_ownership.dart';
 import 'punishments.dart';
-import 'rewards.dart';
 
 part 'user.g.dart';
 
@@ -134,9 +133,8 @@ class User extends Serializable with Prototype<User> {
 
   /// Returns a copy of this user object after the given [punishment] applied.
   User applyPunishment(PendingPunishment punishment) {
-    final trust =
-        this.trust - punishment.overdueQuests.fold<int>(0, (val, e) => val + e.totalTrustLost);
-    final feed = this.feed - punishment.runawayCats.fold<int>(0, (val, e) => val + e.feedLost);
+    final trust = this.trust - punishment.overdueQuests.fold<int>(0, (val, e) => val + e.trustLost);
+    final feed = this.feed - punishment.runawayCats.fold<int>(0, (val, e) => val + e.feedTaken);
 
     final runawayCatIds = HashSet.of(punishment.runawayCats.map((e) => e.nameId));
     final cats = catOwnerships.toList()

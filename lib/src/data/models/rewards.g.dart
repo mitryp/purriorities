@@ -12,9 +12,7 @@ SkillReward _$SkillRewardFromJson(Map<String, dynamic> json) => SkillReward(
     );
 
 Reward _$RewardFromJson(Map<String, dynamic> json) => Reward(
-      mainLevelExpGained: json['mainLevelExpGained'] is int
-          ? json['mainLevelExpGained'] as int
-          : (json['mainLevelExpGained'] as double).round(),
+      mainLevelExpGained: json['mainLevelExpGained'] as int,
       skillRewards: (json['skillRewards'] as List<dynamic>)
           .map((e) => SkillReward.fromJson(e as Map<String, dynamic>))
           .toList(),

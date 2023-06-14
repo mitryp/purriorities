@@ -47,9 +47,9 @@ class OverdueQuest {
   final String id;
 
   /// An amount of trust lost as a result of missing the deadline.
-  final int totalTrustLost;
+  final int trustLost;
 
-  const OverdueQuest({required this.id, required this.totalTrustLost});
+  const OverdueQuest({required this.id, required this.trustLost});
 
   factory OverdueQuest.fromJson(Map<String, dynamic> json) => _$OverdueQuestFromJson(json);
 
@@ -59,10 +59,10 @@ class OverdueQuest {
       other is OverdueQuest &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          totalTrustLost == other.totalTrustLost;
+          trustLost == other.trustLost;
 
   @override
-  int get hashCode => id.hashCode ^ totalTrustLost.hashCode;
+  int get hashCode => id.hashCode ^ trustLost.hashCode;
 }
 
 @JsonSerializable(createToJson: false)
@@ -71,9 +71,9 @@ class RunawayCat {
   final String nameId;
 
   /// An amount of cat food lost as a result of the cat run away.
-  final int feedLost;
+  final int feedTaken;
 
-  const RunawayCat({required this.nameId, required this.feedLost});
+  const RunawayCat({required this.nameId, required this.feedTaken});
 
   factory RunawayCat.fromJson(Map<String, dynamic> json) => _$RunawayCatFromJson(json);
 
@@ -83,8 +83,8 @@ class RunawayCat {
       other is RunawayCat &&
           runtimeType == other.runtimeType &&
           nameId == other.nameId &&
-          feedLost == other.feedLost;
+          feedTaken == other.feedTaken;
 
   @override
-  int get hashCode => nameId.hashCode ^ feedLost.hashCode;
+  int get hashCode => nameId.hashCode ^ feedTaken.hashCode;
 }

@@ -18,10 +18,10 @@ PendingPunishment _$PendingPunishmentFromJson(Map<String, dynamic> json) => Pend
 
 OverdueQuest _$OverdueQuestFromJson(Map<String, dynamic> json) => OverdueQuest(
       id: json['id'] as String,
-      totalTrustLost: json['totalTrustLost'] as int,
+      trustLost: json['trustLost'] as int,
     );
 
 RunawayCat _$RunawayCatFromJson(Map<String, dynamic> json) => RunawayCat(
       nameId: json['nameId'] as String,
-      feedLost: json['feedLost'] as int,
+      feedTaken: json['feedTaken'] as int,
     );

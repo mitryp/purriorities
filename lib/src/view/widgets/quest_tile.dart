@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 
 import '../../app.dart';
 import '../../common/util/helping_functions.dart';
-import '../../data/enums/quest_priority.dart';
 import '../../data/models/quest.dart';
 import '../pages/single_quest_page/single_quest_page.dart';
 

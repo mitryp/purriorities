@@ -89,10 +89,10 @@ class _PunishmentsColumn extends StatelessWidget {
     const catSpriteRadius = 32.0;
     const cardPadding = 8.0;
 
-    final feedLostFromCats = punishment.runawayCats.fold(0, (val, e) => val + e.feedLost);
+    final feedLostFromCats = punishment.runawayCats.fold(0, (val, e) => val + e.feedTaken);
     final trustLostFromQuests = punishment.overdueQuests.fold(
       0,
-      (val, e) => val + e.totalTrustLost,
+      (val, e) => val + e.trustLost,
     );
 
     return Column(

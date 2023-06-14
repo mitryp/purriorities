@@ -13,7 +13,6 @@ import '../widgets/chat_bubble.dart';
 import '../widgets/error_snack_bar.dart';
 import '../widgets/progress_indicator_button.dart';
 import 'confirmation_dialog.dart';
-import 'reward_punishment_dialog.dart';
 
 class TaskManagementDialog extends StatelessWidget {
   final Task task;
