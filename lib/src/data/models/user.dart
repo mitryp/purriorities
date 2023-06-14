@@ -28,11 +28,11 @@ class User extends Serializable with Prototype<User> {
   /// An experience points which this user has gained on his [level].
   /// Must be non-negative.
   @JsonKey(includeToJson: false)
-  final int levelExp;
+  final double levelExp;
 
   /// An amount of XP needed for the user to level up.
   @JsonKey(includeToJson: false)
-  final int levelCap;
+  final double levelCap;
 
   /// An amount of cat food that this user has gained.
   /// Must be non-negative.
@@ -112,8 +112,8 @@ class User extends Serializable with Prototype<User> {
     String? nickname,
     String? email,
     int? level,
-    int? levelExp,
-    int? levelCap,
+    double? levelExp,
+    double? levelCap,
     int? feed,
     int? catnip,
     double? trust,
