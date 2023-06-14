@@ -1,4 +1,5 @@
-/// An API link.
+/// A URL to the server root.
+/// FetchServices will add the 'api' route before the actual path of the service.
 const String baseUrl = String.fromEnvironment(
   'API_BASE_URL',
   defaultValue: 'http://localhost:80/',
@@ -7,8 +8,20 @@ const String baseUrl = String.fromEnvironment(
 /// A maximum possible level of trust user can have.
 const double maxUserTrust = 100.0;
 
-/// A price of a Golden loot box (in catnip).
-const int goldenLootBoxPrice = int.fromEnvironment('LEGENDARY_LOOT_BOX_PRICE', defaultValue: 20);
+/// A price of a legendary loot box (in catnip).
+const int legendaryLootBoxPrice = int.fromEnvironment(
+  'LEGENDARY_LOOT_BOX_PRICE',
+  defaultValue: 20,
+);
 
 /// A price of a regular loot box (in feed).
-const int commonLootBoxPrice = int.fromEnvironment('COMMON_LOOT_BOX_PRICE', defaultValue: 100);
+const int commonLootBoxPrice = int.fromEnvironment(
+  'COMMON_LOOT_BOX_PRICE',
+  defaultValue: 3000,
+);
+
+/// An amount of feed can be bought for 1 unit of catnip currency.
+const int catnipToFeedExchangeRate = int.fromEnvironment(
+  'CATNIP_TO_FEED_RATE',
+  defaultValue: 1500,
+);

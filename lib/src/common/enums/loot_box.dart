@@ -11,7 +11,7 @@ enum LootBoxType {
     sprite: Sprite.catCarrier,
   ),
   legendary(
-    goldenLootBoxPrice,
+    legendaryLootBoxPrice,
     Currency.catnip,
     catRarity: CatRarity.legendary,
     sprite: Sprite.catCarrier,
