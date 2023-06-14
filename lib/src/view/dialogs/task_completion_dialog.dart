@@ -54,7 +54,7 @@ class TaskManagementDialog extends StatelessWidget {
         actionsAlignment: MainAxisAlignment.center,
         actionsOverflowAlignment: OverflowBarAlignment.center,
         actions: <Widget>[
-          ElevatedButton(
+          ProgressIndicatorButton.elevated(
             style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green[300])),
             onPressed: () => _processTaskCompletion(context),
             child: const Text('Няв'),
@@ -66,7 +66,7 @@ class TaskManagementDialog extends StatelessWidget {
             onPressed: () => _processTaskRefuse(context),
             child: const Text('Відмовитися'),
           ),
-          ProgressIndicatorButton.elevated(
+          ElevatedButton(
             style: ButtonStyle(foregroundColor: MaterialStatePropertyAll(Colors.grey[300])),
             onPressed: context.pop,
             child: const Text('Просто кицяю'),
