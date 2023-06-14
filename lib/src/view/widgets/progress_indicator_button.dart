@@ -27,7 +27,7 @@ class ProgressIndicatorButton extends StatefulWidget {
     required this.onPressed,
     this.style,
     super.key,
-  }) : buttonBuilder = ElevatedButton.new;
+  }) : buttonBuilder = _elevatedButtonBuilder;
 
   const ProgressIndicatorButton.outlined({
     required Text textCaption,
@@ -35,7 +35,7 @@ class ProgressIndicatorButton extends StatefulWidget {
     this.style,
     super.key,
   })  : child = textCaption,
-        buttonBuilder = OutlinedButton.new;
+        buttonBuilder = _outlinedButtonBuilder;
 
   const ProgressIndicatorButton.text({
     required Text textCaption,
@@ -43,7 +43,7 @@ class ProgressIndicatorButton extends StatefulWidget {
     this.style,
     super.key,
   })  : child = textCaption,
-        buttonBuilder = TextButton.new;
+        buttonBuilder = _textButtonBuilder;
 
   @override
   State<ProgressIndicatorButton> createState() => _ProgressIndicatorButtonState();
@@ -55,11 +55,11 @@ class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
   @override
   Widget build(BuildContext context) {
     return widget.buttonBuilder(
+      style: widget.style,
       onPressed: widget.onPressed != null ? _handlePress : null,
       child: isProcessing
           ? Transform.scale(scale: 0.5, child: const CircularProgressIndicator())
           : widget.child,
-      style: widget.style,
     );
   }
 
@@ -74,3 +74,36 @@ class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
     });
   }
 }
+
+Widget _outlinedButtonBuilder({
+  required VoidCallback? onPressed,
+  required Widget child,
+  ButtonStyle? style,
+}) =>
+    OutlinedButton(
+      onPressed: onPressed,
+      style: style,
+      child: child,
+    );
+
+Widget _elevatedButtonBuilder({
+  required VoidCallback? onPressed,
+  required Widget child,
+  ButtonStyle? style,
+}) =>
+    ElevatedButton(
+      onPressed: onPressed,
+      style: style,
+      child: child,
+    );
+
+Widget _textButtonBuilder({
+  required VoidCallback? onPressed,
+  required Widget child,
+  ButtonStyle? style,
+}) =>
+    TextButton(
+      onPressed: onPressed,
+      style: style,
+      child: child,
+    );
