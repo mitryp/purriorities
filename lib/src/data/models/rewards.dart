@@ -29,7 +29,7 @@ class SkillReward {
 @JsonSerializable(createToJson: false)
 class Reward {
   ///
-  final int mainLevelExpGained;
+  final double mainLevelExpGained;
 
   ///
   final List<SkillReward> skillRewards;
@@ -41,7 +41,7 @@ class Reward {
   final int catnipGained;
 
   /// Taking 100 cap into account
-  final int trustGained;
+  final double trustGained;
 
   const Reward({
     required this.mainLevelExpGained,

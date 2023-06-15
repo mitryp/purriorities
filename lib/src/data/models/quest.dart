@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../util/datetime_comparison.dart';
+import '../../util/extensions/datetime_extensions.dart';
 import '../enums/quest_priority.dart';
 import 'abs/prototype.dart';
 import 'abs/serializable.dart';
@@ -91,6 +93,23 @@ class Quest extends Serializable with Prototype<Quest> {
       limit: extracted.limit?.toLocal(),
       interval: extracted.interval,
     );
+  }
+
+  /// Whether this quest is repeating.
+  bool get isRepeating => interval != null;
+
+  /// Whether this quest should be rescheduled after its completion.
+  bool get shouldRepeatAgain {
+    final interval = this.interval;
+    final deadline = this.deadline;
+    final limit = this.limit;
+
+    final currentDate = DateTime.now().toDate();
+
+    return deadline != null &&
+        interval != null &&
+        (limit == null ||
+            maxDate(currentDate, deadline).add(Duration(days: interval)).isBefore(limit));
   }
 
   @override

@@ -39,7 +39,7 @@ class _QuestStageDisplay extends StatelessWidget {
         ),
         subtitle: Wrap(
           spacing: _wrapSpacing,
-          runSpacing: 0,
+          runSpacing: kIsWeb ? _wrapSpacing : 0,
           children: stage.tasks.map(_QuestTaskSelectionChip.new).toList(growable: false),
         ),
       ),
@@ -55,6 +55,8 @@ class _QuestTaskSelectionChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FilterChip(
+      selectedColor: task.isRefused ? Colors.red[200]!.withOpacity(0.15) : null,
+      showCheckmark: task.isFinished,
       label: Text(task.name),
       onSelected: task.isPending ? (_) => _openCompletionDialog(context) : null,
       selected: task.isNotPending,
@@ -63,6 +65,8 @@ class _QuestTaskSelectionChip extends StatelessWidget {
 
   Future<void> _openCompletionDialog(BuildContext context) async {
     final questWrapper = context.read<NotifierWrapper<Quest>>();
+    Quest quest() => questWrapper.data;
+
     final sync = context.synchronizer();
 
     final res = await showDialog<dynamic>(
@@ -74,28 +78,35 @@ class _QuestTaskSelectionChip extends StatelessWidget {
       ),
     );
 
-    final isQuestFinished = questWrapper.data.stages.every((stage) => stage.isFinished);
     await sync.syncUser();
 
     // ignore: use_build_context_synchronously
-    if (!context.mounted || res == null) return;
+    if (!context.mounted || res == null || (res is! Reward && res is! TaskRefuseResponse)) return;
 
-    if (res is Reward) {
-      questWrapper.data = questWrapper.data.setTaskStatus(task.id, isCompleted: true);
+    final wasRewarded = res is Reward;
+    questWrapper.data = quest().setTaskStatus(task.id, isCompleted: wasRewarded);
+
+    log('wasNewQuestScheduled: '
+        '${quest().shouldRepeatAgain} && ${quest().stages.map((stage) => stage.isFinished)}');
+
+    final wasNewQuestScheduled =
+        quest().shouldRepeatAgain && quest().stages.every((stage) => stage.isFinished);
+
+    if (wasRewarded) {
       await showRewardPunishmentDialog(
         context: context,
         reward: res,
-        isQuestFinished: isQuestFinished,
+        wasNewQuestScheduled: wasNewQuestScheduled,
       );
-    } else if (res is TaskRefuseResponse) {
-      questWrapper.data = questWrapper.data.setTaskStatus(task.id, isCompleted: false);
+    } else {
+      // questWrapper.data = quest.setTaskStatus(task.id, isCompleted: false);
       await showRewardPunishmentDialog(
         context: context,
         refuseResponse: res,
-        isQuestFinished: isQuestFinished,
+        wasNewQuestScheduled: wasNewQuestScheduled,
       );
     }
 
-    if (questWrapper.data.isFinished) await sync.syncQuests();
+    if (quest().isFinished) await sync.syncQuests();
   }
 }

@@ -25,7 +25,7 @@ class RewardPunishmentDialog extends StatelessWidget {
   final List<CollectionCat> ownedCats;
   final PendingPunishment punishment;
   final Reward reward;
-  final bool isQuestFinished;
+  final bool wasNewQuestScheduled;
 
   const RewardPunishmentDialog({
     required this.user,
@@ -33,39 +33,42 @@ class RewardPunishmentDialog extends StatelessWidget {
     required this.ownedCats,
     this.punishment = const PendingPunishment.absent(),
     this.reward = const Reward.absent(),
-    this.isQuestFinished = false,
+    this.wasNewQuestScheduled = false,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (!reward.isAbsent) ...[
-              Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.only(bottom: 8),
-                child: const Text('Досягнення', style: RewardPunishmentDialog._labelStyle),
-              ),
-              _RewardsColumn(reward, user: user, skills: skills),
-            ],
-            if (!punishment.isAbsent) ...[
-              Container(
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(bottom: 8, top: reward.isAbsent ? 0 : 8),
-                child: const Text('Втрати', style: RewardPunishmentDialog._labelStyle),
-              ),
-              _PunishmentsColumn(punishment, cats: ownedCats),
-            ],
-            if (isQuestFinished)
-              const _RewardPunishmentEntry(
-                title: Text('Новий періодичний квест створено'),
-              ),
+      title: const Text(
+        'Операцію виконано',
+        style: TextStyle(fontSize: 18),
+        textAlign: TextAlign.center,
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (!reward.isAbsent) ...[
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(bottom: 8),
+              child: const Text('Досягнення', style: _labelStyle),
+            ),
+            _RewardsColumn(reward, user: user, skills: skills),
           ],
-        ),
+          if (!punishment.isAbsent) ...[
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(bottom: 8, top: reward.isAbsent ? 0 : 8),
+              child: const Text('Втрати', style: _labelStyle),
+            ),
+            _PunishmentsColumn(punishment, cats: ownedCats),
+          ],
+          if (wasNewQuestScheduled)
+            const _RewardPunishmentEntry(
+              title: Text('Новий періодичний квест створено'),
+            ),
+        ],
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [ElevatedButton(onPressed: context.pop, child: const Text('Зрозуміло'))],
@@ -217,36 +220,39 @@ class _RewardsColumn extends StatelessWidget {
         if (skillsXpGained.isNotEmpty)
           _RewardPunishmentEntry(
             title: const Text('Ви отримали досвід у навичках', textAlign: TextAlign.center),
-            child: ListView.separated(
-              separatorBuilder: (_, __) => const Divider(),
-              shrinkWrap: true,
-              itemCount: skillsXpGained.length,
-              itemBuilder: (_, index) {
-                final item = skillsXpGained[index];
-                final skill = item.skill;
-                final xpGained = item.xpGained;
-                final wasLevelGained = skill.levelExp + xpGained >= skill.levelCap;
+            child: SizedBox(
+              width: double.maxFinite,
+              child: ListView(
+                shrinkWrap: true,
+                children: ListTile.divideTiles(
+                  context: context,
+                  tiles: skillsXpGained.map((item) {
+                    final skill = item.skill;
+                    final xpGained = item.xpGained;
+                    final wasLevelGained = skill.levelExp + xpGained >= skill.levelCap;
 
-                return ListTile(
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(flex: 3, child: Text(item.skill.name)),
-                      if (wasLevelGained)
-                        const Expanded(child: Icon(Icons.arrow_upward, color: legendaryColor)),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          '${skill.level + (wasLevelGained ? 1 : 0)} рівень',
-                          style: const TextStyle(fontSize: 14),
-                          textAlign: TextAlign.end,
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              },
+                    return ListTile(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(flex: 3, child: Text(item.skill.name)),
+                          if (wasLevelGained)
+                            const Expanded(child: Icon(Icons.arrow_upward, color: legendaryColor)),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              '${skill.level + (wasLevelGained ? 1 : 0)} рівень',
+                              style: const TextStyle(fontSize: 14),
+                              textAlign: TextAlign.end,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  }),
+                ).toList(growable: false),
+              ),
             ),
           ),
         if (reward.mainLevelExpGained > 0)
@@ -256,7 +262,7 @@ class _RewardsColumn extends StatelessWidget {
                 children: [
                   const TextSpan(text: 'Ви отримали '),
                   TextSpan(
-                    text: '${reward.mainLevelExpGained}',
+                    text: reward.mainLevelExpGained.toStringAsFixed(2),
                     style: _xpTextStyle,
                   ),
                   const TextSpan(text: ' очок досвіду'),
@@ -303,7 +309,7 @@ Future<void> showRewardPunishmentDialog({
   required BuildContext context,
   Reward? reward,
   TaskRefuseResponse? refuseResponse,
-  bool isQuestFinished = false,
+  bool wasNewQuestScheduled = false,
 }) async {
   assert(reward != null || refuseResponse != null);
 
@@ -334,7 +340,7 @@ Future<void> showRewardPunishmentDialog({
       ownedCats: collectionCats,
       punishment: punishment ?? const PendingPunishment.absent(),
       reward: rew,
-      isQuestFinished: isQuestFinished,
+      wasNewQuestScheduled: wasNewQuestScheduled,
     ),
   );
 }
