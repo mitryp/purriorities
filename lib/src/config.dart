@@ -21,7 +21,11 @@ const int commonLootBoxPrice = int.fromEnvironment(
 );
 
 /// An amount of feed can be bought for 1 unit of catnip currency.
-const int catnipToFeedExchangeRate = int.fromEnvironment(
-  'CATNIP_TO_FEED_RATE',
-  defaultValue: 1500,
-);
+// const int catnipToFeedExchangeRate = int.fromEnvironment(
+//   'CATNIP_TO_FEED_RATE',
+//   defaultValue: 1500,
+// );
+
+// todo due to the issues with the dart2js compiler, had to hardcode the value
+/// An amount of feed can be bought for 1 unit of catnip currency.
+const int catnipToFeedExchangeRate = 1500;

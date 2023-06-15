@@ -24,5 +24,7 @@ parameters:
   Default: `20`
 - `COMMON_LOOT_BOX_PRICE` - an integer price of Regular loot boxes (in feed).
   Default: `3000`
-- `CATNIP_TO_FEED_RATE` - an integer amount of feed can be bought for 1 unit of catnip.
-  Default: `1500`
+
+[//]: # (- `CATNIP_TO_FEED_RATE` - an integer amount of feed can be bought for 1 unit of catnip.)
+
+[//]: # ( Default: `1500`)
