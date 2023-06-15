@@ -18,6 +18,8 @@ dependencies:
   cookie_jar: ^4.0.3
   flutter_secure_storage: ^8.0.0
   flutter_slidable: ^3.0.0
+  comparators:
+    git: https://github.com/mitryp/comparators
 
 dev_dependencies:
   flutter_test:

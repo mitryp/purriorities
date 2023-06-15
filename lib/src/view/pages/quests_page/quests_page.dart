@@ -1,8 +1,10 @@
+import 'package:comparators/comparators.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/enums/app_route.dart';
+import '../../../data/models/quest.dart';
 import '../../../data/models/skill.dart';
 import '../../../services/helpers/pagination_data.dart';
 import '../../../services/http/fetch/quests_fetch_service.dart';
@@ -89,15 +91,9 @@ class _QuestsPageState extends State<QuestsPage> {
 
     _data.quests = questsRes.result()
       ..sort(
-        (a, b) {
-          if (a.isFinished) return 100000;
-
-          if (a.isFinished && b.isFinished) {
-            return 10 * (a.deadline ?? date).compareTo(b.deadline ?? date);
-          }
-
-          return (b.deadline ?? date).compareTo(a.deadline ?? date);
-        },
+        compareBool<Quest>((quest) => quest.isFinished).then(
+          compare((quest) => quest.deadline ?? date),
+        ),
       );
     _data.isLoaded = true;
   }

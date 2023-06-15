@@ -1,3 +1,4 @@
+import 'package:comparators/comparators.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../util/datetime_comparison.dart';
@@ -86,7 +87,7 @@ class Quest extends Serializable with Prototype<Quest> {
         isFinished = false;
 
   factory Quest.fromJson(Map<String, dynamic> json) {
-    final extracted = _$QuestFromJson(json)..stages.sort((a, b) => a.index - b.index);
+    final extracted = _$QuestFromJson(json)..stages.sort(compare((stage) => stage.index));
 
     return extracted.copyWithSchedule(
       deadline: extracted.deadline?.toLocal(),

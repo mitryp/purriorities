@@ -145,6 +145,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.1"
+  comparators:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "1efd4e498e789aedc7c9e3757720264a6f833952"
+      url: "https://github.com/mitryp/comparators"
+    source: git
+    version: "0.0.1"
   convert:
     dependency: transitive
     description:
