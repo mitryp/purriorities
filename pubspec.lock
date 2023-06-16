@@ -150,10 +150,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "1efd4e498e789aedc7c9e3757720264a6f833952"
+      resolved-ref: "2cc75ed10c159ab1f6af6645d0cb206650fb1b29"
       url: "https://github.com/mitryp/comparators"
     source: git
-    version: "0.0.1"
+    version: "1.0.0"
   convert:
     dependency: transitive
     description:
