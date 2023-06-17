@@ -151,11 +151,11 @@ class User extends Serializable with Prototype<User> {
     };
   }
 
-  /// Returns a copy of this user with the [amount] of [currency] removed from its balance.
-  User removeCurrency(int amount, Currency currency) {
+  /// Returns a copy of this user with the given [amount] of the [currency].
+  User setCurrencyAmount(int amount, Currency currency) {
     return switch (currency) {
-      Currency.feed => copyWith(feed: max(0, feed - amount)),
-      Currency.catnip => copyWith(catnip: max(0, catnip - amount)),
+      Currency.feed => copyWith(feed: max(0, amount)),
+      Currency.catnip => copyWith(catnip: max(0, amount)),
     };
   }
 

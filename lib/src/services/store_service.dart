@@ -67,6 +67,53 @@ class StoreService {
     return res;
   }
 
+  /// Makes a request to buy the common currency for 1 unit of the special one.
+  ///
+  /// If the current user is not logged in or does not have the required amount of the special
+  /// currency, return FetchResult.success(false).
+  /// Otherwise, returns FetchResult.success(true).
+  Future<FetchResult> purchaseCommonCurrency(StorePrices prices) async {
+    final userData = _userData();
+    const price = 1;
+
+    if (!userData.isLoggedIn || !_validateUserBalanceFor(price, Currency.catnip)) {
+      return const FetchResult.failure();
+    }
+
+    final res = await FetchResult.fromResponse(client.post('$basePath/buy-feed'), true);
+
+    if (res.isSuccessful) {
+      final user = userData.user!;
+
+      _setUserBalance({
+        Currency.catnip: user.amountOfCurrency(Currency.catnip) - price,
+        Currency.feed: user.amountOfCurrency(Currency.feed) + prices.catnipToFeedRate,
+      });
+    }
+
+    return res;
+  }
+
+  Future<FetchResult> purchaseCatBack(CatOwnership runawayCat) async {
+    final userData = _userData();
+    final price = runawayCat.price;
+
+    if (!userData.isLoggedIn || price == null || !_validateUserBalanceFor(price, Currency.feed)) {
+      return const FetchResult.failure();
+    }
+
+    final res = await FetchResult.fromResponse(
+      client.post('$basePath/return-cat/${runawayCat.catNameId}'),
+    );
+
+    if (res.isSuccessful) {
+      final user = userData.user!;
+      _setUserBalance({Currency.feed: user.amountOfCurrency(Currency.feed) - price});
+    }
+
+    return res;
+  }
+
   /// Returns true if the current user has at least the [amount] of the [currency] on their balance.
   bool _validateUserBalanceFor(int amount, Currency currency, [User? user]) {
     user ??= _userData().user!;
@@ -83,9 +130,26 @@ class StoreService {
     UserData? userData,
   ]) {
     userData ??= _userData();
+    final user = userData.user!;
+
+    final currencyAmount = user.amountOfCurrency(lootBoxType.currency);
+    final price = prices.priceForLootBoxType(lootBoxType);
 
     userData.user = userData.user!
-        .removeCurrency(prices.priceForLootBoxType(lootBoxType), lootBoxType.currency)
+        .setCurrencyAmount(currencyAmount - price, lootBoxType.currency)
         .updateCatOwnership(cat);
+  }
+
+  void _setUserBalance(Map<Currency, int> balances, [UserData? userData]) {
+    assert(balances.entries.every((e) => e.value >= 0));
+
+    userData ??= _userData();
+    var user = userData.user;
+
+    for (final MapEntry(key: currency, value: amount) in balances.entries) {
+      user = user?.setCurrencyAmount(amount, currency);
+    }
+
+    userData.user = user;
   }
 }

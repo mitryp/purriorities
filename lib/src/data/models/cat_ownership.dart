@@ -41,4 +41,13 @@ class CatOwnership {
 
   @override
   int get hashCode => level.hashCode ^ catNameId.hashCode ^ xpBoost.hashCode;
+
+  CatOwnership copyWithPrice({required int? price}) {
+    return CatOwnership(
+      catNameId: catNameId,
+      level: level,
+      xpBoost: xpBoost,
+      price: price,
+    );
+  }
 }

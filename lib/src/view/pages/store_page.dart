@@ -110,7 +110,7 @@ class _MobileStorePageState extends State<_MobileStorePage> {
       showErrorSnackBar(
         context: context,
         content: ErrorSnackBarContent(
-          titleText: 'Сталась помилка при купівлі',
+          titleText: 'Сталась помилка при купівлі переноски',
           subtitleText: 'Повідомлення від сервера: ${res.errorMessage}',
         ),
       );
@@ -123,6 +123,30 @@ class _MobileStorePageState extends State<_MobileStorePage> {
 
   Future<void> _processCurrencyPurchase() async {
     log('Intending to purchase some currency', name: 'StorePage');
+
+    final res = await _storeService.purchaseCommonCurrency(_storePrices);
+
+    if (!mounted) return;
+
+    if (!res.isSuccessful) {
+      showErrorSnackBar(
+        context: context,
+        content: ErrorSnackBarContent(
+          titleText: 'Сталась помилка при купівлі валюти',
+          subtitleText: 'Повідомлення від сервера: ${res.errorMessage}',
+        ),
+      );
+
+      return;
+    }
+
+    showErrorSnackBar(
+      context: context,
+      content: ErrorSnackBarContent(
+        titleText: 'Успішно!',
+        backgroundColor: Colors.green[300],
+      ),
+    );
   }
 
   void _displayLootBoxOpening(LootBoxType lootBoxType, CatOwnership ownership) {
@@ -140,14 +164,15 @@ class _MobileStorePageState extends State<_MobileStorePage> {
   @override
   Widget build(BuildContext context) {
     if (!_arePricesLoaded) {
-      return Scaffold(
-        body: const Center(
+      return const Scaffold(
+        body: Center(
           child: CircularProgressIndicator(),
         ),
       );
     }
 
     final rate = _storePrices.catnipToFeedRate;
+    const catnipAmountToBuyFeed = 1;
 
     return MobileLayout(
       children: [
@@ -198,7 +223,9 @@ class _MobileStorePageState extends State<_MobileStorePage> {
                       Selector<UserData, int>(
                         selector: (context, userData) => userData.user!.catnip,
                         builder: (context, catnipAmount, _) => ProgressIndicatorButton.elevated(
-                          onPressed: catnipAmount >= rate ? _processCurrencyPurchase : null,
+                          onPressed: catnipAmount >= catnipAmountToBuyFeed
+                              ? _processCurrencyPurchase
+                              : null,
                           style: accentButtonStyle,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
