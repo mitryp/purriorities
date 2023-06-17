@@ -31,6 +31,7 @@ class QuestTile extends StatelessWidget {
     final titleColor = !quest.isFinished ? priorityColor : priorityColor.withOpacity(0.8);
 
     return ListTile(
+      tileColor: quest.isFinished ? Colors.grey[850]!.withOpacity(0.5) : null,
       title: Text(
         quest.name,
         style: quest.priority.textStyle.copyWith(
