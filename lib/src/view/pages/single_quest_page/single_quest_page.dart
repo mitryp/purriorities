@@ -24,7 +24,6 @@ import '../../../util/time_format.dart';
 import '../../dialogs/confirmation_dialog.dart';
 import '../../dialogs/reward_punishment_dialog.dart';
 import '../../dialogs/task_completion_dialog.dart';
-import '../../theme.dart';
 import '../../widgets/authorizer.dart';
 import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';

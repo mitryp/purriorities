@@ -8,6 +8,7 @@ import '../../common/enums/currency.dart';
 import '../../common/enums/loot_box.dart';
 import '../../constants.dart';
 import '../../data/models/cat_ownership.dart';
+import '../../data/models/store_prices.dart';
 import '../../data/models/user.dart';
 import '../../data/user_data.dart';
 import '../../services/cats_info_cache.dart';
@@ -33,7 +34,7 @@ class StorePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Authorizer(
       child: ProxyProvider<Dio, StoreService>(
-        update: (context, client, prev) => prev ?? StoreService(context: context, client: client),
+        update: (context, client, prev) => StoreService(context: context, client: client),
         child: LayoutSelector(
           mobileLayoutBuilder: (context) => const _MobileStorePage(),
           desktopLayoutBuilder: (context) => const Placeholder(),
@@ -53,17 +54,44 @@ class _MobileStorePage extends StatefulWidget {
 class _MobileStorePageState extends State<_MobileStorePage> {
   late final StoreService _storeService = context.read<StoreService>();
 
+  late final StorePrices _storePrices;
+  bool _arePricesLoaded = false;
+
   @override
   void initState() {
     super.initState();
 
     context.synchronizer().syncUser();
+    _loadPrices();
+  }
+
+  Future<void> _loadPrices() async {
+    if (_arePricesLoaded) return;
+
+    final pricesRes = await _storeService.fetchPrices();
+
+    if (!mounted) return;
+
+    if (!pricesRes.isSuccessful) {
+      showErrorSnackBar(
+        context: context,
+        content: ErrorSnackBarContent(
+          titleText: 'Під час отримання цін магазину сталася помилка',
+          subtitleText: 'Повідомлення від сервера: ${pricesRes.errorMessage}',
+        ),
+      );
+
+      return;
+    }
+
+    _storePrices = pricesRes.result();
+    setState(() => _arePricesLoaded = true);
   }
 
   Future<void> _processLootBoxPurchase(LootBoxType lootBoxType) async {
     log('Intending to purchase a box of type ${lootBoxType.name}', name: 'StorePage');
 
-    final res = await _storeService.openCase(lootBoxType);
+    final res = await _storeService.openCase(lootBoxType, _storePrices);
 
     if (!mounted) return;
 
@@ -111,7 +139,15 @@ class _MobileStorePageState extends State<_MobileStorePage> {
 
   @override
   Widget build(BuildContext context) {
-    final rate = Currency.catnip.rate.entries.first;
+    if (!_arePricesLoaded) {
+      return Scaffold(
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final rate = _storePrices.catnipToFeedRate;
 
     return MobileLayout(
       children: [
@@ -154,6 +190,7 @@ class _MobileStorePageState extends State<_MobileStorePage> {
                             type: type,
                             radius: 56,
                             onPurchaseIntent: _processLootBoxPurchase,
+                            prices: _storePrices,
                           );
                         }).toList(growable: false),
                       ),
@@ -161,12 +198,12 @@ class _MobileStorePageState extends State<_MobileStorePage> {
                       Selector<UserData, int>(
                         selector: (context, userData) => userData.user!.catnip,
                         builder: (context, catnipAmount, _) => ProgressIndicatorButton.elevated(
-                          onPressed: catnipAmount >= rate.value ? _processCurrencyPurchase : null,
+                          onPressed: catnipAmount >= rate ? _processCurrencyPurchase : null,
                           style: accentButtonStyle,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text('+ ${rate.value} '),
+                              Text('+ $rate '),
                               const CurrencyImage(currency: Currency.feed),
                               const Text(' за 1 '),
                               const CurrencyImage(currency: Currency.catnip),
@@ -190,15 +227,19 @@ class _LootBoxPurchaseColumn extends StatelessWidget {
   final LootBoxType type;
   final double radius;
   final FutureCallback<void, LootBoxType> onPurchaseIntent;
+  final StorePrices prices;
 
   const _LootBoxPurchaseColumn({
     required this.type,
     required this.onPurchaseIntent,
+    required this.prices,
     this.radius = 32,
   });
 
   @override
   Widget build(BuildContext context) {
+    final price = prices.priceForLootBoxType(type);
+
     return FittedBox(
       fit: BoxFit.fitWidth,
       child: Column(
@@ -214,12 +255,12 @@ class _LootBoxPurchaseColumn extends StatelessWidget {
             selector: (context, userData) => userData.user!,
             builder: (context, user, _) => ProgressIndicatorButton(
               buttonBuilder: OutlinedButton.new,
-              onPressed: user.amountOfCurrency(type.currency) >= type.price
+              onPressed: user.amountOfCurrency(type.currency) >= price
                   ? () => onPurchaseIntent(type)
                   : null,
               child: CurrencyInfo(
                 currency: type.currency,
-                quantity: type.price,
+                quantity: price,
               ),
             ),
           ),

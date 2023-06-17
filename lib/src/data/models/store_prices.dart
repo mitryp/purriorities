@@ -24,4 +24,13 @@ class StorePrices {
   });
 
   factory StorePrices.fromJson(JsonMap json) => _$StorePricesFromJson(json);
+
+  /// Returns an integer price for the given [LootBoxType].
+  /// The currency is determined by the loot box type itself.
+  int priceForLootBoxType(LootBoxType type) {
+    return switch (type) {
+      LootBoxType.common => commonLootBoxPrice,
+      LootBoxType.legendary => legendaryLootBoxPrice,
+    };
+  }
 }

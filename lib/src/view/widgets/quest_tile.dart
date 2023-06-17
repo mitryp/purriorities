@@ -34,9 +34,10 @@ class QuestTile extends StatelessWidget {
       title: Text(
         quest.name,
         style: quest.priority.textStyle.copyWith(
-            color: titleColor,
-            decoration: quest.isFinished ? TextDecoration.lineThrough : null,
-            decorationColor: priorityColor),
+          color: titleColor,
+          decoration: quest.isFinished ? TextDecoration.lineThrough : null,
+          decorationColor: priorityColor,
+        ),
       ),
       trailing: Wrap(
         alignment: WrapAlignment.end,

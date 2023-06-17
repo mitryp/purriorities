@@ -5,13 +5,14 @@ import 'package:provider/provider.dart';
 import '../common/enums/currency.dart';
 import '../common/enums/loot_box.dart';
 import '../data/models/cat_ownership.dart';
+import '../data/models/store_prices.dart';
 import '../data/models/user.dart';
 import '../data/user_data.dart';
 import '../typedefs.dart';
 import 'http/util/fetch_result.dart';
 
 /// A class providing the store functionality of the app.
-/// It has methods to open the loot boxes and buy currency.
+/// It has methods to open the loot boxes, buy currency and purchase the runaway cats back.
 ///
 /// The class will check if the current user has enough currency to perform the requested operations
 /// and remove the respective amount of the respective currency after a successful store operation.
@@ -26,27 +27,34 @@ class StoreService {
   const StoreService({
     required this.context,
     required this.client,
-    this.basePath = 'api/cats/case',
+    this.basePath = 'api/store',
   });
 
   UserData _userData() => context.read<UserData>();
 
+  /// Makes a request to get the [StorePrices] from the server.
+  Future<FetchResult<StorePrices>> fetchPrices() => FetchResult.transformResponse(
+        client.get<JsonMap>('$basePath/pricing'),
+        StorePrices.fromJson,
+      );
+
   /// Makes a request to open the loot box of the given [lootBoxType].
   ///
-  /// If the current user does not have the needed amount of the required currency, returns null.
+  /// If the current user is not logged in or does not have the needed amount of the required
+  /// currency, returns null.
   /// Otherwise, the respective amount of the respective currency will be removed from the user
   /// balance, and the [CatOwnership] of the received cat will be returned.
-  Future<FetchResult<CatOwnership>?> openCase(LootBoxType lootBoxType) async {
+  Future<FetchResult<CatOwnership>?> openCase(LootBoxType lootBoxType, StorePrices prices) async {
     final userData = _userData();
-    final price = lootBoxType.price;
+    final price = prices.priceForLootBoxType(lootBoxType);
     final currency = lootBoxType.currency;
 
-    if (!_validateUserBalanceFor(price, currency, userData.user)) {
+    if (!userData.isLoggedIn || !_validateUserBalanceFor(price, currency, userData.user)) {
       return null;
     }
 
     final res = await FetchResult.transformResponse(
-      client.post<JsonMap>('$basePath/${lootBoxType.requestPath}'),
+      client.post<JsonMap>('$basePath/case/${lootBoxType.requestPath}'),
       CatOwnership.fromJson,
     );
 
@@ -54,7 +62,7 @@ class StoreService {
       return res;
     }
 
-    _updateUserDataWithCat(lootBoxType, res.result(), userData);
+    _updateUserDataWithCat(lootBoxType, res.result(), prices, userData);
 
     return res;
   }
@@ -68,11 +76,16 @@ class StoreService {
 
   /// Charges the user by the [lootBoxType] price in its currency and adds the [cat] to its
   /// collection.
-  void _updateUserDataWithCat(LootBoxType lootBoxType, CatOwnership cat, [UserData? userData]) {
+  void _updateUserDataWithCat(
+    LootBoxType lootBoxType,
+    CatOwnership cat,
+    StorePrices prices, [
+    UserData? userData,
+  ]) {
     userData ??= _userData();
 
     userData.user = userData.user!
-        .removeCurrency(lootBoxType.price, lootBoxType.currency)
+        .removeCurrency(prices.priceForLootBoxType(lootBoxType), lootBoxType.currency)
         .updateCatOwnership(cat);
   }
 }
