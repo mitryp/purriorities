@@ -197,48 +197,58 @@ class _RewardsColumn extends StatelessWidget {
             skill: skills.firstWhere((skill) => skill.id == skillReward.id)
           ),
         )
+        .where((entry) => entry.xpGained > 0)
         .toList(growable: false);
 
     final wasMainLevelGained = user.levelExp + reward.mainLevelExpGained >= user.levelCap;
 
-    return Column(
-      children: [
-        if (currenciesGained.isNotEmpty)
-          _RewardPunishmentEntry(
-            title: Text.rich(
-              TextSpan(
-                children: [
-                  for (final cur in currenciesGained)
-                    WidgetSpan(
-                      child: cur,
-                      alignment: PlaceholderAlignment.middle,
-                    ),
-                ],
+    return SizedBox(
+      width: double.maxFinite,
+      child: Column(
+        children: [
+          if (currenciesGained.isNotEmpty)
+            _RewardPunishmentEntry(
+              title: Text.rich(
+                TextSpan(
+                  children: [
+                    for (final cur in currenciesGained)
+                      WidgetSpan(
+                        child: cur,
+                        alignment: PlaceholderAlignment.middle,
+                      ),
+                  ],
+                ),
               ),
             ),
-          ),
-        if (skillsXpGained.isNotEmpty)
-          _RewardPunishmentEntry(
-            title: const Text('Ви отримали досвід у навичках', textAlign: TextAlign.center),
-            child: SizedBox(
-              width: double.maxFinite,
-              child: ListView(
-                shrinkWrap: true,
+          if (skillsXpGained.isNotEmpty)
+            _RewardPunishmentEntry(
+              title: const Text('Ви отримали досвід у навичках', textAlign: TextAlign.center),
+              child: Column(
                 children: ListTile.divideTiles(
                   context: context,
                   tiles: skillsXpGained.map((item) {
                     final skill = item.skill;
                     final xpGained = item.xpGained;
                     final wasLevelGained = skill.levelExp + xpGained >= skill.levelCap;
+                    const skillNameFontSize = 14.0;
 
                     return ListTile(
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Expanded(flex: 3, child: Text(item.skill.name)),
+                          Expanded(
+                            flex: 3,
+                            child: Text(
+                              item.skill.name,
+                              style: const TextStyle(fontSize: skillNameFontSize),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
                           if (wasLevelGained)
-                            const Expanded(child: Icon(Icons.arrow_upward, color: legendaryColor)),
+                            const Expanded(
+                              child: Center(child: Icon(Icons.arrow_upward, color: legendaryColor)),
+                            ),
                           Expanded(
                             flex: 3,
                             child: Text(
@@ -254,24 +264,24 @@ class _RewardsColumn extends StatelessWidget {
                 ).toList(growable: false),
               ),
             ),
-          ),
-        if (reward.mainLevelExpGained > 0)
-          _RewardPunishmentEntry(
-            title: Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(text: 'Ви отримали '),
-                  TextSpan(
-                    text: reward.mainLevelExpGained.toStringAsFixed(2),
-                    style: _xpTextStyle,
-                  ),
-                  const TextSpan(text: ' очок досвіду'),
-                ],
+          if (reward.mainLevelExpGained > 0)
+            _RewardPunishmentEntry(
+              title: Text.rich(
+                TextSpan(
+                  children: [
+                    const TextSpan(text: 'Ви отримали '),
+                    TextSpan(
+                      text: reward.mainLevelExpGained.toStringAsFixed(2),
+                      style: _xpTextStyle,
+                    ),
+                    const TextSpan(text: ' очок досвіду'),
+                  ],
+                ),
               ),
+              child: wasMainLevelGained ? const Text('Новий рівень!', style: _xpTextStyle) : null,
             ),
-            child: wasMainLevelGained ? const Text('Новий рівень!', style: _xpTextStyle) : null,
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
