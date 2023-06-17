@@ -162,6 +162,7 @@ class _InitPageState extends State<InitPage> {
     final indicatorValue = values.actual / values.total;
 
     return MobileLayout.child(
+      minimumSafeArea: const EdgeInsets.all(16),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -175,6 +176,7 @@ class _InitPageState extends State<InitPage> {
             Text(
               _loadingLabel,
               style: const TextStyle(fontSize: 18),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
