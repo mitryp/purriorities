@@ -53,6 +53,7 @@ class TaskManagementDialog extends StatelessWidget {
         content: const Text('Няв, якщо виконали завдання :3'),
         actionsAlignment: MainAxisAlignment.center,
         actionsOverflowAlignment: OverflowBarAlignment.center,
+        actionsOverflowButtonSpacing: 6,
         actions: <Widget>[
           ProgressIndicatorButton.elevated(
             style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.green[300])),
