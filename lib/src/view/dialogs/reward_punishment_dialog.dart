@@ -119,6 +119,7 @@ class _PunishmentsColumn extends StatelessWidget {
               ),
             ),
             child: SizedBox(
+              width: double.maxFinite,
               height: catSpriteRadius * 1.5,
               child: ListView.separated(
                 shrinkWrap: true,
