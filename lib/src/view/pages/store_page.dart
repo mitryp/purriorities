@@ -281,7 +281,11 @@ class _LootBoxPurchaseColumn extends StatelessWidget {
           Selector<UserData, User>(
             selector: (context, userData) => userData.user!,
             builder: (context, user, _) => ProgressIndicatorButton(
-              buttonBuilder: OutlinedButton.new,
+              buttonBuilder: ({required child, required onPressed, style}) => OutlinedButton(
+                onPressed: onPressed,
+                style: style,
+                child: child,
+              ),
               onPressed: user.amountOfCurrency(type.currency) >= price
                   ? () => onPurchaseIntent(type)
                   : null,
