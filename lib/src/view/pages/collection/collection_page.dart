@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,12 +9,14 @@ import '../../../data/models/cat.dart';
 import '../../../data/models/user.dart';
 import '../../../data/user_data.dart';
 import '../../../services/cats_info_cache.dart';
+import '../../../services/store_service.dart';
 import '../../../typedefs.dart';
 import '../../../util/extensions/context_synchronizer.dart';
 import '../../../util/sprite_scaling.dart';
 import '../../widgets/authorizer.dart';
 import '../../widgets/currency/currency_info.dart';
 import '../../widgets/diamond_text.dart';
+import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
 import '../../widgets/progress_bars/labeled_progress_bar.dart';
@@ -40,9 +43,12 @@ class _CollectionPageState extends State<CollectionPage> {
   @override
   Widget build(BuildContext context) {
     return Authorizer(
-      child: LayoutSelector(
-        mobileLayoutBuilder: (context) => const MobileCollection(),
-        desktopLayoutBuilder: (context) => const Placeholder(),
+      child: ProxyProvider<Dio, StoreService>(
+        update: (context, client, prev) => StoreService(context: context, client: client),
+        child: LayoutSelector(
+          mobileLayoutBuilder: (context) => const MobileCollection(),
+          desktopLayoutBuilder: (context) => const Placeholder(),
+        ),
       ),
     );
   }

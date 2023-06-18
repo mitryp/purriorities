@@ -42,9 +42,7 @@ class CatCard extends StatelessWidget {
                       ? Center(child: Text('+${ownership?.xpBoost ?? '???'}% XP'))
                       : _PurchaseButton(
                           price: catPrice,
-                          onPressed: () async {
-                            // todo purchase the cat back
-                          },
+                          onPressed: () => _processCatPurchasingBack(context),
                         ),
                 ),
               ],
@@ -53,6 +51,38 @@ class CatCard extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Future<void> _processCatPurchasingBack(BuildContext context) async {
+    final ownership = cat.ownership;
+
+    if (ownership == null) return;
+
+    final service = context.read<StoreService>();
+    final res = await service.purchaseCatBack(ownership);
+
+    // ignore: use_build_context_synchronously
+    if (!context.mounted) return;
+
+    if (res.isSuccessful) {
+      showErrorSnackBar(
+        context: context,
+        content: ErrorSnackBarContent(
+          titleText: 'Успішно!',
+          backgroundColor: Colors.green[200],
+        ),
+      );
+
+      return;
+    }
+
+    showErrorSnackBar(
+      context: context,
+      content: ErrorSnackBarContent(
+        titleText: 'Не вдалось повернути котика',
+        subtitleText: 'Повідомлення від сервера: ${res.errorMessage}',
+      ),
     );
   }
 }
