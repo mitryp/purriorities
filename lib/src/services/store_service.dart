@@ -104,11 +104,13 @@ class StoreService {
 
     final res = await FetchResult.fromResponse(
       client.post('$basePath/return-cat/${runawayCat.catNameId}'),
+      true,
     );
 
     if (res.isSuccessful) {
       final user = userData.user!;
-      _setUserBalance({Currency.feed: user.amountOfCurrency(Currency.feed) - price});
+      _setUserBalance({Currency.feed: user.amountOfCurrency(Currency.feed) - price}, userData);
+      _addOrUpdateCatOwnership(runawayCat.copyWithPrice(price: null), userData);
     }
 
     return res;
@@ -135,9 +137,15 @@ class StoreService {
     final currencyAmount = user.amountOfCurrency(lootBoxType.currency);
     final price = prices.priceForLootBoxType(lootBoxType);
 
-    userData.user = userData.user!
+    userData.user = user
         .setCurrencyAmount(currencyAmount - price, lootBoxType.currency)
         .updateCatOwnership(cat);
+  }
+
+  void _addOrUpdateCatOwnership(CatOwnership ownership, [UserData? userData]) {
+    userData ??= _userData();
+
+    userData.user = userData.user?.updateCatOwnership(ownership);
   }
 
   void _setUserBalance(Map<Currency, int> balances, [UserData? userData]) {
