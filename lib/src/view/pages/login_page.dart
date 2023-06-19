@@ -54,6 +54,7 @@ class MobileLoginForm extends StatefulWidget {
 
 class _MobileLoginFormState extends State<MobileLoginForm> {
   final _formKey = GlobalKey<FormState>();
+  final _buttonKey = GlobalKey<ProgressIndicatorButtonState>();
   late final Synchronizer synchronizer = context.synchronizer();
 
   @override
@@ -78,7 +79,45 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
         leading: _buildLeading(),
         form: Form(
           key: _formKey,
-          child: _buildFormContent(context),
+          child: Builder(
+            builder: (context) {
+              final loginData = context.watch<LoginData>();
+              final error = context.watch<NotifierWrapper<DioError?>>().data;
+              final errorMessage = (error?.response?.data as Map<String, dynamic>?)?['message'];
+              final errorColor = Theme.of(context).colorScheme.error;
+
+              return Column(
+                children: [
+                  TextFormField(
+                    initialValue: loginData.email,
+                    validator: isEmail,
+                    onChanged: (newEmail) => loginData.email = newEmail,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    keyboardType: TextInputType.emailAddress,
+                    onFieldSubmitted: (_) => _buttonKey.currentState?.handlePress(),
+                  ),
+                  TextFormField(
+                    obscureText: true,
+                    initialValue: loginData.password,
+                    validator: isLongerOrEqual(8),
+                    onChanged: (newPassword) => loginData.password = newPassword,
+                    decoration: const InputDecoration(labelText: 'Пароль'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    onFieldSubmitted: (_) => _buttonKey.currentState?.handlePress(),
+                  ),
+                  if (errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        errorMessage,
+                        style: TextStyle(color: errorColor),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
         ),
         trailing: _buildTrailing(context),
       ),
@@ -108,42 +147,6 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
     ];
   }
 
-  Widget _buildFormContent(BuildContext context) {
-    final loginData = context.watch<LoginData>();
-    final error = context.watch<NotifierWrapper<DioError?>>().data;
-    final errorMessage = (error?.response?.data as Map<String, dynamic>?)?['message'];
-    final errorColor = Theme.of(context).colorScheme.error;
-
-    return Column(
-      children: [
-        TextFormField(
-          initialValue: loginData.email,
-          validator: isEmail,
-          onChanged: (newEmail) => loginData.email = newEmail,
-          decoration: const InputDecoration(labelText: 'Email'),
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          keyboardType: TextInputType.emailAddress,
-        ),
-        TextFormField(
-          obscureText: true,
-          initialValue: loginData.password,
-          validator: isLongerOrEqual(8),
-          onChanged: (newPassword) => loginData.password = newPassword,
-          decoration: const InputDecoration(labelText: 'Пароль'),
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-        ),
-        if (errorMessage != null)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              errorMessage,
-              style: TextStyle(color: errorColor),
-            ),
-          ),
-      ],
-    );
-  }
-
   List<Widget> _buildTrailing(BuildContext context) {
     return [
       Padding(
@@ -155,6 +158,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
           runSpacing: 8,
           children: [
             ProgressIndicatorButton.outlined(
+              key: _buttonKey,
               onPressed: () => _processLogin(context),
               textCaption: const Text('Увійти'),
             ),
