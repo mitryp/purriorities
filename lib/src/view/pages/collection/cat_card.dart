@@ -24,11 +24,15 @@ class CatCard extends StatelessWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                SizedBox.square(
-                  dimension: _radius * 2,
-                  child: (ownership?.isAway ?? false)
-                      ? _ShadedCatAvatar(cat.info, isOwned: cat.isOwned)
-                      : _CatAvatar(cat.info, isOwned: cat.isOwned),
+                Tooltip(
+                  message: (ownership == null) ? '???' : info.description,
+                  margin: const EdgeInsets.only(top: _radius * 0.25),
+                  child: SizedBox.square(
+                    dimension: _radius * 2,
+                    child: (ownership?.isAway ?? false)
+                        ? _ShadedCatAvatar(cat.info, isOwned: cat.isOwned)
+                        : _CatAvatar(cat.info, isOwned: cat.isOwned),
+                  ),
                 ),
                 FittedBox(
                   child: Text(
