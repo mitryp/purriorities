@@ -49,7 +49,7 @@ class RewardPunishmentDialog extends StatelessWidget {
             Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.only(bottom: 8),
-              child: const Text('Досягнення', style: _labelStyle),
+              child: const Text('Нагорода', style: _labelStyle),
             ),
             _RewardsColumn(reward, user: user, skills: skills),
           ],
@@ -68,7 +68,7 @@ class RewardPunishmentDialog extends StatelessWidget {
         ],
       ),
       actionsAlignment: MainAxisAlignment.center,
-      actions: [ElevatedButton(onPressed: context.pop, child: const Text('Зрозуміло'))],
+      actions: [ElevatedButton(onPressed: context.pop, child: const Text('Няв'))],
     );
   }
 }
