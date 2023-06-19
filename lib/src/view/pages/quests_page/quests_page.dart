@@ -168,9 +168,7 @@ class _MobileQuestsPage extends StatelessWidget {
             slivers: [
               SliverToBoxAdapter(
                 child: !questsPageData.areFiltersLoaded && !questsPageData.isLoaded
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
+                    ? const Center(child: CircularProgressIndicator())
                     : Column(
                         children: [
                           Card(
@@ -199,12 +197,20 @@ class _MobileQuestsPage extends StatelessWidget {
                       ),
               ),
               if (questsPageData.error == null)
-                QuestsList(
-                  items: questsPageData.quests,
-                  isFiltered: questsPageData.areFiltersApplied,
-                  useSliverList: true,
-                  filtersUpdateCallback: _filterUpdateCallback,
-                )
+                if (questsPageData.isLoaded)
+                  QuestsList(
+                    items: questsPageData.quests,
+                    isFiltered: questsPageData.areFiltersApplied,
+                    useSliverList: true,
+                    filtersUpdateCallback: _filterUpdateCallback,
+                  )
+                else
+                  const SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 16),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  )
               else
                 SliverToBoxAdapter(
                   child: Padding(
