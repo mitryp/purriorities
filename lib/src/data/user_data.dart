@@ -9,7 +9,8 @@ class UserData with ChangeNotifier {
   User? _user;
   QuestCategory? _defaultCategory;
   List<Quest> _quests = [];
-  List<PendingPunishment> _punishments = [];
+  PendingPunishment? _punishment;
+  bool punishmentHasBeenDisplayed = false;
 
   User? get user => _user;
 
@@ -43,10 +44,11 @@ class UserData with ChangeNotifier {
     notifyListeners();
   }
 
-  List<PendingPunishment> get pendingPunishments => _punishments;
+  PendingPunishment? get pendingPunishment => _punishment;
 
-  set pendingPunishments(List<PendingPunishment> punishments) {
-    _punishments = punishments;
+  set pendingPunishment(PendingPunishment? punishment) {
+    _punishment = punishment;
+    punishmentHasBeenDisplayed = false;
     notifyListeners();
   }
 

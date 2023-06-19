@@ -94,15 +94,20 @@ class _QuestTaskSelectionChip extends StatelessWidget {
 
     if (wasRewarded) {
       await showRewardPunishmentDialog(
+        label: 'Завдання ${task.name}',
         context: context,
         reward: res,
         wasNewQuestScheduled: wasNewQuestScheduled,
       );
     } else {
-      // questWrapper.data = quest.setTaskStatus(task.id, isCompleted: false);
+      final reward = (res as TaskRefuseResponse).reward;
+      final punishment = res.punishment;
+
       await showRewardPunishmentDialog(
+        label: 'Завдання ${task.name}',
         context: context,
-        refuseResponse: res,
+        reward: reward,
+        punishment: punishment,
         wasNewQuestScheduled: wasNewQuestScheduled,
       );
     }

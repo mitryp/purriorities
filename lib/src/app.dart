@@ -12,6 +12,7 @@ import 'services/cats_info_cache.dart';
 import 'services/http/auth_service.dart';
 import 'services/http/util/client.dart';
 import 'services/http/util/fetch_service_bundle.dart';
+import 'services/punishment_service.dart';
 import 'services/synchronizer.dart';
 import 'typedefs.dart';
 import 'view/pages/init_page.dart';
@@ -141,6 +142,12 @@ class _AppTopProviders extends StatelessWidget {
 
         // a Synchronizer provider
         Provider<Synchronizer>(create: Synchronizer.new),
+
+        // a provider of punishment service
+        Provider<PunishmentTimerService>(
+          create: PunishmentTimerService.new,
+          dispose: (_, timerService) => timerService.cancel(),
+        ),
       ],
       child: child,
     );

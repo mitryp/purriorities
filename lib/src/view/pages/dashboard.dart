@@ -7,6 +7,7 @@ import '../../common/enums/query_param.dart';
 import '../../common/enums/sprite.dart';
 import '../../data/models/user.dart';
 import '../../data/user_data.dart';
+import '../../services/punishment_service.dart';
 import '../../util/extensions/context_synchronizer.dart';
 import '../../util/sprite_scaling.dart';
 import '../widgets/active_quests_view.dart';
@@ -18,6 +19,7 @@ import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_bars/labeled_progress_bar.dart';
 import '../widgets/sprite_avatar.dart';
+import '../widgets/punishment_consumer.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -48,9 +50,11 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Authorizer(
-      child: LayoutSelector(
-        mobileLayoutBuilder: (context) => const _MobileDashboard(),
-        desktopLayoutBuilder: (context) => const _DesktopDashboard(),
+      child: PunishmentConsumer(
+        child: LayoutSelector(
+          mobileLayoutBuilder: (context) => const _MobileDashboard(),
+          desktopLayoutBuilder: (context) => const _DesktopDashboard(),
+        ),
       ),
     );
   }
@@ -61,6 +65,8 @@ class _MobileDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final punishmentService = context.read<PunishmentTimerService>();
+
     return MobileLayout(
       floatingActionButton: AddButton(onPressed: () => context.push(AppRoute.editQuest.route)),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -87,9 +93,12 @@ class _MobileDashboard extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: ElevatedButton(
-                      onPressed: () => context
-                          .push(AppRoute.allQuests.route)
-                          .whenComplete(context.synchronizer().syncQuests),
+                      onPressed: () => context.push(AppRoute.allQuests.route).whenComplete(
+                            () => context
+                                .synchronizer()
+                                .syncQuests()
+                                .whenComplete(punishmentService.reschedulePunishmentSync),
+                          ),
                       child: const Text('Всі квести'),
                     ),
                   ),

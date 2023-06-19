@@ -24,6 +24,7 @@ import '../widgets/error_snack_bar.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_indicator_button.dart';
+import '../widgets/punishment_consumer.dart';
 import '../widgets/sprite_avatar.dart';
 import 'collection/collection_cat.dart';
 
@@ -35,9 +36,11 @@ class StorePage extends StatelessWidget {
     return Authorizer(
       child: ProxyProvider<Dio, StoreService>(
         update: (context, client, prev) => StoreService(context: context, client: client),
-        child: LayoutSelector(
-          mobileLayoutBuilder: (context) => const _MobileStorePage(),
-          desktopLayoutBuilder: (context) => const Placeholder(),
+        child: PunishmentConsumer(
+          child: LayoutSelector(
+            mobileLayoutBuilder: (context) => const _MobileStorePage(),
+            desktopLayoutBuilder: (context) => const Placeholder(),
+          ),
         ),
       ),
     );

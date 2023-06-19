@@ -14,6 +14,7 @@ import '../../../data/user_data.dart';
 import '../../../data/util/notifier_wrapper.dart';
 import '../../../data/util/validators.dart';
 import '../../../services/http/util/fetch_service_bundle.dart';
+import '../../../services/punishment_service.dart';
 import '../../../typedefs.dart';
 import '../../../util/datetime_comparison.dart';
 import '../../../util/extensions/context_synchronizer.dart';
@@ -35,7 +36,9 @@ import '../../widgets/quest_skill_tile/quest_skill_tile.dart';
 import 'quest_skills_selector_delegate.dart';
 
 part 'quest_schedule_tile.dart';
+
 part 'quest_skills_selector.dart';
+
 part 'quest_stages_editor.dart';
 
 class QuestEditPage extends StatelessWidget {
@@ -190,8 +193,10 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
     final res = await service.create(quest);
     if (!mounted) return;
 
+    final punishmentService = context.read<PunishmentTimerService>();
+
     if (res.isSuccessful) {
-      context.synchronizer().syncQuests();
+      context.synchronizer().syncQuests().whenComplete(punishmentService.reschedulePunishmentSync);
       context.pop();
 
       return;

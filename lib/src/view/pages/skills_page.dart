@@ -12,6 +12,7 @@ import '../widgets/add_button.dart';
 import '../widgets/authorizer.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
+import '../widgets/punishment_consumer.dart';
 import '../widgets/skill_tile.dart';
 
 class SkillsPage extends StatefulWidget {
@@ -36,9 +37,11 @@ class _SkillsPageState extends State<SkillsPage> {
     return Authorizer(
       child: ChangeNotifierProvider<_SkillsData>.value(
         value: _data,
-        child: LayoutSelector(
-          mobileLayoutBuilder: (context) => const _MobileSkillsPage(),
-          desktopLayoutBuilder: (context) => const Placeholder(),
+        child: PunishmentConsumer(
+          child: LayoutSelector(
+            mobileLayoutBuilder: (context) => const _MobileSkillsPage(),
+            desktopLayoutBuilder: (context) => const Placeholder(),
+          ),
         ),
       ),
     );

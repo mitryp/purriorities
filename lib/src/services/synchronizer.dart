@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../data/models/punishments.dart';
 import '../data/models/quest.dart';
 import '../data/models/quest_category.dart';
 import '../data/models/user.dart';
@@ -49,7 +50,7 @@ class Synchronizer {
     return _updateUserData<User>((data) => data.user = user);
   }
 
-  /// Currently, synchronizes all the quests of the current user from the server and updates the
+  /// Synchronizes all the active quests of the current user from the server and updates the
   /// [UserData] of [_context] with the obtained value.
   Future<List<Quest>?> syncQuests() async {
     const activeQuestsPaginationData = PaginationData(filter: {'finishDate': '\$null'});
@@ -63,7 +64,7 @@ class Synchronizer {
     return _updateUserData((data) => data.quests = quests ?? []);
   }
 
-  /// Synchronises the inbox category of the current user and updates the [UserData] of [_context]
+  /// Synchronizes the inbox category of the current user and updates the [UserData] of [_context]
   /// with the received value.
   Future<QuestCategory?> syncDefaultCategory() async {
     log('synchronizing inbox category', name: 'Synchronizer');
@@ -73,5 +74,15 @@ class Synchronizer {
         .then((res) => res.isSuccessful ? res.result() : null);
 
     return _updateUserData((data) => data.defaultCategory = category);
+  }
+
+  /// Synchronizes the pending punishment, updates the [UserData] of [_context] with the received
+  /// value.
+  Future<PendingPunishment?> syncPunishment() async {
+    final punishment = await _userFetchService()
+        .pendingPunishment()
+        .then((res) => res.isSuccessful ? res.result() : null);
+
+    return _updateUserData((data) => data.pendingPunishment = punishment);
   }
 }

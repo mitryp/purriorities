@@ -18,6 +18,7 @@ import '../../widgets/categories_drawer.dart';
 import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
+import '../../widgets/punishment_consumer.dart';
 import '../../widgets/quests_list.dart';
 import 'quests_filter.dart';
 import 'quests_page_data.dart';
@@ -104,11 +105,13 @@ class _QuestsPageState extends State<QuestsPage> {
     return Authorizer(
       child: ChangeNotifierProvider<QuestsPageData>.value(
         value: _data,
-        builder: (_, __) => LayoutSelector(
-          mobileLayoutBuilder: (context) => _MobileQuestsPage(
-            filterUpdateCallback: _fetchFilteredQuests,
+        builder: (_, __) => PunishmentConsumer(
+          child: LayoutSelector(
+            mobileLayoutBuilder: (context) => _MobileQuestsPage(
+              filterUpdateCallback: _fetchFilteredQuests,
+            ),
+            desktopLayoutBuilder: (context) => const Placeholder(),
           ),
-          desktopLayoutBuilder: (context) => const Placeholder(),
         ),
       ),
     );

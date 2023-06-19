@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 
+import '../../../data/models/punishments.dart';
 import '../../../data/models/user.dart';
+import '../../../typedefs.dart';
 import '../util/fetch_result.dart';
 import 'fetch_service.dart';
 
@@ -24,4 +26,9 @@ class UsersFetchService extends FetchService<User> with ModifyFetchMixin<User> {
   }
 
   Future<FetchResult<User>> me() => getOne();
+
+  Future<FetchResult<PendingPunishment>> pendingPunishment() => FetchResult.transformResponse(
+        client.get<JsonMap>('$path/new-punishments'),
+        PendingPunishment.fromJson,
+      );
 }

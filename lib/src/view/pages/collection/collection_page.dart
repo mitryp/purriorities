@@ -21,6 +21,7 @@ import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
 import '../../widgets/progress_bars/labeled_progress_bar.dart';
 import '../../widgets/progress_indicator_button.dart';
+import '../../widgets/punishment_consumer.dart';
 import '../../widgets/sprite_avatar.dart';
 import 'collection_cat.dart';
 
@@ -45,9 +46,11 @@ class _CollectionPageState extends State<CollectionPage> {
     return Authorizer(
       child: ProxyProvider<Dio, StoreService>(
         update: (context, client, prev) => StoreService(context: context, client: client),
-        child: LayoutSelector(
-          mobileLayoutBuilder: (context) => const MobileCollection(),
-          desktopLayoutBuilder: (context) => const Placeholder(),
+        child: PunishmentConsumer(
+          child: LayoutSelector(
+            mobileLayoutBuilder: (context) => const MobileCollection(),
+            desktopLayoutBuilder: (context) => const Placeholder(),
+          ),
         ),
       ),
     );

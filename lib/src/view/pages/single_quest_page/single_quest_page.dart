@@ -28,6 +28,7 @@ import '../../widgets/authorizer.dart';
 import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';
 import '../../widgets/layouts/mobile.dart';
+import '../../widgets/punishment_consumer.dart';
 
 part 'quest_info_tiles.dart';
 part 'quest_stage_display.dart';
@@ -42,9 +43,11 @@ class SingleQuestPage extends StatelessWidget {
     return Authorizer(
       child: ChangeNotifierProvider<NotifierWrapper<Quest>>(
         create: (context) => NotifierWrapper(quest, checkEquality: false),
-        child: LayoutSelector(
-          mobileLayoutBuilder: (_) => const _MobileQuestPage(),
-          desktopLayoutBuilder: (_) => const Placeholder(),
+        child: PunishmentConsumer(
+          child: LayoutSelector(
+            mobileLayoutBuilder: (_) => const _MobileQuestPage(),
+            desktopLayoutBuilder: (_) => const Placeholder(),
+          ),
         ),
       ),
     );

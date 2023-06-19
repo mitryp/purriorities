@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../common/enums/app_route.dart';
 import '../../common/enums/query_param.dart';
 import '../../services/cats_info_cache.dart';
+import '../../services/punishment_service.dart';
 import '../../typedefs.dart';
 import '../../util/extensions/context_synchronizer.dart';
 import '../widgets/error_snack_bar.dart';
@@ -27,14 +28,18 @@ class _InitPageState extends State<InitPage> {
   late bool _isUserLoaded = widget.sessionRestored;
   bool _isCatsInfoLoaded = false;
   bool _areQuestsLoaded = false;
+  bool _arePunishmentsLoaded = false;
   bool _isDefaultCategoryLoaded = false;
   String _loadingLabel = 'Ініціалізація';
 
   late final _synchronizer = context.synchronizer();
 
+  late final _punishmentService = context.read<PunishmentTimerService>();
+
   @override
   void initState() {
     super.initState();
+
     _initLoadingFlow();
   }
 
@@ -43,6 +48,7 @@ class _InitPageState extends State<InitPage> {
       _loadCats,
       _loadUser,
       _loadQuests,
+      _loadPunishments,
       _loadDefaultCategory,
     ];
 
@@ -71,7 +77,7 @@ class _InitPageState extends State<InitPage> {
     );
   }
 
-  Future<bool> _loadCats() async => _loadStage(
+  Future<bool> _loadCats() => _loadStage(
         loader: context.read<CatsInfoCache>().loadCats,
         label: 'Збираємо котиків',
         errorText: 'Не вдалось завантажити котиків',
@@ -79,14 +85,21 @@ class _InitPageState extends State<InitPage> {
         onSuccess: () => _isCatsInfoLoaded = true,
       );
 
-  Future<bool> _loadQuests() async => _loadStage(
+  Future<bool> _loadQuests() => _loadStage(
         loader: _synchronizer.syncQuests,
         label: 'Завантажуємо квести',
         errorText: 'Не вдалось завантажити квести',
         onSuccess: () => _areQuestsLoaded = true,
       );
 
-  Future<bool> _loadDefaultCategory() async => _loadStage(
+  Future<bool> _loadPunishments() => _loadStage(
+        loader: _punishmentService.syncPunishments,
+        label: 'Синхронізуємо покарання',
+        errorText: 'Не вдалось синхронізувати покарання',
+        onSuccess: () => _arePunishmentsLoaded = true,
+      );
+
+  Future<bool> _loadDefaultCategory() => _loadStage(
         loader: _synchronizer.syncDefaultCategory,
         label: 'Отримуємо категорію за замовчуванням',
         errorText: 'Не вдалось завантажити початкову категорію',
@@ -150,6 +163,7 @@ class _InitPageState extends State<InitPage> {
       _isUserLoaded,
       _isCatsInfoLoaded,
       _areQuestsLoaded,
+      _arePunishmentsLoaded,
       _isDefaultCategoryLoaded,
     ];
 

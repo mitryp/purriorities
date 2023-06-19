@@ -6,7 +6,6 @@ import '../../common/enums/currency.dart';
 import '../../data/models/punishments.dart';
 import '../../data/models/rewards.dart';
 import '../../data/models/skill.dart';
-import '../../data/models/task_refuse_response.dart';
 import '../../data/models/user.dart';
 import '../../data/user_data.dart';
 import '../../services/cats_info_cache.dart';
@@ -20,6 +19,7 @@ import '../widgets/sprite_avatar.dart';
 class RewardPunishmentDialog extends StatelessWidget {
   static const TextStyle _labelStyle = TextStyle(fontSize: 16);
 
+  final String label;
   final User user;
   final List<Skill> skills;
   final List<CollectionCat> ownedCats;
@@ -28,6 +28,7 @@ class RewardPunishmentDialog extends StatelessWidget {
   final bool wasNewQuestScheduled;
 
   const RewardPunishmentDialog({
+    required this.label,
     required this.user,
     required this.skills,
     required this.ownedCats,
@@ -40,11 +41,7 @@ class RewardPunishmentDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        'Операцію виконано',
-        style: TextStyle(fontSize: 18),
-        textAlign: TextAlign.center,
-      ),
+      title: Text(label, style: const TextStyle(fontSize: 18), textAlign: TextAlign.center),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -100,6 +97,33 @@ class _PunishmentsColumn extends StatelessWidget {
 
     return Column(
       children: [
+        if (punishment.extraTrustLost > 0)
+          _RewardPunishmentEntry(
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(text: 'Ви втратили '),
+                  TextSpan(text: '${punishment.extraTrustLost}', style: _trustTextStyle),
+                  const TextSpan(text: ' довіри'),
+                ],
+              ),
+            ),
+          ),
+        if (trustLostFromQuests > 0)
+          _RewardPunishmentEntry(
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  const TextSpan(text: 'Пропущені реченці призвели до втрати '),
+                  TextSpan(
+                    text: '$trustLostFromQuests',
+                    style: _trustTextStyle,
+                  ),
+                  const TextSpan(text: ' одиниць довіри'),
+                ],
+              ),
+            ),
+          ),
         if (punishment.runawayCats.isNotEmpty)
           _RewardPunishmentEntry(
             title: Text.rich(
@@ -143,33 +167,6 @@ class _PunishmentsColumn extends StatelessWidget {
               ),
             ),
           ),
-        if (trustLostFromQuests > 0)
-          _RewardPunishmentEntry(
-            title: Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(text: 'Пропущені реченці призвели до втрати '),
-                  TextSpan(
-                    text: '$trustLostFromQuests',
-                    style: _trustTextStyle,
-                  ),
-                  const TextSpan(text: ' одиниць довіри'),
-                ],
-              ),
-            ),
-          ),
-        if (punishment.extraTrustLost > 0)
-          _RewardPunishmentEntry(
-            title: Text.rich(
-              TextSpan(
-                children: [
-                  const TextSpan(text: 'Ви втратили '),
-                  TextSpan(text: '${punishment.extraTrustLost}', style: _trustTextStyle),
-                  const TextSpan(text: ' довіри'),
-                ],
-              ),
-            ),
-          )
       ],
     );
   }
@@ -318,11 +315,12 @@ class _RewardPunishmentEntry extends StatelessWidget {
 
 Future<void> showRewardPunishmentDialog({
   required BuildContext context,
+  required String label,
   Reward? reward,
-  TaskRefuseResponse? refuseResponse,
+  PendingPunishment? punishment,
   bool wasNewQuestScheduled = false,
 }) async {
-  assert(reward != null || refuseResponse != null);
+  assert(reward != null || punishment != null);
 
   final catOwnerships = context.read<UserData>().user!.catOwnerships;
   final cats = context.read<CatsInfoCache>().cats;
@@ -340,12 +338,13 @@ Future<void> showRewardPunishmentDialog({
   // ignore: use_build_context_synchronously
   if (!context.mounted) return;
 
-  final rew = reward ?? refuseResponse!.reward;
-  final punishment = refuseResponse?.punishment;
+  final rew = reward ?? const Reward.absent();
+  punishment ??= const PendingPunishment.absent();
 
   await showDialog(
     context: context,
     builder: (context) => RewardPunishmentDialog(
+      label: label,
       user: user,
       skills: skills.result().data,
       ownedCats: collectionCats,
