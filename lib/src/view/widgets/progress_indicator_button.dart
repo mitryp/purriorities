@@ -46,24 +46,24 @@ class ProgressIndicatorButton extends StatefulWidget {
         buttonBuilder = _textButtonBuilder;
 
   @override
-  State<ProgressIndicatorButton> createState() => _ProgressIndicatorButtonState();
+  State<ProgressIndicatorButton> createState() => ProgressIndicatorButtonState();
 }
 
-class _ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
+class ProgressIndicatorButtonState extends State<ProgressIndicatorButton> {
   bool isProcessing = false;
 
   @override
   Widget build(BuildContext context) {
     return widget.buttonBuilder(
       style: widget.style,
-      onPressed: widget.onPressed != null ? _handlePress : null,
+      onPressed: widget.onPressed != null ? handlePress : null,
       child: isProcessing
           ? Transform.scale(scale: 0.5, child: const CircularProgressIndicator())
           : widget.child,
     );
   }
 
-  void _handlePress() {
+  void handlePress() {
     if (isProcessing) return;
 
     setState(() => isProcessing = true);
