@@ -90,14 +90,7 @@ class _QuestsPageState extends State<QuestsPage> {
       return;
     }
 
-    final date = DateTime(2023);
-
-    _data.quests = questsRes.result()
-      ..sort(
-        compareBool<Quest>((quest) => quest.isFinished).then(
-          compare((quest) => quest.deadline ?? date),
-        ),
-      );
+    _data.quests = questsRes.result();
     _data.isLoaded = true;
   }
 
