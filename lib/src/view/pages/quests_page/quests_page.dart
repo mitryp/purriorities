@@ -10,6 +10,7 @@ import '../../../data/models/skill.dart';
 import '../../../services/helpers/pagination_data.dart';
 import '../../../services/http/fetch/quests_fetch_service.dart';
 import '../../../services/http/util/fetch_service_bundle.dart';
+import '../../../services/punishment_service.dart';
 import '../../../util/extensions/context_synchronizer.dart';
 import '../../../util/extensions/string_ellipsis.dart';
 import '../../widgets/add_button.dart';
@@ -168,7 +169,10 @@ class _MobileQuestsPage extends StatelessWidget {
           floatingActionButton: AddButton(
             onPressed: () => context.push(AppRoute.editQuest.route).whenComplete(() {
               _filterUpdateCallback();
-              context.synchronizer().syncQuests();
+              context
+                  .synchronizer()
+                  .syncQuests()
+                  .whenComplete(context.read<PunishmentTimerService>().reschedulePunishmentSync);
             }),
           ),
           child: CustomScrollView(

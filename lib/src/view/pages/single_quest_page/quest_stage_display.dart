@@ -94,7 +94,7 @@ class _QuestTaskSelectionChip extends StatelessWidget {
 
     if (wasRewarded) {
       await showRewardPunishmentDialog(
-        label: 'Завдання ${task.name}',
+        label: 'Завдання "${task.name}"',
         context: context,
         reward: res,
         wasNewQuestScheduled: wasNewQuestScheduled,
@@ -104,7 +104,7 @@ class _QuestTaskSelectionChip extends StatelessWidget {
       final punishment = res.punishment;
 
       await showRewardPunishmentDialog(
-        label: 'Завдання ${task.name}',
+        label: 'Завдання "${task.name}"',
         context: context,
         reward: reward,
         punishment: punishment,

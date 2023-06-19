@@ -17,6 +17,7 @@ import '../../../data/models/task.dart';
 import '../../../data/models/task_refuse_response.dart';
 import '../../../data/util/notifier_wrapper.dart';
 import '../../../services/http/util/fetch_service_bundle.dart';
+import '../../../services/punishment_service.dart';
 import '../../../services/tasks_service.dart';
 import '../../../util/extensions/context_synchronizer.dart';
 import '../../../util/extensions/string_capitalize.dart';
@@ -31,6 +32,7 @@ import '../../widgets/layouts/mobile.dart';
 import '../../widgets/punishment_consumer.dart';
 
 part 'quest_info_tiles.dart';
+
 part 'quest_stage_display.dart';
 
 class SingleQuestPage extends StatelessWidget {
@@ -128,7 +130,10 @@ class _MobileQuestPage extends StatelessWidget {
     if (!context.mounted) return;
 
     if (res.isSuccessful && res.result()) {
-      context.synchronizer().syncQuests();
+      context
+          .synchronizer()
+          .syncQuests()
+          .whenComplete(context.read<PunishmentTimerService>().reschedulePunishmentSync);
       context.pop();
 
       return;
