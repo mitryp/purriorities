@@ -76,7 +76,7 @@ class _LootBoxDialogContentState extends State<LootBoxDialogContent> {
               secondChild: Column(
                 children: [
                   SpriteAvatar.network(
-                    backgroundColor: widget.lootBoxType.catRarity.color,
+                    backgroundColor: widget.reward.info.rarity.color,
                     networkPath: widget.reward.info.spritePath,
                     scale: scaleTo(spritesDimension),
                     minRadius: spritesDimension,
