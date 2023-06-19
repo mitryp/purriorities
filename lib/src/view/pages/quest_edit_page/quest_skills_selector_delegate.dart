@@ -23,7 +23,7 @@ class SkillsSearchDelegate extends SearchDelegate<Skill> {
         .toList(growable: false);
 
     return ListView.builder(
-      itemCount: _options.length,
+      itemCount: searchResults.length,
       itemBuilder: (context, index) {
         final skill = searchResults[index];
 
@@ -39,14 +39,16 @@ class SkillsSearchDelegate extends SearchDelegate<Skill> {
   }
 
   @override
-  List<Widget> buildActions(BuildContext context) {
-    return const [];
-  }
+  List<Widget> buildActions(BuildContext context) => const [];
 
   @override
-  Widget buildLeading(BuildContext context) {
-    return const SizedBox();
-  }
+  Widget buildLeading(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: IconButton(
+          onPressed: context.pop,
+          icon: const Icon(Icons.arrow_back),
+        ),
+      );
 
   @override
   Widget buildResults(BuildContext context) => buildSuggestions(context);
