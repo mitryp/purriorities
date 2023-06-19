@@ -204,7 +204,7 @@ class _MobileQuestsPage extends StatelessWidget {
                     useSliverList: true,
                     filtersUpdateCallback: _filterUpdateCallback,
                   )
-                else
+                else if (questsPageData.areFiltersLoaded)
                   const SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.only(top: 16),
