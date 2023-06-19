@@ -27,7 +27,6 @@ class CategoriesEditPage extends StatelessWidget {
       create: (context) => NotifierWrapper(category ?? const QuestCategory.empty()),
       child: LayoutSelector(
         mobileLayoutBuilder: (_) => _MobileCategoriesEditPage(isEditing: category != null),
-        desktopLayoutBuilder: (_) => const Placeholder(),
       ),
     );
   }

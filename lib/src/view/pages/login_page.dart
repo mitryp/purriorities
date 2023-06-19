@@ -40,7 +40,6 @@ class LoginPage extends StatelessWidget {
       ],
       child: LayoutSelector(
         mobileLayoutBuilder: (context) => const MobileLoginForm(),
-        desktopLayoutBuilder: (context) => const Placeholder(),
       ),
     );
   }

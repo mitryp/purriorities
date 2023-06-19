@@ -40,7 +40,6 @@ class _SkillsPageState extends State<SkillsPage> {
         child: PunishmentConsumer(
           child: LayoutSelector(
             mobileLayoutBuilder: (context) => const _MobileSkillsPage(),
-            desktopLayoutBuilder: (context) => const Placeholder(),
           ),
         ),
       ),

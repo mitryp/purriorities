@@ -29,7 +29,6 @@ class SkillsEditPage extends StatelessWidget {
         create: (_) => _SkillEditData(skill?.name),
         child: LayoutSelector(
           mobileLayoutBuilder: (_) => _MobileSkillsEditPage(skill: skill),
-          desktopLayoutBuilder: (_) => const Placeholder(),
         ),
       ),
     );

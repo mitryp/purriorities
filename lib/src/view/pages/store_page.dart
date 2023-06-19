@@ -39,7 +39,6 @@ class StorePage extends StatelessWidget {
         child: PunishmentConsumer(
           child: LayoutSelector(
             mobileLayoutBuilder: (context) => const _MobileStorePage(),
-            desktopLayoutBuilder: (context) => const Placeholder(),
           ),
         ),
       ),

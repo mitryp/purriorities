@@ -48,7 +48,6 @@ class SingleQuestPage extends StatelessWidget {
         child: PunishmentConsumer(
           child: LayoutSelector(
             mobileLayoutBuilder: (_) => const _MobileQuestPage(),
-            desktopLayoutBuilder: (_) => const Placeholder(),
           ),
         ),
       ),

@@ -17,7 +17,6 @@ class MainNavigation extends StatelessWidget {
       create: (context) => MainNavigationData(),
       child: LayoutSelector(
         mobileLayoutBuilder: (context) => _MobileNavigation(child: child),
-        desktopLayoutBuilder: (context) => const Placeholder(),
       ),
     );
   }

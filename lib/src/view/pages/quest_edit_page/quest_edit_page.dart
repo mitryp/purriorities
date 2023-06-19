@@ -64,10 +64,7 @@ class QuestEditPage extends StatelessWidget {
           );
         },
         child: LayoutSelector(
-          mobileLayoutBuilder: (context) => MobileQuestEditPage(
-            isEditing: initialQuest != null,
-          ),
-          desktopLayoutBuilder: (context) => const Placeholder(),
+          mobileLayoutBuilder: (context) => MobileQuestEditPage(isEditing: initialQuest != null),
         ),
       ),
     );

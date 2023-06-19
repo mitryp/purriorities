@@ -61,7 +61,10 @@ class Synchronizer {
         .getMany(activeQuestsPaginationData)
         .then((res) => res.isSuccessful ? res.map((p) => p.data) : null);
 
-    return _updateUserData((data) => data.quests = quests ?? []);
+    return _updateUserData((data) {
+      data.quests = quests ?? [];
+      return quests;
+    });
   }
 
   /// Synchronizes the inbox category of the current user and updates the [UserData] of [_context]

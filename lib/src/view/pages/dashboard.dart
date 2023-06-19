@@ -14,12 +14,11 @@ import '../widgets/active_quests_view.dart';
 import '../widgets/add_button.dart';
 import '../widgets/authorizer.dart';
 import '../widgets/currency/currency_balance.dart';
-import '../widgets/layouts/desktop.dart';
 import '../widgets/layouts/layout_selector.dart';
 import '../widgets/layouts/mobile.dart';
 import '../widgets/progress_bars/labeled_progress_bar.dart';
-import '../widgets/sprite_avatar.dart';
 import '../widgets/punishment_consumer.dart';
+import '../widgets/sprite_avatar.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -53,7 +52,6 @@ class _DashboardState extends State<Dashboard> {
       child: PunishmentConsumer(
         child: LayoutSelector(
           mobileLayoutBuilder: (context) => const _MobileDashboard(),
-          desktopLayoutBuilder: (context) => const _DesktopDashboard(),
         ),
       ),
     );
@@ -183,11 +181,4 @@ class _UserInfoSection extends StatelessWidget {
       },
     );
   }
-}
-
-class _DesktopDashboard extends StatelessWidget {
-  const _DesktopDashboard();
-
-  @override
-  Widget build(BuildContext context) => const DesktopLayout();
 }

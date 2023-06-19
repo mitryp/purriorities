@@ -111,7 +111,6 @@ class _QuestsPageState extends State<QuestsPage> {
             mobileLayoutBuilder: (context) => _MobileQuestsPage(
               filterUpdateCallback: _fetchFilteredQuests,
             ),
-            desktopLayoutBuilder: (context) => const Placeholder(),
           ),
         ),
       ),

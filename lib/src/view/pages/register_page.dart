@@ -23,7 +23,6 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutSelector(
       mobileLayoutBuilder: (context) => MobileRegisterForm(email: _cachedEmail),
-      desktopLayoutBuilder: (context) => const Placeholder(),
     );
   }
 }

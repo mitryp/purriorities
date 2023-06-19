@@ -49,7 +49,6 @@ class _CollectionPageState extends State<CollectionPage> {
         child: PunishmentConsumer(
           child: LayoutSelector(
             mobileLayoutBuilder: (context) => const MobileCollection(),
-            desktopLayoutBuilder: (context) => const Placeholder(),
           ),
         ),
       ),
