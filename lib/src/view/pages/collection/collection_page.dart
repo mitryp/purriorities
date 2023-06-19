@@ -70,11 +70,26 @@ class MobileCollection extends StatelessWidget {
             child: Selector<UserData, User?>(
               selector: (context, data) => data.user,
               builder: (context, user, _) {
-                return LabeledProgressBar(
-                  label: 'Довіра',
-                  value: user?.trust ?? 0,
-                  maxValue: maxUserTrust,
-                  labelAlign: TextAlign.center,
+                return Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: LabeledProgressBar(
+                        label: 'Довіра',
+                        value: user?.trust ?? 0,
+                        maxValue: maxUserTrust,
+                        labelAlign: TextAlign.center,
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: CurrencyInfo(
+                          quantity: user?.feed ?? 0,
+                          currency: Currency.feed,
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
