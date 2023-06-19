@@ -107,6 +107,7 @@ class _PunishmentsColumn extends StatelessWidget {
                   const TextSpan(text: ' довіри'),
                 ],
               ),
+              textAlign: TextAlign.center,
             ),
           ),
         if (trustLostFromQuests > 0)
@@ -122,12 +123,12 @@ class _PunishmentsColumn extends StatelessWidget {
                   const TextSpan(text: ' одиниць довіри'),
                 ],
               ),
+              textAlign: TextAlign.center,
             ),
           ),
         if (punishment.runawayCats.isNotEmpty)
           _RewardPunishmentEntry(
             title: Text.rich(
-              textAlign: TextAlign.center,
               TextSpan(
                 children: [
                   const TextSpan(text: 'Від вас пішли ці котики та забрали з собою '),
@@ -141,6 +142,7 @@ class _PunishmentsColumn extends StatelessWidget {
                   )
                 ],
               ),
+              textAlign: TextAlign.center,
             ),
             child: SizedBox(
               width: double.maxFinite,
@@ -275,8 +277,15 @@ class _RewardsColumn extends StatelessWidget {
                     const TextSpan(text: ' очок досвіду'),
                   ],
                 ),
+                textAlign: TextAlign.center,
               ),
-              child: wasMainLevelGained ? const Text('Новий рівень!', style: _xpTextStyle) : null,
+              child: wasMainLevelGained
+                  ? const Text(
+                      'Новий рівень!',
+                      style: _xpTextStyle,
+                      textAlign: TextAlign.center,
+                    )
+                  : null,
             ),
         ],
       ),
