@@ -113,6 +113,11 @@ class Quest extends Serializable with Prototype<Quest> {
             maxDate(currentDate, deadline).add(Duration(days: interval)).isBefore(limit));
   }
 
+  /// Whether this quest was refused by the user.
+  /// This state occurs when each task of each stage of the quest was refused.
+  bool get isRefused =>
+      isFinished && stages.every((stage) => stage.tasks.every((task) => task.isRefused));
+
   @override
   Map<String, dynamic> toJson() => _$QuestToJson(this);
 

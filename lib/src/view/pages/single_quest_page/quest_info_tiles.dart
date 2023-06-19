@@ -19,17 +19,24 @@ class _QuestInfoTiles extends StatelessWidget {
     final statusTextStyle = TextStyle(
       color: isDeadlineMissed
           ? errorColor
-          : (quest.isFinished ? QuestPriority.optional : QuestPriority.regular).color,
+          : (quest.isRefused ? QuestPriority.optional : QuestPriority.regular).color,
     );
 
     final defaultTrailingStyle = TextStyle(color: Colors.grey[200]);
 
+    final String questStatusLabel;
+    if (quest.isRefused) {
+      questStatusLabel = 'Скасований';
+    } else if (quest.isFinished) {
+      questStatusLabel = 'Завершений';
+    } else if (isDeadlineMissed) {
+      questStatusLabel = 'Протермінований';
+    } else {
+      questStatusLabel = 'Активний';
+    }
+
     final List<(String, String, TextStyle?)> tileEntries = [
-      (
-        'Статус',
-        quest.isFinished ? 'Завершений' : (isDeadlineMissed ? 'Протермінований' : 'Активний'),
-        statusTextStyle
-      ),
+      ('Статус', questStatusLabel, statusTextStyle),
       if (!quest.isFinished && deadline != null)
         (
           isDeadlineMissed ? 'Протерміновано на' : 'Часу залишилось',
