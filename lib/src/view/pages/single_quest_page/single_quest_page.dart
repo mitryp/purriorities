@@ -72,13 +72,11 @@ class _MobileQuestPage extends StatelessWidget {
         final priorityTextStyle = quest.priority.textStyleWithColor;
 
         return MobileLayout.child(
-          floatingActionButton: quest.isFinished
-              ? null
-              : FloatingActionButton(
-                  onPressed: () => _processDeleteTask(context, quest),
-                  backgroundColor: Colors.red[600],
-                  child: const Icon(Icons.delete),
-                ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _processDeleteTask(context, quest),
+            backgroundColor: Colors.red[600],
+            child: const Icon(Icons.delete),
+          ),
           appBar: AppBar(
             title: Text.rich(
               TextSpan(
