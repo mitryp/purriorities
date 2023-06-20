@@ -96,13 +96,8 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
         trailing: [
           Padding(
             padding: const EdgeInsets.only(top: 24, bottom: 72),
-            child: ProgressIndicatorButton(
+            child: ProgressIndicatorButton.elevated(
               onPressed: _processRegister,
-              buttonBuilder: ({required child, required onPressed, style}) => ElevatedButton(
-                onPressed: onPressed,
-                style: style,
-                child: child,
-              ),
               child: const Text('Продовжити'),
             ),
           ),

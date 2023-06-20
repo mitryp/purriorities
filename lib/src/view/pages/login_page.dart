@@ -160,7 +160,7 @@ class _MobileLoginFormState extends State<MobileLoginForm> {
             ProgressIndicatorButton.outlined(
               key: _buttonKey,
               onPressed: () => _processLogin(context),
-              textCaption: const Text('Увійти'),
+              child: const Text('Увійти'),
             ),
             TextButton(
               onPressed: () => _processRegisterRedirect(context),

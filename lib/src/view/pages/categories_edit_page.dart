@@ -78,8 +78,7 @@ class _MobileCategoriesEditPageState extends State<_MobileCategoriesEditPage> {
           ),
           trailing: [
             const SizedBox(height: 16),
-            ProgressIndicatorButton(
-              buttonBuilder: OutlinedButton.new,
+            ProgressIndicatorButton.outlined(
               onPressed: _processCategorySaving,
               child: const Text('Зберегти'),
             ),

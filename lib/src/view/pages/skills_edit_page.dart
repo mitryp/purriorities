@@ -87,8 +87,7 @@ class _MobileSkillsEditPageState extends State<_MobileSkillsEditPage> {
                   skillData.error?.message ?? 'Сталася помилка',
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 ),
-              ProgressIndicatorButton(
-                buttonBuilder: OutlinedButton.new,
+              ProgressIndicatorButton.outlined(
                 onPressed: _processSkillSaving,
                 child: const Text('Зберегти'),
               )
