@@ -11,8 +11,7 @@ parameters:
 
 > These options control the behavior of the client when sending requests to the server
 
-- `API_BASE_URL` - a URL of the server root with the HTTP schema included. Must end with `/`.   
-  The port must be specified if the server uses a port different from `80`.  
+- `API_BASE_URL` - a URL of the server root with the HTTP schema included. Must end with `/`.  
   Default: `/`
 
 
