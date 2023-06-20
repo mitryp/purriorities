@@ -193,7 +193,7 @@ class _MobileQuestEditPageState extends State<MobileQuestEditPage> {
     final punishmentService = context.read<PunishmentTimerService>();
 
     if (res.isSuccessful) {
-      context.synchronizer().syncQuests().whenComplete(punishmentService.reschedulePunishmentSync);
+      context.synchronizer().syncQuests().whenComplete(punishmentService.syncPunishments);
       context.pop();
 
       return;
