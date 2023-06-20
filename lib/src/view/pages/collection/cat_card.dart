@@ -44,9 +44,14 @@ class CatCard extends StatelessWidget {
                   height: height / 6,
                   child: catPrice == null
                       ? Center(child: Text('+${ownership?.xpBoost ?? '???'}% XP'))
-                      : _PurchaseButton(
-                          price: catPrice,
-                          onPressed: () => _processCatPurchasingBack(context),
+                      : Selector<UserData, int>(
+                          selector: (_, userData) => userData.user?.feed ?? 0,
+                          builder: (context, feedBalance, _) => _PurchaseButton(
+                            price: catPrice,
+                            onPressed: feedBalance >= catPrice
+                                ? () => _processCatPurchasingBack(context)
+                                : null,
+                          ),
                         ),
                 ),
               ],
@@ -134,7 +139,7 @@ class _ShadedCatAvatar extends StatelessWidget {
 
 class _PurchaseButton extends StatelessWidget {
   final int price;
-  final FutureVoidCallback<void> onPressed;
+  final FutureVoidCallback<void>? onPressed;
 
   const _PurchaseButton({required this.price, required this.onPressed});
 
