@@ -1,11 +1,11 @@
 {
-    "name": "purriorities",
-    "short_name": "purriorities",
+    "name": "Purriorities",
+    "short_name": "Purriorities",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Your next gamified task-management solution.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
