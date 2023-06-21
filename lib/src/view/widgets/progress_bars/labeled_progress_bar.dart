@@ -11,7 +11,6 @@ class LabeledProgressBar extends StatelessWidget {
   final double spacing;
   final TextAlign labelAlign;
   final double progressBarHeight;
-  final int labelFlex;
   final int progressBarFlex;
 
   const LabeledProgressBar({
@@ -23,7 +22,6 @@ class LabeledProgressBar extends StatelessWidget {
     this.spacing = 8.0,
     this.labelAlign = TextAlign.end,
     this.progressBarHeight = 25.0,
-    this.labelFlex = 2,
     this.progressBarFlex = 5,
     super.key,
   });
@@ -35,10 +33,7 @@ class LabeledProgressBar extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(
-          flex: labelFlex,
-          child: Text(label, textAlign: labelAlign),
-        ),
+        Text(label, textAlign: labelAlign),
         SizedBox(width: spacing),
         Expanded(
           flex: progressBarFlex,
