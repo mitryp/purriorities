@@ -211,15 +211,15 @@ class _MobileQuestsPage extends StatelessWidget {
                       child: Center(child: CircularProgressIndicator()),
                     ),
                   )
-              else
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Center(
-                      child: Text(questsPageData.error?.message ?? 'Сталась помилка'),
+                else
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Center(
+                        child: Text(questsPageData.error?.message ?? 'Сталась помилка'),
+                      ),
                     ),
-                  ),
-                )
+                  )
             ],
           ),
         );

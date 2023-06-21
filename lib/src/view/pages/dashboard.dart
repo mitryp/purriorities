@@ -120,7 +120,6 @@ class _UserInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const labelFlex = 2;
     const progressBarFlex = 5;
 
     return Selector<UserData, User>(
@@ -149,6 +148,19 @@ class _UserInfoSection extends StatelessWidget {
                 ],
               ),
               Expanded(
+                flex: 2,
+                child: SizedBox(
+                  height: radius * 2,
+                  child: SpriteAvatar.asset(
+                    sprite.animatedAsset,
+                    minRadius: radius - 8,
+                    scale: scaleToFitCircle(radius),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                flex: 5,
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -157,7 +169,6 @@ class _UserInfoSection extends StatelessWidget {
                       label: 'Довіра',
                       value: user.trust,
                       maxValue: maxTrust,
-                      labelFlex: labelFlex,
                       progressBarFlex: progressBarFlex,
                     ),
                     LabeledProgressBar(
@@ -165,17 +176,14 @@ class _UserInfoSection extends StatelessWidget {
                       value: user.levelExp,
                       maxValue: user.levelCap,
                       progressBarCaption: 'Рівень ${user.level}',
-                      labelFlex: labelFlex,
                       progressBarFlex: progressBarFlex,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8),
                       child: Row(
                         children: [
-                          const Expanded(
-                            flex: labelFlex,
-                            child: SizedBox(),
-                          ),
+                          const Text('     '),
+                          const SizedBox(width: 8),
                           Expanded(
                             flex: progressBarFlex,
                             child: CurrencyBalance(
