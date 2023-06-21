@@ -1,11 +1,13 @@
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/enums/query_param.dart';
 import '../../common/enums/app_route.dart';
+import '../../constants.dart';
 import '../../data/user_data.dart';
 
 class Authorizer extends StatefulWidget {
@@ -31,6 +33,8 @@ class _AuthorizerState extends State<Authorizer> {
 
   @override
   Widget build(BuildContext context) {
+    final currentRoute = AppRoute.maybeOf(context);
+
     return Consumer<UserData>(
       builder: (context, data, child) {
         if (data.isLoggedIn) {
@@ -41,7 +45,13 @@ class _AuthorizerState extends State<Authorizer> {
 
         return widget.unauthorizedPlaceholder;
       },
-      child: widget.child,
+      child: kIsWeb
+          ? Title(
+              title: currentRoute != null ? '${currentRoute.title}$titleEnding' : 'Purriorities',
+              color: Colors.white,
+              child: widget.child,
+            )
+          : widget.child,
     );
   }
 

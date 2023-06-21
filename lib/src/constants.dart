@@ -13,3 +13,5 @@ final accentButtonStyle = ButtonStyle(
     ),
   ),
 );
+
+const titleEnding = ' - Purriorities';
