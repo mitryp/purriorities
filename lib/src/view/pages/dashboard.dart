@@ -129,10 +129,24 @@ class _UserInfoSection extends StatelessWidget {
         return IntrinsicHeight(
           child: Row(
             children: [
-              SpriteAvatar.asset(
-                sprite.animatedAsset,
-                minRadius: radius,
-                scale: scaleToFitCircle(radius),
+              Column(
+                children: [
+                  GestureDetector(
+                    onTap: () => context.push(AppRoute.profile.route),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: SpriteAvatar.asset(
+                        sprite.animatedAsset,
+                        minRadius: radius,
+                        scale: scaleToFitCircle(radius),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(user.nickname),
+                  ),
+                ],
               ),
               Expanded(
                 child: Column(

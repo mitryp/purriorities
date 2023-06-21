@@ -17,6 +17,8 @@ import 'services/synchronizer.dart';
 import 'typedefs.dart';
 import 'view/pages/init_page.dart';
 import 'view/pages/login_page.dart';
+import 'view/pages/profile_page/profile_edit_page.dart';
+import 'view/pages/profile_page/profile_page.dart';
 import 'view/pages/quest_edit_page/quest_edit_page.dart';
 import 'view/pages/quests_page/quests_page.dart';
 import 'view/pages/register_page.dart';
@@ -84,7 +86,17 @@ final _router = GoRouter(
       builder: (context, state) => SkillsEditPage(
         skill: state.extra is Skill ? state.extra as Skill : null,
       ),
-    )
+    ),
+    GoRoute(
+      parentNavigatorKey: rootNavigatorKey,
+      path: AppRoute.profile.route,
+      builder: (context, state) => const ProfilePage(),
+    ),
+    GoRoute(
+      parentNavigatorKey: rootNavigatorKey,
+      path: AppRoute.editProfile.route,
+      builder: (context, state) => const ProfileEditPage(),
+    ),
   ],
 );
 

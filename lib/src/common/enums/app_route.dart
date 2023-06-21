@@ -10,7 +10,9 @@ enum AppRoute {
   editSkill('/edit_skill'),
   register('/register'),
   allQuests('/quests'),
-  editQuest('/edit_quest');
+  editQuest('/edit_quest'),
+  profile('/profile'),
+  editProfile('/edit_profile');
 
   final String route;
 
