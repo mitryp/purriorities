@@ -30,19 +30,24 @@ class _MobileNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const actions = MainNavAction.values;
-    final data = context.watch<MainNavigationData>();
+    final currentLocation = GoRouter.of(context).location;
+    final currentIndex = MainNavAction.values
+        .firstWhere(
+          (action) => action.route.route == currentLocation,
+          orElse: () => MainNavAction.dashboard,
+        )
+        .index;
 
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.white,
         selectedItemColor: QuestPriority.legendary.color,
         onTap: (index) => GoRouter.of(context).go(actions[index].route.route),
-        currentIndex: data.index,
+        currentIndex: currentIndex,
         items: actions.map((action) {
           return BottomNavigationBarItem(
             icon: Icon(action.iconData, size: 36),
             label: action.label,
-            //TODO background color
           );
         }).toList(growable: false),
       ),

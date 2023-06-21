@@ -11,6 +11,10 @@ import '../view/pages/store_page.dart';
 class MainNavigationData with ChangeNotifier {
   MainNavAction _action = MainNavAction.dashboard;
 
+  MainNavigationData();
+
+  factory MainNavigationData.of(BuildContext context) => context.read<MainNavigationData>();
+
   MainNavAction get currentPage => _action;
 
   set currentPage(MainNavAction value) {
@@ -19,10 +23,6 @@ class MainNavigationData with ChangeNotifier {
   }
 
   int get index => currentPage.index;
-
-  MainNavigationData();
-
-  factory MainNavigationData.of(BuildContext context) => context.read<MainNavigationData>();
 }
 
 enum MainNavAction {

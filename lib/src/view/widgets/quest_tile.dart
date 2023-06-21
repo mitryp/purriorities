@@ -48,7 +48,10 @@ class QuestTile extends StatelessWidget {
         children: [
           if (isRepeated) const Icon(Icons.restart_alt_rounded),
           if (quest.isRefused)
-            const Text('Скасовано', style: TextStyle(color: Colors.grey),)
+            const Text(
+              'Скасовано',
+              style: TextStyle(color: Colors.grey),
+            )
           else if (quest.isFinished)
             const Text('Завершено')
           else if (deadline != null)

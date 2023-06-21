@@ -34,14 +34,14 @@ class ProgressIndicatorButton extends StatefulWidget {
     required this.onPressed,
     this.style,
     super.key,
-  })  : buttonBuilder = _outlinedButtonBuilder;
+  }) : buttonBuilder = _outlinedButtonBuilder;
 
   const ProgressIndicatorButton.text({
     required this.child,
     required this.onPressed,
     this.style,
     super.key,
-  })  : buttonBuilder = _textButtonBuilder;
+  }) : buttonBuilder = _textButtonBuilder;
 
   @override
   State<ProgressIndicatorButton> createState() => ProgressIndicatorButtonState();
