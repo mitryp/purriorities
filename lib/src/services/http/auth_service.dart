@@ -25,7 +25,7 @@ class AuthService {
   }
 
   Future<FetchResult<bool>> logout() async {
-    final response = _client.delete<void>('auth/logout');
+    final response = _client.delete<void>('api/auth/logout');
 
     return httpServiceControllerRes(response, (res) => true, orElseIfNotFailed: true);
   }

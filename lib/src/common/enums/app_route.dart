@@ -13,7 +13,9 @@ enum AppRoute {
   editSkill('/edit_skill', 'Редагування навички'),
   register('/register', 'Реєстрація'),
   allQuests('/quests', 'Квести'),
-  editQuest('/edit_quest', 'Редагування квесту');
+  editQuest('/edit_quest', 'Редагування квесту'),
+  profile('/profile', 'Профіль'),
+  editProfile('/edit_profile', 'Редагувати профіль');
 
   final String route;
   final String title;

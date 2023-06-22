@@ -131,11 +131,23 @@ class _UserInfoSection extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: SizedBox(
-                  height: radius * 2,
-                  child: SpriteAvatar.asset(
-                    sprite.animatedAsset,
-                    minRadius: radius - 8,
-                    scale: scaleToFitCircle(radius),
+                  height: radius * 2 * 1.3,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(
+                        onTap: () => context.push(AppRoute.profile.route),
+                        child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: SpriteAvatar.asset(
+                            sprite.animatedAsset,
+                            minRadius: radius,
+                            scale: scaleToFitCircle(radius),
+                          ),
+                        ),
+                      ),
+                      Text(user.nickname),
+                    ],
                   ),
                 ),
               ),
