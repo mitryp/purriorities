@@ -10,7 +10,10 @@ import '../../../common/enums/sprite.dart';
 import '../../../data/models/user.dart';
 import '../../../data/user_data.dart';
 import '../../../services/http/auth_service.dart';
+import '../../../services/http/fetch/user_fetch_service.dart';
+import '../../../services/http/util/fetch_service_bundle.dart';
 import '../../../util/sprite_scaling.dart';
+import '../../dialogs/confirmation_dialog.dart';
 import '../../widgets/authorizer.dart';
 import '../../widgets/error_snack_bar.dart';
 import '../../widgets/layouts/layout_selector.dart';
@@ -42,7 +45,9 @@ class _ProfilePageMobileLayout extends StatelessWidget {
 
   const _ProfilePageMobileLayout({super.key});
 
-  Future<void> _processLogout(BuildContext context, AuthService authService) async {
+  Future<void> _processLogout(BuildContext context) async {
+    final authService = context.read<AuthService>();
+
     final res = await authService.logout();
 
     log('$res, ${res.error?.response}');
@@ -63,10 +68,47 @@ class _ProfilePageMobileLayout extends StatelessWidget {
     context.push(AppRoute.login.route);
   }
 
+  Future<void> _processProfileDeletion(BuildContext context) async {
+    if (!context.mounted) return;
+
+    final isConfirmed = await showConfirmationDialog(
+      context: context,
+      title: 'Ви дійсно хочете видалити акаунт?',
+      prompt: 'Всі дані разом з квестами, досягненнями й колекцією котиків буде втрачено.',
+      confirmLabelText: 'Так',
+      denyLabelText: 'Ні',
+      titleStyle: const TextStyle(fontSize: 17),
+      promptStyle: const TextStyle(fontSize: 15),
+    );
+
+    if (!isConfirmed) return;
+
+    if (!context.mounted) return;
+
+    final userService = context.read<FetchServiceBundle>().usersFetchService;
+
+    final res = await userService.delete();
+
+    log('$res, ${res.error?.response}');
+
+    if (!context.mounted) return;
+
+    if (!res.isSuccessful) {
+      showErrorSnackBar(
+        context: context,
+        content: const ErrorSnackBarContent(
+          titleText: 'Не вдалося видалити акаунт користувача.',
+        ),
+      );
+
+      return;
+    }
+
+    context.push(AppRoute.login.route);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final authService = context.read<AuthService>();
-
     final List<({String caption, IconData iconData, FutureOrCallback callback, bool isAsync})>
         profileButtonsData = [
       (
@@ -75,11 +117,16 @@ class _ProfilePageMobileLayout extends StatelessWidget {
         callback: () => context.push(AppRoute.editProfile.route),
         isAsync: false,
       ),
-      //(caption: 'Видалити профіль', iconData: Icons.delete,  callback: () async => await authService.logout()),
+      (
+        caption: 'Видалити профіль',
+        iconData: Icons.delete,
+        callback: () => _processProfileDeletion(context),
+        isAsync: true,
+      ),
       (
         caption: 'Вийти',
         iconData: Icons.logout,
-        callback: () => _processLogout(context, authService),
+        callback: () => _processLogout(context),
         isAsync: true,
       ),
     ];
@@ -95,7 +142,7 @@ class _ProfilePageMobileLayout extends StatelessWidget {
             children: [
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [

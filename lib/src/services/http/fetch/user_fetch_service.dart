@@ -46,6 +46,17 @@ class UsersFetchService extends FetchService<User> with ModifyFetchMixin<User> {
     );
   }
 
+  @override
+  Future<FetchResult<bool>> delete([String primaryKey = '']) {
+    assert(
+    primaryKey.isEmpty,
+    'UserFetchService must not fetch with a primary key, Users cannot get information about'
+        ' other users. Please, pass an empty string',
+    );
+
+    return super.delete(primaryKey);
+  }
+
   Future<FetchResult<User>> me() => getOne();
 
   Future<FetchResult<PendingPunishment>> pendingPunishment() => FetchResult.transformResponse(
