@@ -64,9 +64,17 @@ mixin ModifyFetchMixin<S extends Serializable> on FetchService<S> {
   ///
   /// The request is sent to [path]/[primaryKey] path.
   /// Returns an updated resource.
-  Future<FetchResult<S>> update(String primaryKey, S serializable, {S? oldSerializable}) async {
+  Future<FetchResult<S>> update(
+    String primaryKey,
+    S serializable, {
+    Map<String, dynamic> additionalFields = const {},
+    S? oldSerializable,
+  }) async {
     final patchJson = oldSerializable?.diff(serializable) ?? serializable.toJson();
-    final res = client.patch<JsonMap>('$path/$primaryKey', data: patchJson);
+    final res = client.patch<JsonMap>(
+      '$path/$primaryKey',
+      data: patchJson..addAll(additionalFields),
+    );
 
     return _defaultResponseTransform(res);
   }

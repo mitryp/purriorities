@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 typedef FieldValidator = String? Function(String?);
 
 FieldValidator all(List<FieldValidator> validators) {
@@ -76,14 +78,18 @@ FieldValidator isLongerOrEqual(int minLength) {
   return all([
     notEmpty,
     (s) {
-      if (s!.trim().length >= minLength) {
-        return null;
-      }
+      if (s!.trim().length >= minLength) return null;
 
       return 'Стрічка повинна бути не коротшою, ніж $minLength символів';
     },
   ]);
 }
+
+FieldValidator repeatPasswordValidator(TextEditingController passwordController) => (value) {
+      if (passwordController.text == value) return null;
+
+      return 'Паролі повинні співпадати';
+    };
 
 FieldValidator get usernameValidator => all([
       notEmpty,
@@ -92,6 +98,7 @@ FieldValidator get usernameValidator => all([
         final match = RegExp(r'\w+').matchAsPrefix(normalized);
 
         if (match != null) return null;
+
         return 'Стрічка може містити латиницю, цифри та підкреслення';
       }
     ]);
@@ -101,6 +108,7 @@ FieldValidator get isEmail => all([
       (s) {
         final normalized = s!.trim();
         final match = RegExp(r'^[\w.+-]*[\w+-]@([\w.-]+\.)+\w+$').matchAsPrefix(normalized);
+
         if (match != null) return null;
         return 'Стрічка повинна бути валідною адресою ел. пошти';
       },
@@ -111,6 +119,7 @@ FieldValidator startsWith(String pattern) =>
 
 String? _nonNegativeCurrencyValidator(String pattern) {
   final match = RegExp(r'^\d+(\.\d{1,2})?\s*$').matchAsPrefix(pattern);
+
   return match == null ? 'Число може містити один або два знаки після коми' : null;
 }
 

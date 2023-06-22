@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +9,6 @@ import '../../../common/enums/app_route.dart';
 import '../../../common/enums/sprite.dart';
 import '../../../data/models/user.dart';
 import '../../../data/user_data.dart';
-import '../../../data/util/notifier_wrapper.dart';
 import '../../../services/http/auth_service.dart';
 import '../../../util/sprite_scaling.dart';
 import '../../widgets/authorizer.dart';
@@ -49,7 +47,7 @@ class _ProfilePageMobileLayout extends StatelessWidget {
 
     log('$res, ${res.error?.response}');
 
-    if(!context.mounted) return;
+    if (!context.mounted) return;
 
     if (!res.isSuccessful) {
       showErrorSnackBar(
@@ -62,25 +60,27 @@ class _ProfilePageMobileLayout extends StatelessWidget {
       return;
     }
 
-    context.go(AppRoute.login.route);
+    context.push(AppRoute.login.route);
   }
 
   @override
   Widget build(BuildContext context) {
     final authService = context.read<AuthService>();
 
-    final List<({String caption, IconData iconData, FutureOrCallback callback})>
+    final List<({String caption, IconData iconData, FutureOrCallback callback, bool isAsync})>
         profileButtonsData = [
       (
         caption: 'Редагувати профіль',
         iconData: Icons.edit,
         callback: () => context.push(AppRoute.editProfile.route),
+        isAsync: false,
       ),
       //(caption: 'Видалити профіль', iconData: Icons.delete,  callback: () async => await authService.logout()),
       (
         caption: 'Вийти',
         iconData: Icons.logout,
         callback: () => _processLogout(context, authService),
+        isAsync: true,
       ),
     ];
 
@@ -120,6 +120,7 @@ class _ProfilePageMobileLayout extends StatelessWidget {
                         onPressed: data.callback,
                         caption: data.caption,
                         iconData: data.iconData,
+                        isAsync: data.isAsync,
                       ),
                     );
                   }).toList(),
@@ -137,28 +138,58 @@ class _ProfileButton extends StatelessWidget {
   final FutureOrCallback onPressed;
   final IconData iconData;
   final String caption;
+  final bool isAsync;
 
   const _ProfileButton({
     required this.caption,
     required this.iconData,
     required this.onPressed,
+    this.isAsync = false,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ProgressIndicatorButton.outlined(
-      onPressed: onPressed,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15.0),
-        child: Row(
-          //mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Icon(iconData),
-            const SizedBox(width: 8.0),
-            Text(caption),
-          ],
+    if (isAsync) {
+      ProgressIndicatorButton.outlined(
+        onPressed: onPressed,
+        child: _ProfileButtonContent(
+          iconData: iconData,
+          caption: caption,
         ),
+      );
+    }
+
+    return OutlinedButton(
+      onPressed: onPressed,
+      child: _ProfileButtonContent(
+        iconData: iconData,
+        caption: caption,
+      ),
+    );
+  }
+}
+
+class _ProfileButtonContent extends StatelessWidget {
+  final IconData iconData;
+  final String caption;
+
+  const _ProfileButtonContent({
+    required this.caption,
+    required this.iconData,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15.0),
+      child: Row(
+        children: [
+          Icon(iconData),
+          const SizedBox(width: 8.0),
+          Text(caption),
+        ],
       ),
     );
   }

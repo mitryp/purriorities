@@ -25,6 +25,27 @@ class UsersFetchService extends FetchService<User> with ModifyFetchMixin<User> {
     return super.getOne(primaryKey);
   }
 
+  @override
+  Future<FetchResult<User>> update(
+    String primaryKey,
+    User serializable, {
+    Map<String, dynamic> additionalFields = const {},
+    User? oldSerializable,
+  }) {
+    assert(
+      primaryKey.isEmpty,
+      'UserFetchService must not fetch with a primary key, Users cannot get information about'
+      ' other users. Please, pass an empty string',
+    );
+
+    return super.update(
+      primaryKey,
+      serializable,
+      oldSerializable: oldSerializable,
+      additionalFields: additionalFields,
+    );
+  }
+
   Future<FetchResult<User>> me() => getOne();
 
   Future<FetchResult<PendingPunishment>> pendingPunishment() => FetchResult.transformResponse(

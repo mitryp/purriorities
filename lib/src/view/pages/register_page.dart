@@ -49,7 +49,7 @@ class _MobileRegisterFormState extends State<MobileRegisterForm> {
       ('Нікнейм', _usernameController, usernameValidator),
       ('Email', _emailController, isEmail),
       ('Пароль', _passwordController, isLongerOrEqual(8)),
-      ('Повторіть пароль', null, _repeatPasswordValidator),
+      ('Повторіть пароль', null, repeatPasswordValidator(_passwordController)),
     ];
 
     return MobileLayout.child(

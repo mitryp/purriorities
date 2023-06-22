@@ -13,6 +13,7 @@ class QuestCategory extends Serializable with Prototype<QuestCategory> {
   final String name;
 
   /// An id of this category.
+  @JsonKey(includeToJson: false)
   final String id;
 
   /// If this category is a default one.
