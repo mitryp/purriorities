@@ -121,10 +121,10 @@ class _InitPageState extends State<InitPage> {
     if (!mounted) return false;
 
     if (errorPredicate(res)) {
-      showErrorSnackBar(
-        context: context,
-        content: ErrorSnackBarContent(titleText: errorText),
-      );
+      // showErrorSnackBar(
+      //   context: context,
+      //   content: ErrorSnackBarContent(titleText: errorText),
+      // );
 
       _requestLoginRedirect();
 
