@@ -64,7 +64,7 @@ class _AuthorizerState extends State<Authorizer> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!context.mounted) return;
 
-      final route = AppRoute.login.params([QueryParam.redirectTo(currentLocation)]);
+      final route = AppRoute.init.params([QueryParam.redirectTo(currentLocation)]);
       log('redirecting to route $route', name: 'Authorizer');
 
       context.go(route);
