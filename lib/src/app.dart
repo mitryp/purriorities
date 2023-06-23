@@ -30,7 +30,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey();
 final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey();
 
 final _router = GoRouter(
-  initialLocation: AppRoute.init.route,
+  initialLocation: AppRoute.login.route,
   navigatorKey: rootNavigatorKey,
   routes: [
     ShellRoute(
