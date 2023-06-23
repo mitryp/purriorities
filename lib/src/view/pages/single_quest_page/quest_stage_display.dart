@@ -112,6 +112,6 @@ class _QuestTaskSelectionChip extends StatelessWidget {
       );
     }
 
-    if (quest().isFinished) await sync.syncQuests();
+    await sync.syncQuests();
   }
 }
