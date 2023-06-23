@@ -89,7 +89,6 @@ class _PositionedBubble extends StatelessWidget {
     required this.size,
     required this.left,
     required this.bottom,
-    super.key,
   });
 
   @override

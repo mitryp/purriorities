@@ -7,7 +7,6 @@ import 'common/enums/app_route.dart';
 import 'data/main_navigation_data.dart';
 import 'data/models/quest.dart';
 import 'data/models/skill.dart';
-import 'data/models/user.dart';
 import 'data/user_data.dart';
 import 'services/cats_info_cache.dart';
 import 'services/http/auth_service.dart';

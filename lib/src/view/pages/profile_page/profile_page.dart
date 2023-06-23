@@ -10,7 +10,6 @@ import '../../../common/enums/sprite.dart';
 import '../../../data/models/user.dart';
 import '../../../data/user_data.dart';
 import '../../../services/http/auth_service.dart';
-import '../../../services/http/fetch/user_fetch_service.dart';
 import '../../../services/http/util/fetch_service_bundle.dart';
 import '../../../util/sprite_scaling.dart';
 import '../../dialogs/confirmation_dialog.dart';
@@ -43,7 +42,7 @@ class _ProfilePageMobileLayout extends StatelessWidget {
   static const Sprite sprite = Sprite.grayCat;
   static const double radius = 50.0;
 
-  const _ProfilePageMobileLayout({super.key});
+  const _ProfilePageMobileLayout();
 
   Future<void> _processLogout(BuildContext context) async {
     final authService = context.read<AuthService>();
@@ -52,6 +51,7 @@ class _ProfilePageMobileLayout extends StatelessWidget {
 
     log('$res, ${res.error?.response}');
 
+    // ignore: use_build_context_synchronously
     if (!context.mounted) return;
 
     if (!res.isSuccessful) {
@@ -83,6 +83,7 @@ class _ProfilePageMobileLayout extends StatelessWidget {
 
     if (!isConfirmed) return;
 
+    // ignore: use_build_context_synchronously
     if (!context.mounted) return;
 
     final userService = context.read<FetchServiceBundle>().usersFetchService;
@@ -91,6 +92,7 @@ class _ProfilePageMobileLayout extends StatelessWidget {
 
     log('$res, ${res.error?.response}');
 
+    // ignore: use_build_context_synchronously
     if (!context.mounted) return;
 
     if (!res.isSuccessful) {
@@ -192,7 +194,6 @@ class _ProfileButton extends StatelessWidget {
     required this.iconData,
     required this.onPressed,
     this.isAsync = false,
-    super.key,
   });
 
   @override
@@ -224,7 +225,6 @@ class _ProfileButtonContent extends StatelessWidget {
   const _ProfileButtonContent({
     required this.caption,
     required this.iconData,
-    super.key,
   });
 
   @override

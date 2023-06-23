@@ -10,7 +10,6 @@ import '../../services/cats_info_cache.dart';
 import '../../services/punishment_service.dart';
 import '../../typedefs.dart';
 import '../../util/extensions/context_synchronizer.dart';
-import '../widgets/error_snack_bar.dart';
 import '../widgets/layouts/mobile.dart';
 
 class InitPage extends StatefulWidget {
@@ -121,11 +120,6 @@ class _InitPageState extends State<InitPage> {
     if (!mounted) return false;
 
     if (errorPredicate(res)) {
-      // showErrorSnackBar(
-      //   context: context,
-      //   content: ErrorSnackBarContent(titleText: errorText),
-      // );
-
       _requestLoginRedirect();
 
       return false;
@@ -143,7 +137,8 @@ class _InitPageState extends State<InitPage> {
 
     _requestRedirect(
       AppRoute.dashboard.params([
-        if (redirectPath != null) QueryParam.redirectTo(redirectPath),
+        if (redirectPath != null && redirectPath != GoRouter.of(context).location)
+          QueryParam.redirectTo(redirectPath),
       ]),
     );
   }

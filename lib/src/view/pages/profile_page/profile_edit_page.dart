@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +29,7 @@ class ProfileEditPage extends StatelessWidget {
 }
 
 class _ProfileEditPageMobileLayout extends StatefulWidget {
-  const _ProfileEditPageMobileLayout({super.key});
+  const _ProfileEditPageMobileLayout();
 
   @override
   State<_ProfileEditPageMobileLayout> createState() => _ProfileEditPageMobileLayoutState();
@@ -134,15 +132,20 @@ class _ProfileEditPageMobileLayoutState extends State<_ProfileEditPageMobileLayo
     if (!mounted) return;
 
     if (res.isSuccessful) {
+      final updatedUser = res.result();
+
       showErrorSnackBar(
         context: context,
         content: ErrorSnackBarContent(
           titleText: 'Дані користувача успішно оновлено',
+          subtitleText: user.email != updatedUser.email || _passwordController.text.isNotEmpty
+              ? 'Потрібно перезайти в акаунт'
+              : null,
           backgroundColor: Colors.green[400],
         ),
       );
 
-      context.push(AppRoute.login.route);
+      context.go(AppRoute.login.route);
 
       return;
     }
